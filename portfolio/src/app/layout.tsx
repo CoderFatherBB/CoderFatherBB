@@ -1,0 +1,38 @@
+import type { Metadata } from "next";
+import { Inter, Outfit } from "next/font/google";
+import "./globals.css";
+import MouseSpotlight from "@/components/MouseSpotlight";
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+const outfit = Outfit({
+  variable: "--font-outfit",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  title: "Bhavin Baldota | AI/ML Engineer",
+  description: "Lead Software Engineer (GenAI/ML) at Persistent, Co-Founder of AIoT Tech, and Researcher in Deep Learning.",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en" className={`${inter.variable} ${outfit.variable} scroll-smooth`}>
+      <body className="min-h-screen bg-black text-white antialiased selection:bg-blue-500/30">
+        <MouseSpotlight />
+        <div className="bg-glow top-0 left-0" />
+        <div className="bg-glow bottom-0 right-0" style={{ filter: "blur(120px)", opacity: 0.5 }} />
+        <div className="relative z-10">
+          {children}
+        </div>
+      </body>
+    </html>
+  );
+}
