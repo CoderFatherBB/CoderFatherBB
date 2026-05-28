@@ -1,7 +1,7 @@
 "use client";
 
 import { Mail, ArrowUp } from "lucide-react";
-import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaYoutube, FaInstagram } from "react-icons/fa";
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -28,6 +28,12 @@ export default function Footer() {
             </a>
             <a href="https://www.linkedin.com/in/bhavin-baldota-103553234/" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-300 hover:bg-[#0a66c2] hover:text-white transition-all">
               <FaLinkedin size={18} />
+            </a>
+            <a href="https://www.youtube.com/@YourFatherAI" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-300 hover:bg-[#ff0000] hover:text-white transition-all">
+              <FaYoutube size={18} />
+            </a>
+            <a href="https://www.instagram.com/yourfather_ai/" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-300 hover:bg-[#e1306c] hover:text-white transition-all">
+              <FaInstagram size={18} />
             </a>
           </div>
         </div>

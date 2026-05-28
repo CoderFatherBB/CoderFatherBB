@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Mail, Menu, X } from "lucide-react";
-import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaYoutube, FaInstagram } from "react-icons/fa";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -66,6 +66,12 @@ export default function Navbar() {
             </a>
             <a href="https://www.linkedin.com/in/bhavin-baldota-103553234/" target="_blank" rel="noreferrer" className="text-slate-300 hover:text-[#0a66c2] transition-colors">
               <FaLinkedin size={20} />
+            </a>
+            <a href="https://www.youtube.com/@YourFatherAI" target="_blank" rel="noreferrer" className="text-slate-300 hover:text-[#ff0000] transition-colors">
+              <FaYoutube size={22} />
+            </a>
+            <a href="https://www.instagram.com/yourfather_ai/" target="_blank" rel="noreferrer" className="text-slate-300 hover:text-[#e1306c] transition-colors">
+              <FaInstagram size={21} />
             </a>
           </motion.div>
         </nav>
