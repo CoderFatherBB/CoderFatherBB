@@ -1,7 +1,7 @@
 <div align="center">
   <h1 align="center">Hi there, I'm Bhavin Baldota! 👋</h1>
   <p align="center">
-    <strong>AI/ML Engineer | B.Tech in AI & Data Science | Co-Founder @ AIoT Tech</strong>
+    <strong>Lead Software Engineer (GenAI) @ Persistent | B.Tech in AI & Data Science | Co-Founder @ AIoT Tech (On Break)</strong>
   </p>
   <p align="center">
     <a href="https://www.linkedin.com/in/bhavin-baldota-103553234/">
@@ -22,10 +22,11 @@
 
 I am a dedicated **AI/ML Engineer** with a deep passion for Artificial Intelligence, Machine Learning, and Deep Learning. I specialize in building high-accuracy models and contributing to cutting-edge research across multiple domains, from natural language processing to audio perception.
 
+- 🏢 **Lead Software Engineer (GenAI) @ Persistent**: Currently working as a Lead Software Engineer focusing on Generative AI.
+- 🚀 **Co-Founder @ AIoT Tech (On Break)**: Leading a talented team to deliver innovative AI, ML, and DL solutions for industry clients.
 - 🔬 **Research Intern @ DRDO**: Focused on AI/ML-based audio perception and localization projects.
-- 🚀 **Co-Founder @ AIoT Tech**: Leading a talented team to deliver innovative AI, ML, and DL solutions for industry clients.
 - 🎓 **Education**: Bachelor of Technology in Artificial Intelligence and Data Science.
-- 🏆 **Achievements**: 35+ certifications listed on LinkedIn, multiple hackathon participations, and continuous contributions to research in disease detection and NLP.
+- 🏆 **Achievements**: 60+ certifications listed on LinkedIn, multiple hackathon participations, and continuous contributions to research in disease detection and NLP.
 
 ---
 
@@ -63,30 +64,4 @@ I am a dedicated **AI/ML Engineer** with a deep passion for Artificial Intellige
   <img alt="MLflow" src="https://img.shields.io/badge/mlflow-%23d9ead3.svg?style=for-the-badge&logo=numpy&logoColor=blue">
 </p>
 
----
 
-### 📊 GitHub Stats
-
-<div align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=CoderFatherBB&theme=dark&hide_border=false&include_all_commits=true&count_private=false" alt="GitHub Stats" />
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=CoderFatherBB&theme=dark&hide_border=false" alt="GitHub Streak" />
-</div>
-<br>
-<div align="center">
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=CoderFatherBB&theme=dark&hide_border=false&include_all_commits=true&count_private=false&layout=compact" alt="Top Languages" />
-</div>
-
-<br>
-
-### 🏆 GitHub Trophies
-<div align="center">
-  <img src="https://github-profile-trophy.vercel.app/?username=CoderFatherBB&theme=dark&no-frame=false&no-bg=false&margin-w=4" alt="GitHub Trophies" />
-</div>
-
----
-
-<div align="center">
-  <a href="https://visitcount.itsvg.in">
-    <img src="https://visitcount.itsvg.in/api?id=CoderFatherBB&icon=0&color=0" alt="Profile Views">
-  </a>
-</div>
