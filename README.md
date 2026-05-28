@@ -13,6 +13,10 @@
     <a href="https://www.youtube.com/@YourFatherAI">
       <img src="https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="YouTube">
     </a>
+    <br><br>
+    <a href="https://bhavin-baldota-portfolio.vercel.app">
+      <img src="https://img.shields.io/badge/🌍_View_Live_Portfolio-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Portfolio">
+    </a>
   </p>
 </div>
 
@@ -66,4 +70,6 @@ I am a dedicated **AI/ML Engineer** with a deep passion for Artificial Intellige
 
 
 ---
-<p><a herf="https://bhavin-baldota-portfolio.vercel.app">Portfolio</p>
+<p align="center">
+  <a href="https://bhavin-baldota-portfolio.vercel.app"><strong>🌐 View My Interactive Portfolio</strong></a>
+</p>
