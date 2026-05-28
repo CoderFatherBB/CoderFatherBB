@@ -140,16 +140,7 @@ const experiences: Experience[] = [
 ];
 
 export default function Experience() {
-  const [activeExp, setActiveExp] = useState<Experience | null>(null);
-
-  // Prevent scrolling when modal is open
-  useEffect(() => {
-    if (activeExp) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-  }, [activeExp]);
+  const [hoveredExp, setHoveredExp] = useState<string | null>(null);
 
   return (
     <>
@@ -166,34 +157,36 @@ export default function Experience() {
               Professional <span className="text-blue-400">Experience</span>
             </h2>
             <div className="w-20 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
-            <p className="mt-4 text-white/50 tracking-widest text-sm uppercase">Click cards to expand details</p>
+            <p className="mt-4 text-white/50 tracking-widest text-sm uppercase">Hover cards to expand details</p>
           </motion.div>
 
           <div className="relative border-l border-white/10 ml-3 md:ml-6 space-y-12">
             {experiences.map((exp, index) => (
               <motion.div
                 key={exp.id}
-                layoutId={`card-container-${exp.id}`}
+                layout
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="relative pl-8 md:pl-12 cursor-pointer group"
-                onClick={() => setActiveExp(exp)}
+                onMouseEnter={() => setHoveredExp(exp.id)}
+                onMouseLeave={() => setHoveredExp(null)}
+                onClick={() => setHoveredExp(hoveredExp === exp.id ? null : exp.id)}
               >
                 {/* Timeline dot */}
-                <div className="absolute w-6 h-6 bg-blue-500 rounded-full border-4 border-[#0f1115] -left-[13px] top-1 shadow-[0_0_15px_rgba(59,130,246,0.5)]"></div>
+                <div className="absolute w-6 h-6 bg-blue-500 rounded-full border-4 border-[#0f1115] -left-[13px] top-1 shadow-[0_0_15px_rgba(59,130,246,0.5)] z-10"></div>
                 
                 <motion.div 
-                  layoutId={`card-${exp.id}`}
-                  className="glass-card rounded-2xl p-6 md:p-8 hover:border-blue-500/50 hover:bg-white/[0.08] transition-colors"
+                  layout
+                  className={`glass-card rounded-2xl p-6 md:p-8 transition-all duration-300 overflow-hidden relative ${hoveredExp === exp.id ? 'border-blue-500/50 bg-[#0a101f] shadow-2xl shadow-blue-500/10' : 'hover:border-blue-500/30'}`}
                 >
                   <div className="flex flex-col md:flex-row md:items-start justify-between mb-4">
                     <div className="flex items-start gap-4">
                       {/* Company Logo Thumbnail */}
                       <motion.div 
-                        layoutId={`logo-${exp.id}`}
-                        className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden shrink-0"
+                        layout
+                        className={`${hoveredExp === exp.id ? 'w-20 h-20 md:w-24 md:h-24 shadow-lg shadow-blue-500/20' : 'w-12 h-12'} rounded-xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden shrink-0 transition-all duration-300`}
                       >
                         <img 
                           src={`/logos/${exp.logoId}.png`} 
@@ -209,8 +202,8 @@ export default function Experience() {
                         />
                       </motion.div>
                       <div>
-                        <motion.h3 layoutId={`title-${exp.id}`} className="text-xl md:text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">{exp.role}</motion.h3>
-                        <motion.div layoutId={`subtitle-${exp.id}`} className="flex items-center space-x-2 text-slate-300 mt-1 font-medium">
+                        <motion.h3 layout className="text-xl md:text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">{exp.role}</motion.h3>
+                        <motion.div layout className="flex items-center space-x-2 text-slate-300 mt-1 font-medium">
                           <Briefcase size={16} className="text-blue-400" />
                           <span>{exp.company}</span>
                           <span className="text-white/20">•</span>
@@ -218,15 +211,48 @@ export default function Experience() {
                         </motion.div>
                       </div>
                     </div>
-                    <motion.div layoutId={`date-${exp.id}`} className="flex items-center space-x-2 text-slate-400 text-sm mt-4 md:mt-0 bg-white/5 px-3 py-1.5 rounded-full border border-white/5 h-fit">
+                    <motion.div layout className="flex items-center space-x-2 text-slate-400 text-sm mt-4 md:mt-0 bg-white/5 px-3 py-1.5 rounded-full border border-white/5 h-fit shrink-0">
                       <Calendar size={14} />
                       <span>{exp.date}</span>
                     </motion.div>
                   </div>
                   
-                  <motion.p layoutId={`desc-${exp.id}`} className="text-slate-400 leading-relaxed mb-6">{exp.description}</motion.p>
+                  <motion.p layout className="text-slate-400 leading-relaxed mb-6">{exp.description}</motion.p>
                   
-                  <motion.div layoutId={`skills-${exp.id}`} className="flex flex-wrap gap-2">
+                  <AnimatePresence>
+                    {hoveredExp === exp.id && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="pt-4 pb-8 border-t border-white/10">
+                          <div className="flex items-center gap-3 mb-4">
+                            <BarChart className="text-blue-400" size={20} />
+                            <h4 className="text-xl font-bold text-white">Key Projects & Contributions</h4>
+                          </div>
+                          <ul className="space-y-3">
+                            {exp.metrics.map((metric, i) => (
+                              <motion.li 
+                                key={i}
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.1 + (i * 0.05) }}
+                                className="flex items-start gap-3 text-slate-300 text-sm md:text-base"
+                              >
+                                <ChevronRight size={18} className="text-blue-500 shrink-0 mt-0.5" />
+                                <span>{metric}</span>
+                              </motion.li>
+                            ))}
+                          </ul>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  <motion.div layout className="flex flex-wrap gap-2 mt-auto">
                     {exp.skills.map((skill, i) => (
                       <span key={i} className="text-xs font-medium text-blue-300 bg-blue-500/10 border border-blue-500/20 px-3 py-1 rounded-full">
                         {skill}
@@ -240,112 +266,6 @@ export default function Experience() {
         </div>
       </section>
 
-      {/* Expanded Modal Overlay */}
-      <AnimatePresence>
-        {activeExp && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-xl"
-              onClick={() => setActiveExp(null)}
-            />
-            
-            <div className="fixed inset-0 z-[101] flex items-center justify-center p-4 md:p-10 pointer-events-none">
-              <motion.div
-                layoutId={`card-${activeExp.id}`}
-                className="glass-card w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl pointer-events-auto relative shadow-2xl shadow-blue-500/20 border border-blue-500/30"
-                style={{ background: 'linear-gradient(145deg, rgba(15, 23, 42, 0.95) 0%, rgba(4, 11, 22, 0.98) 100%)' }}
-              >
-                <button 
-                  onClick={() => setActiveExp(null)}
-                  className="absolute top-6 right-6 p-2 bg-white/5 hover:bg-white/10 rounded-full transition-colors border border-white/10 z-10"
-                >
-                  <X size={20} className="text-white" />
-                </button>
-
-                <div className="p-8 md:p-12">
-                  <div className="flex flex-col md:flex-row items-start md:items-center gap-8 mb-10">
-                    {/* Enlarged Logo */}
-                    <motion.div 
-                      layoutId={`logo-${activeExp.id}`}
-                      className="w-24 h-24 md:w-32 md:h-32 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden shrink-0 shadow-lg shadow-blue-500/20"
-                    >
-                      <img 
-                        src={`/logos/${activeExp.logoId}.png`} 
-                        alt={activeExp.company}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          if (!e.currentTarget.src.includes('clearbit') && !e.currentTarget.src.includes('ui-avatars')) {
-                            e.currentTarget.src = `https://logo.clearbit.com/${activeExp.domain}`;
-                          } else if (e.currentTarget.src.includes('clearbit')) {
-                            e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(activeExp.company)}&background=0D8ABC&color=fff`;
-                          }
-                        }}
-                      />
-                    </motion.div>
-                    
-                    <div>
-                      <motion.h3 layoutId={`title-${activeExp.id}`} className="text-3xl md:text-5xl font-bold text-white mb-2">{activeExp.role}</motion.h3>
-                      <motion.div layoutId={`subtitle-${activeExp.id}`} className="flex items-center space-x-3 text-blue-300 text-lg md:text-xl font-medium mb-4">
-                        <Briefcase size={20} />
-                        <span>{activeExp.company}</span>
-                        <span className="text-white/20">•</span>
-                        <span>{activeExp.type}</span>
-                      </motion.div>
-                      <motion.div layoutId={`date-${activeExp.id}`} className="flex items-center space-x-2 text-slate-400 text-sm bg-white/5 px-4 py-2 rounded-full border border-white/5 w-fit">
-                        <Calendar size={16} />
-                        <span>{activeExp.date}</span>
-                      </motion.div>
-                    </div>
-                  </div>
-
-                  <motion.p layoutId={`desc-${activeExp.id}`} className="text-slate-300 text-lg leading-relaxed mb-10 border-l-4 border-blue-500 pl-4">
-                    {activeExp.description}
-                  </motion.p>
-
-                  {/* Quantitative Details Section */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2, duration: 0.4 }}
-                    className="mb-10"
-                  >
-                    <div className="flex items-center gap-3 mb-6 border-b border-white/10 pb-4">
-                      <BarChart className="text-blue-400" size={24} />
-                      <h4 className="text-2xl font-bold text-white">Key Projects & Contributions</h4>
-                    </div>
-                    
-                    <ul className="space-y-4">
-                      {activeExp.metrics.map((metric, i) => (
-                        <motion.li 
-                          key={i}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.3 + (i * 0.1), duration: 0.4 }}
-                          className="flex items-start gap-4 text-slate-300"
-                        >
-                          <ChevronRight size={20} className="text-blue-500 shrink-0 mt-0.5" />
-                          <span className="text-lg">{metric}</span>
-                        </motion.li>
-                      ))}
-                    </ul>
-                  </motion.div>
-                  
-                  <motion.div layoutId={`skills-${activeExp.id}`} className="flex flex-wrap gap-2 pt-6 border-t border-white/10">
-                    {activeExp.skills.map((skill, i) => (
-                      <span key={i} className="text-sm font-medium text-blue-300 bg-blue-500/10 border border-blue-500/20 px-4 py-2 rounded-full">
-                        {skill}
-                      </span>
-                    ))}
-                  </motion.div>
-                </div>
-              </motion.div>
-            </div>
-          </>
-        )}
-      </AnimatePresence>
     </>
   );
 }
