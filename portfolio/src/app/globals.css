@@ -132,12 +132,20 @@ html.light-theme .glass-card {
   box-shadow: 0 10px 30px rgba(14, 165, 233, 0.1);
 }
 
-html.light-theme .bg-\[\#0f1115\] {
-  background-color: #bae6fd !important;
+.exp-card-hover {
+  background-color: #0a101f;
 }
 
-html.light-theme .bg-\[\#0a101f\] {
+.timeline-dot-bg {
+  border-color: #0f1115;
+}
+
+html.light-theme .exp-card-hover {
   background-color: #7dd3fc !important;
+}
+
+html.light-theme .timeline-dot-bg {
+  border-color: #bae6fd !important;
 }
 
 html.light-theme .bg-white\/5 {

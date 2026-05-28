@@ -157,7 +157,9 @@ export default function Experience() {
               Professional <span className="text-blue-400">Experience</span>
             </h2>
             <div className="w-20 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
-            <p className="mt-4 text-white/50 tracking-widest text-sm uppercase">Hover cards to expand details</p>
+            <p className="mt-4 text-white/50 tracking-widest text-sm uppercase">
+              <span className="hidden md:inline">Hover</span><span className="inline md:hidden">Tap</span> cards to expand details
+            </p>
           </motion.div>
 
           <div className="relative border-l border-white/10 ml-3 md:ml-6 space-y-12">
@@ -169,17 +171,17 @@ export default function Experience() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="relative pl-8 md:pl-12 cursor-pointer group"
-                onMouseEnter={() => setHoveredExp(exp.id)}
-                onMouseLeave={() => setHoveredExp(null)}
+                className="relative pl-8 md:pl-12 cursor-pointer"
+                onHoverStart={() => setHoveredExp(exp.id)}
+                onHoverEnd={() => setHoveredExp(null)}
                 onClick={() => setHoveredExp(hoveredExp === exp.id ? null : exp.id)}
               >
                 {/* Timeline dot */}
-                <div className="absolute w-6 h-6 bg-blue-500 rounded-full border-4 border-[#0f1115] -left-[13px] top-1 shadow-[0_0_15px_rgba(59,130,246,0.5)] z-10"></div>
+                <div className="absolute w-6 h-6 bg-blue-500 rounded-full border-4 border-[#0f1115] light:border-[#bae6fd] timeline-dot-bg -left-[13px] top-1 shadow-[0_0_15px_rgba(59,130,246,0.5)] z-10"></div>
                 
                 <motion.div 
                   layout
-                  className={`glass-card rounded-2xl p-6 md:p-8 transition-all duration-300 overflow-hidden relative ${hoveredExp === exp.id ? 'border-blue-500/50 bg-[#0a101f] shadow-2xl shadow-blue-500/10' : 'hover:border-blue-500/30'}`}
+                  className={`glass-card rounded-2xl p-6 md:p-8 transition-all duration-300 overflow-hidden relative ${hoveredExp === exp.id ? 'border-blue-500/50 exp-card-hover shadow-2xl shadow-blue-500/10' : 'border-white/10'}`}
                 >
                   <div className="flex flex-col md:flex-row md:items-start justify-between mb-4">
                     <div className="flex items-start gap-4">
@@ -202,7 +204,7 @@ export default function Experience() {
                         />
                       </motion.div>
                       <div>
-                        <motion.h3 layout className="text-xl md:text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">{exp.role}</motion.h3>
+                        <motion.h3 layout className={`text-xl md:text-2xl font-bold transition-colors ${hoveredExp === exp.id ? 'text-blue-400' : 'text-white'}`}>{exp.role}</motion.h3>
                         <motion.div layout className="flex items-center space-x-2 text-slate-300 mt-1 font-medium">
                           <Briefcase size={16} className="text-blue-400" />
                           <span>{exp.company}</span>

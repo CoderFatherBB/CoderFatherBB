@@ -29,10 +29,12 @@ export default function RootLayout({
       <body className="min-h-screen bg-[var(--background)] text-[var(--foreground)] antialiased selection:bg-blue-500/30 transition-colors duration-500">
         <MouseSpotlight />
         <ThemeToggle />
-        <div className="bg-glow top-0 left-0" />
-        <div className="bg-glow bottom-0 right-0" style={{ filter: "blur(120px)", opacity: 0.5 }} />
-        <div className="relative z-10">
-          {children}
+        <div className="relative overflow-x-hidden w-full min-h-screen flex flex-col">
+          <div className="bg-glow top-0 left-0" />
+          <div className="bg-glow bottom-0 right-0" style={{ filter: "blur(120px)", opacity: 0.5 }} />
+          <div className="relative z-10 w-full">
+            {children}
+          </div>
         </div>
       </body>
     </html>
