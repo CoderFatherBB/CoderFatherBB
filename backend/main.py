@@ -8,7 +8,7 @@ from typing import List
 from sse_starlette.sse import EventSourceResponse
 from groq import Groq
 from dotenv import load_dotenv
-import chromadb
+# import chromadb
 
 # Load environment variables
 load_dotenv(dotenv_path=".env.local")
