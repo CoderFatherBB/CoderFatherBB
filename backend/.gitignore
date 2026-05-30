@@ -1,0 +1,9 @@
+# python cache
+__pycache__
+*.pyc
+
+# ChromaDB
+chroma_db/
+
+# environment variables
+.env*

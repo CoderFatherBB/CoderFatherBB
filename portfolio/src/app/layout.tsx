@@ -3,6 +3,7 @@ import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import MouseSpotlight from "@/components/MouseSpotlight";
 import ThemeToggle from "@/components/ThemeToggle";
+import Chatbot from "@/components/Chatbot";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -29,6 +30,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-[var(--background)] text-[var(--foreground)] antialiased selection:bg-blue-500/30 transition-colors duration-500">
         <MouseSpotlight />
         <ThemeToggle />
+        <Chatbot />
         <div className="relative overflow-x-hidden w-full min-h-screen flex flex-col">
           <div className="bg-glow top-0 left-0" />
           <div className="bg-glow bottom-0 right-0" style={{ filter: "blur(120px)", opacity: 0.5 }} />

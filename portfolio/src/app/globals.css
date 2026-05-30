@@ -172,3 +172,77 @@ html.light-theme .bg-glow {
 html.light-theme .hover\:bg-white\/\[0\.08\]:hover {
   background-color: rgba(0, 0, 0, 0.04) !important;
 }
+
+/* Chatbot Light Mode Overrides */
+html.light-theme .chat-bg {
+  background-color: #f0f9ff !important; /* sky-50 */
+  border-color: rgba(14, 165, 233, 0.2) !important;
+  box-shadow: 0 10px 40px -10px rgba(14, 165, 233, 0.15) !important;
+}
+html.light-theme .chat-header {
+  background-color: rgba(224, 242, 254, 0.95) !important; /* sky-100 */
+  border-bottom-color: rgba(14, 165, 233, 0.2) !important;
+}
+html.light-theme .chat-title {
+  color: #0c4a6e !important; /* sky-900 */
+}
+html.light-theme .chat-bot-bubble {
+  background-color: #e0f2fe !important; /* sky-100 */
+  border-color: rgba(14, 165, 233, 0.15) !important;
+  box-shadow: none !important;
+}
+html.light-theme .chat-bot-icon {
+  background-color: #bae6fd !important; /* sky-200 */
+  border-color: rgba(14, 165, 233, 0.2) !important;
+  color: #0f172a !important; /* Very dark slate for max contrast */
+}
+html.light-theme .chat-footer {
+  background-color: rgba(224, 242, 254, 0.95) !important; /* sky-100 */
+  border-top-color: rgba(14, 165, 233, 0.2) !important;
+}
+html.light-theme .chat-input-wrapper {
+  background-color: #ffffff !important;
+  border-color: rgba(14, 165, 233, 0.3) !important;
+}
+html.light-theme .chat-input-wrapper:focus-within {
+  background-color: #f8fafc !important;
+  border-color: #3b82f6 !important;
+}
+html.light-theme .chat-input {
+  color: #0f172a !important;
+}
+html.light-theme .chat-input::placeholder {
+  color: #64748b !important;
+}
+html.light-theme .chat-send-btn:disabled {
+  background-color: #93c5fd !important; /* blue-300 instead of slate-700 */
+  opacity: 0.7 !important;
+}
+
+/* Chatbot Prose Light Mode Overrides */
+html.light-theme .chat-prose {
+  color: #1e293b !important;
+}
+html.light-theme .chat-prose strong,
+html.light-theme .chat-prose h1,
+html.light-theme .chat-prose h2,
+html.light-theme .chat-prose h3 {
+  color: #0f172a !important;
+}
+html.light-theme .chat-prose table {
+  border-color: #cbd5e1 !important;
+}
+html.light-theme .chat-prose th,
+html.light-theme .chat-prose td {
+  border-color: #cbd5e1 !important;
+}
+html.light-theme .chat-prose th {
+  background-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+html.light-theme .chat-prose a {
+  color: #2563eb !important;
+}
+html.light-theme .chat-prose a:hover {
+  color: #1d4ed8 !important;
+}

@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+chromadb
+sentence-transformers
+groq
+langchain
+langchain-community
+langchain-text-splitters
+pydantic
+python-dotenv
+sse-starlette
