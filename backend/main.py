@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 import chromadb
 
 # Load environment variables
-load_dotenv(dotenv_path="../portfolio/.env.local")
+load_dotenv(dotenv_path=".env.local")
 
 # Initialize FastAPI app
 app = FastAPI()
@@ -19,26 +19,26 @@ app = FastAPI()
 # Add CORS middleware to allow requests from the Next.js frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3001", "http://172.20.10.5:3000"],
+    allow_origins=["*"], # Allows both local dev and production Vercel URLs
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-import ingest
+# import ingest
 
-# Initialize ChromaDB client
-try:
-    chroma_client = chromadb.PersistentClient(path="./chroma_db")
-    collection = chroma_client.get_collection(name="portfolio_kb")
-    # Verify it has documents
-    if collection.count() == 0:
-        raise ValueError("Collection exists but is empty.")
-except Exception as e:
-    print(f"Warning: ChromaDB collection not found or empty. Running ingestion automatically... ({e})")
-    ingest.ingest_files()
-    chroma_client = chromadb.PersistentClient(path="./chroma_db")
-    collection = chroma_client.get_collection(name="portfolio_kb")
+# # Initialize ChromaDB client
+# try:
+#     chroma_client = chromadb.PersistentClient(path="./chroma_db")
+#     collection = chroma_client.get_collection(name="portfolio_kb")
+#     # Verify it has documents
+#     if collection.count() == 0:
+#         raise ValueError("Collection exists but is empty.")
+# except Exception as e:
+#     print(f"Warning: ChromaDB collection not found or empty. Running ingestion automatically... ({e})")
+#     ingest.ingest_files()
+#     chroma_client = chromadb.PersistentClient(path="./chroma_db")
+#     collection = chroma_client.get_collection(name="portfolio_kb")
 
 # Initialize Groq client
 # The user specified their model and key in the previous prompt
@@ -63,16 +63,20 @@ async def chat_endpoint(request: ChatRequest):
     query = latest_message.content if latest_message else ""
     
     # 1. Retrieve relevant context from ChromaDB
-    context_chunks = []
-    if collection and query:
-        results = collection.query(
-            query_texts=[query],
-            n_results=5  # Top 5 most relevant chunks
-        )
-        if results["documents"] and len(results["documents"]) > 0:
-            context_chunks = results["documents"][0]
+    # context_chunks = []
+    # if collection and query:
+    #     results = collection.query(
+    #         query_texts=[query],
+    #         n_results=5  # Top 5 most relevant chunks
+    #     )
+    #     if results["documents"] and len(results["documents"]) > 0:
+    #         context_chunks = results["documents"][0]
+
+    with open(r"knowledge_base/master_kb.md", "r") as f:
+        knowledge_base = f.read()
             
-    context_string = "\n\n---\n\n".join(context_chunks) if context_chunks else "No specific knowledge base context found."
+    # context_string = "\n\n---\n\n".join(context_chunks) if context_chunks else "No specific knowledge base context found."
+    context_string = knowledge_base
 
     # 2. Build the prompt
     system_prompt = f"""You are the official digital twin and AI assistant for Bhavin Baldota's portfolio website. 
@@ -124,6 +128,10 @@ KNOWLEDGE BASE CONTEXT (Retrieved via RAG):
             yield f'3:{json.dumps({"error": str(e)})}\n'
 
     return EventSourceResponse(generate_stream(), headers={"x-vercel-ai-data-stream": "v1"})
+
+@app.get("/")
+async def root():
+    return {"status": "alive", "message": "CoderFather AI Backend is running."}
 
 if __name__ == "__main__":
     import uvicorn
