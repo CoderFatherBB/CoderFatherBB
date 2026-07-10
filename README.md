@@ -1,7 +1,7 @@
 <div align="center">
   <h1 align="center">Hi there, I'm Bhavin Baldota! 👋</h1>
   <p align="center">
-    <strong>Lead Software Engineer (GenAI) @ Persistent | B.Tech in AI & Data Science | Co-Founder @ AIoT Tech (On Break)</strong>
+    <strong>Lead Software Engineer (GenAI) @ Persistent | B.Tech in AI & Data Science</strong>
   </p>
   <p align="center">
     <a href="https://www.linkedin.com/in/bhavin-baldota-103553234/">
@@ -27,7 +27,6 @@
 I am a dedicated **AI/ML Engineer** with a deep passion for Artificial Intelligence, Machine Learning, and Deep Learning. I specialize in building high-accuracy models and contributing to cutting-edge research across multiple domains, from natural language processing to audio perception.
 
 - 🏢 **Lead Software Engineer (GenAI) @ Persistent**: Currently working as a Lead Software Engineer focusing on Generative AI.
-- 🚀 **Co-Founder @ AIoT Tech (On Break)**: Leading a talented team to deliver innovative AI, ML, and DL solutions for industry clients.
 - 🔬 **Research Intern @ DRDO**: Focused on AI/ML-based audio perception and localization projects.
 - 🎓 **Education**: Bachelor of Technology in Artificial Intelligence and Data Science.
 - 🏆 **Achievements**: 60+ certifications listed on LinkedIn, multiple hackathon participations, and continuous contributions to research in disease detection and NLP.

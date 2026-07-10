@@ -81,17 +81,7 @@ before graduation.
 
 PROFESSIONAL TIMELINE
 
-2020
-Joined Provilac as Software Developer.
-Worked on:
-* Customer applications
-* Backend APIs
-* Logistics platforms
-* Delivery systems
-
 2021
-Continued software development.
-Expanded responsibilities.
 Began mentoring and leadership activities.
 
 2022
@@ -112,7 +102,6 @@ Projects included:
 Started publishing research datasets.
 
 2024
-Co-founded AIoT Tech.
 Technical Lead in Visionary Club.
 Conducted AI/ML mentoring activities.
 Research internship at DRDO.
@@ -209,13 +198,6 @@ DRDO RESEARCH
 Research Area: Audio Perception and Localization.
 Objectives: Sound source localization, signal processing, defence-oriented AI systems.
 Key Learnings: Real-world deployment constraints, robust ML systems, defence-grade engineering discipline.
-
----
-
-AIOT TECH
-Role: Co-Founder
-Focus: AI consulting, AI solutions, Computer Vision, Generative AI, Enterprise Automation.
-Worked on client-focused AI projects across multiple industries.
 
 ---
 

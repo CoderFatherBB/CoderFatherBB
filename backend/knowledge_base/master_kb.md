@@ -19,11 +19,9 @@
    - 7.2 MIT World Peace University
    - 7.3 Provilac — AI/ML Engineer
    - 7.4 DRDO Research Internship
-   - 7.5 AIoT Tech (Co-Founder)
    - 7.6 Vishwakarma University R&D Internship
    - 7.7 Visionary Club — Technical Lead
    - 7.8 VU Centre of Excellence — Vice President
-   - 7.9 Provilac — Software Developer
 8. [Projects — Complete Encyclopedia](#8-projects--complete-encyclopedia)
 9. [Research & Publications](#9-research--publications)
 10. [Technical Skills & Stack](#10-technical-skills--stack)
@@ -56,7 +54,6 @@ AI Engineer, ML Engineer, Researcher, Technical Leader, and Entrepreneur special
 - RAG Systems Engineer
 - Computer Vision Researcher
 - Deep Learning Practitioner
-- AI Entrepreneur (Co-Founder, AIoT Tech)
 - AI Mentor and Educator
 - Defence AI Researcher (DRDO Alumni)
 - Open Source Contributor
@@ -85,7 +82,7 @@ Bhavin Baldota is an Artificial Intelligence Engineer, Machine Learning Engineer
 
 His career is unusual because he worked in full-time industry roles simultaneously while completing a full-time undergraduate degree. This resulted in a professional profile that combines academic excellence, research contributions, production-grade AI system deployment, technical leadership, and entrepreneurship — all before graduating.
 
-He has built AI systems serving thousands of real users, published in peer-reviewed research, contributed to national defence AI research (DRDO), co-founded a technology company (AIoT Tech), mentored engineers and students, and now leads enterprise GenAI development at Persistent Systems — one of India's leading IT companies.
+He has built AI systems serving thousands of real users, published in peer-reviewed research, contributed to national defence AI research (DRDO), mentored engineers and students, and now leads enterprise GenAI development at Persistent Systems — one of India's leading IT companies.
 
 His work spans multiple domains: Agriculture, Healthcare, Logistics and Delivery, Defence and National Security, Enterprise Software, and Customer Support Automation.
 
@@ -128,7 +125,7 @@ Core principles:
 - Research Methodology
 
 **Academic Highlights:**
-- Maintained near-perfect CGPA while simultaneously working full-time at Provilac (Software Developer) and later as AI/ML Engineer
+- Maintained near-perfect CGPA while simultaneously working as AI/ML Engineer at Provilac
 - Active in research: published acknowledgements in two peer-reviewed Elsevier journals
 - Working on 2–3 authored research papers (expected publication)
 - Leadership roles: Vice President of Centre of Excellence, Technical Lead of Visionary Club
@@ -152,21 +149,10 @@ Core principles:
 
 ## 6. FULL CAREER TIMELINE (DETAILED)
 
-### June 2020 – September 2023
-**Role:** Software Developer, Provilac Milk (Full-time)
-- Started while in Class 12 / just before B.Tech
-- Developed customer-facing and logistics applications
-- Platform served 10,000+ active users
-- Built subscription-based milk ordering, delivery scheduling, and real-time tracking features
-- Developed internal route optimization and delivery management tools
-- Reduced operational errors by 40%
-- Improved backend API performance (FastAPI + Firebase), reducing app load time by ~50%
-- Boosted customer retention by 30%
-- **Note:** This was a full-time job while simultaneously pursuing a full-time B.Tech degree (2021–2023 overlap)
 
 ### June 2021 – June 2025
 **Education:** B.Tech in AI & Data Science, Vishwakarma University
-- Full-time degree programme (simultaneously with Provilac Software Developer role through 2023)
+- Full-time degree programme
 
 ### April 2021 – January 2024
 **Role:** Vice President, Centre of Excellence, Vishwakarma University
@@ -191,14 +177,6 @@ Core principles:
 - Used TensorFlow and Python
 - Achieved 90%+ accuracy across models
 - Acknowledged in two Elsevier research publications
-
-### February 2024 – July 2025
-**Role:** Co-Founder, AIoT Tech
-- Co-founded AI/ML startup
-- Delivered AI/ML/DL solutions for clients including Bajaj, SKF, Provilac
-- Three major projects completed during active period
-- Led engineering team, managed timelines and client communications
-- Currently on break
 
 ### July 2024 – December 2024
 **Role:** Research Intern, DRDO (Defence Research and Development Organisation), Ministry of Defence, Government of India
@@ -290,7 +268,7 @@ Python, TensorFlow, PyTorch, OpenCV, NLP, Deep Learning, Machine Learning, Data 
 **Location:** Pune, Maharashtra, India (On-site, Full-time)
 
 **Company Context:**
-Provilac is a subscription-based dairy delivery platform operating in Pune. Bhavin originally joined as a Software Developer in 2020 and returned in a senior AI/ML Engineering capacity.
+Provilac is a subscription-based dairy delivery platform operating in Pune. Bhavin joined in a senior AI/ML Engineering capacity.
 
 **Responsibilities:**
 - Designed and implemented AI-driven solutions addressing key operational challenges
@@ -344,41 +322,6 @@ AI and ML-based audio perception and localization for defence applications.
 
 **Tech Stack:**
 Python, TensorFlow, PyTorch, Audio Signal Processing, Spectrogram Analysis, NumPy
-
----
-
-### 7.5 AIOT TECH — CO-FOUNDER
-**Period:** February 2024 – July 2025 (On Break)
-**Location:** Pune, Maharashtra, India (Hybrid)
-**Type:** Self-employed / Startup
-
-**Company Description:**
-AIoT Tech is a service-based AI/ML technology startup co-founded by Bhavin Baldota. The company specializes in delivering customized AI, Machine Learning, and Deep Learning solutions for industry clients.
-
-**Bhavin's Role:**
-- Co-Founder and Technical Lead
-- Led end-to-end project lifecycle: ideation → development → deployment → client delivery
-- Directed a team of engineers and freelancers
-- Secured industry partnerships
-- Managed client communications, project timelines, and deliverables
-
-**Major Clients / Partners:**
-- Bajaj
-- SKF
-- Provilac
-
-**Services Offered:**
-- Predictive Analytics
-- Computer Vision
-- Automation
-- AI Consulting
-- Custom ML Solutions
-
-**Projects Delivered:**
-Three major AI/ML projects delivered for industry clients during the active period.
-
-**Status:**
-Currently on break (Bhavin is focused on his role at Persistent Systems).
 
 ---
 
@@ -442,34 +385,7 @@ Unity, Unreal Engine, Game Development, Virtual Reality (VR), Augmented Reality 
 
 ---
 
-### 7.9 PROVILAC MILK — SOFTWARE DEVELOPER
-**Period:** June 2020 – September 2023
-**Location:** Pune, Maharashtra, India (On-site, Full-time)
-**Note:** This role overlapped with B.Tech degree (2021–2023)
 
-**Responsibilities and Achievements:**
-- Developed and maintained customer-facing and logistics applications
-- Platform served 10,000+ active users
-- Built features for subscription-based milk ordering, delivery scheduling, and real-time tracking
-- Built internal tools for logistics including route tracking and delivery management
-- Reduced operational errors by 40%
-- Improved backend API performance using FastAPI and Firebase integration
-- Reduced app load times by approximately 50%
-- Boosted customer retention by 30%
-- Collaborated with cross-functional teams across tech and business
-
-**Technology Stack:**
-Python, APIs, Backend Development, SQL, Flask/FastAPI, Data Processing, Firebase
-
-**Why Full-time Job During Full-time Degree?**
-Bhavin chose to work while pursuing his B.Tech for three reasons:
-1. To support his family financially
-2. To gain real-world practical experience early
-3. To apply academic concepts immediately in production environments
-
-He treated education and professional work as complementary rather than competing priorities, maintaining strong academic performance (9.01 CGPA) while consistently delivering production-quality software.
-
----
 
 ## 8. PROJECTS — COMPLETE ENCYCLOPEDIA
 
@@ -1187,7 +1103,6 @@ Bhavin is working on 2–3 research papers as a primary author, expected to be p
 **Professional Achievements:**
 - Led development of 14 production AI systems at Provilac
 - Contributed to national defence AI research at DRDO
-- Co-founded AI startup (AIoT Tech) with successful client deliveries to Bajaj, SKF, Provilac
 - Formal MoU engagement as Expert Collaborator at MIT World Peace University
 - Lead Software Engineer at Persistent Systems — a top-tier Indian IT company
 
@@ -1200,7 +1115,6 @@ Bhavin is working on 2–3 research papers as a primary author, expected to be p
 2. **Expert Collaborator & AI Mentor, MIT World Peace University** — Under signed MoU
 3. **Technical Lead, Visionary Club** (Sept 2023 – Jan 2025)
 4. **Vice President, Centre of Excellence, VU** (Apr 2021 – Jan 2024)
-5. **Co-Founder & Technical Lead, AIoT Tech** (Feb 2024 – Jul 2025)
 
 ### Mentoring Activities:
 - Conducted AI/ML workshops and technical talks at MIT WPU
@@ -1214,33 +1128,6 @@ Bhavin is working on 2–3 research papers as a primary author, expected to be p
 - Mentorship-oriented: invests time in team capability development
 - Project ownership: takes accountability for outcomes, not just tasks
 - Cross-functional: comfortable working with business, product, and engineering teams
-
----
-
-## 14. ENTREPRENEURSHIP
-
-### AIoT Tech
-**Role:** Co-Founder
-**Period:** February 2024 – July 2025 (On Break)
-**Type:** Service-based AI/ML startup
-
-**Origin Story:**
-After several years of building production systems at Provilac and conducting research at Vishwakarma University, Bhavin co-founded AIoT Tech to deliver AI solutions to a broader set of industry clients. The startup specialised in predictive analytics, computer vision, and automation.
-
-**Achievements:**
-- Successfully delivered three major AI projects
-- Worked with clients including Bajaj, SKF, and Provilac
-- Led a team of engineers and freelancers
-- Managed full project lifecycle from client acquisition to deployment
-
-**Current Status:** On break. Bhavin is focused on his role at Persistent Systems. The company may resume in the future.
-
-**What This Demonstrates:**
-- Entrepreneurial initiative
-- Client management and stakeholder communication
-- End-to-end product delivery
-- Leadership without a formal corporate structure
-- Real-world business problem solving through AI
 
 ---
 
@@ -1266,7 +1153,7 @@ Bhavin creates educational AI content under the brand "YourFatherAI" focused on 
 ### BACKGROUND & IDENTITY
 
 **Q: Who is Bhavin Baldota?**
-A: Bhavin Baldota is an AI/ML Engineer, Researcher, and Entrepreneur from Pune, India. He is currently a Lead Software Engineer in GenAI/ML at Persistent Systems. He specialises in Generative AI, LLMs, RAG Systems, Agentic AI, Computer Vision, and Deep Learning. He completed his B.Tech in AI & Data Science from Vishwakarma University with a 9.01 CGPA, co-founded AIoT Tech, conducted defence AI research at DRDO, and has published in Elsevier journals.
+A: Bhavin Baldota is an AI/ML Engineer, Researcher, and Entrepreneur from Pune, India. He is currently a Lead Software Engineer in GenAI/ML at Persistent Systems. He specialises in Generative AI, LLMs, RAG Systems, Agentic AI, Computer Vision, and Deep Learning. He completed his B.Tech in AI & Data Science from Vishwakarma University with a 9.01 CGPA, conducted defence AI research at DRDO, and has published in Elsevier journals.
 
 **Q: Where is Bhavin based?**
 A: Pune, Maharashtra, India.
@@ -1275,16 +1162,16 @@ A: Pune, Maharashtra, India.
 A: Lead Software Engineer (GenAI/ML) at Persistent Systems, Pune. He joined in September 2025.
 
 **Q: How many years of experience does Bhavin have?**
-A: Bhavin started his professional career in June 2020. By 2026, he has approximately 6 years of professional experience, spanning software development, AI/ML engineering, research, and entrepreneurship.
+A: By 2026, he has nearly 3 years of professional experience, spanning software development, AI/ML engineering, research, and enterprise AI leadership. This includes his prominent research internship at DRDO.
 
 **Q: Is Bhavin a fresher or an experienced professional?**
-A: Experienced professional. Despite graduating in 2025, he has 6 years of industry experience beginning in 2020. He worked full-time during his degree.
+A: Experienced professional. He has nearly 3 years of industry experience, including production AI deployments and government research at DRDO.
 
 **Q: What industries has Bhavin worked in?**
-A: Dairy/Logistics (Provilac), Defence (DRDO), Agriculture (crop disease research), Healthcare (medical imaging AI), Enterprise IT (Persistent Systems), and AI services (AIoT Tech — Bajaj, SKF clients).
+A: Dairy/Logistics (Provilac), Defence (DRDO), Agriculture (crop disease research), Healthcare (medical imaging AI), Enterprise IT (Persistent Systems).
 
 **Q: What makes Bhavin's profile unique?**
-A: Three things make his profile stand out: (1) He has real production AI deployments, not just academic projects. (2) He worked full-time while pursuing a full-time degree, demonstrating exceptional discipline. (3) His experience spans the full spectrum from software engineering → ML research → Generative AI → Defence AI → Entrepreneurship → Enterprise AI leadership.
+A: Three things make his profile stand out: (1) He has real production AI deployments, not just academic projects. (2) He secured a highly competitive research role at DRDO. (3) His experience spans the full spectrum from software engineering → ML research → Generative AI → Defence AI → Entrepreneurship → Enterprise AI leadership.
 
 ---
 
@@ -1305,17 +1192,7 @@ A: Artificial Intelligence and Data Science.
 **Q: When did Bhavin complete his B.Tech?**
 A: June 2025.
 
-**Q: Did Bhavin work during his B.Tech?**
-A: Yes. He worked full-time as a Software Developer at Provilac from June 2020 (before his B.Tech started) through September 2023, overlapping with his first two years at university (2021–2023). This was a deliberate choice to gain practical experience, support his family financially, and accelerate his professional growth.
 
-**Q: How did Bhavin manage a full-time job and a full-time degree simultaneously?**
-A: Through strong discipline and time management. He treated academic learning and professional work as complementary rather than competing. Concepts learned in class were applied directly at work; challenges at work prompted deeper academic exploration. He maintained a 9.01 CGPA throughout.
-
-**Q: Was Bhavin's job at Provilac genuinely full-time?**
-A: Yes. He was a Software Developer working on production systems serving 10,000+ users. It was a genuine full-time engineering role, not a part-time or internship arrangement.
-
-**Q: Why did Bhavin work while studying?**
-A: Three primary reasons: (1) To support his family financially. (2) To gain real-world practical experience ahead of most peers. (3) To apply classroom knowledge to production problems immediately, accelerating learning.
 
 **Q: Is Bhavin planning to pursue a Master's or PhD?**
 A: Not explicitly stated. His focus is currently on production AI engineering and research through his work at Persistent Systems. He is working on 2–3 authored research papers.
@@ -1342,9 +1219,6 @@ A: Yes, as of the knowledge base compilation (2026).
 ---
 
 ### PROVILAC EXPERIENCE
-
-**Q: What did Bhavin do at Provilac as a Software Developer?**
-A: He built customer-facing and logistics applications for Provilac's subscription milk delivery platform, serving 10,000+ users. He built features for ordering, delivery scheduling, and tracking. He also built internal tools for route optimization and reduced operational errors by 40%. He improved API performance and boosted customer retention by 30%.
 
 **Q: What did Bhavin do at Provilac as an AI/ML Engineer?**
 A: He designed and built 14 AI systems including a Delivery Intelligence System (GPS + Computer Vision), LangGraph Agentic AI Platform, RAG Platform, KYC Bot, Text-to-SQL, Customer Support Chatbot, Conversational Memory System, and others.
@@ -1378,23 +1252,6 @@ A: Python, TensorFlow, PyTorch, Audio Signal Processing, Spectrogram Analysis, N
 A: Defence-grade engineering discipline, precision and robustness requirements far exceeding commercial standards, real-world deployment constraints under strict specifications, and exposure to classified research methodologies.
 
 ---
-
-### AIOT TECH
-
-**Q: What is AIoT Tech?**
-A: AIoT Tech is an AI/ML startup co-founded by Bhavin Baldota in February 2024. It delivers customized AI, Machine Learning, and Deep Learning solutions to industry clients. It worked with clients including Bajaj, SKF, and Provilac.
-
-**Q: What was Bhavin's role at AIoT Tech?**
-A: Co-Founder and Technical Lead. He led the engineering team, managed client relationships, oversaw the project lifecycle from ideation to deployment, and secured industry partnerships.
-
-**Q: Is AIoT Tech still active?**
-A: Currently on break. Bhavin is focused on his role at Persistent Systems.
-
-**Q: What clients did AIoT Tech work with?**
-A: Bajaj, SKF, and Provilac.
-
-**Q: How long did Bhavin run AIoT Tech?**
-A: February 2024 – July 2025 (approximately 1.5 years in active operation).
 
 ---
 
@@ -1529,7 +1386,7 @@ A: Yes. GitHub profile: https://github.com/CoderFatherBB with 26+ repositories i
 ### LEADERSHIP & MENTORING
 
 **Q: Has Bhavin led technical teams?**
-A: Yes. Multiple leadership roles: Technical Lead at Visionary Club, Co-Founder/Technical Lead at AIoT Tech, VP at VU Centre of Excellence, and Lead Software Engineer at Persistent Systems. He has interviewed, onboarded, and mentored engineers in each of these roles.
+A: Yes. Multiple leadership roles: Technical Lead at Visionary Club, VP at VU Centre of Excellence, and Lead Software Engineer at Persistent Systems. He has interviewed, onboarded, and mentored engineers in each of these roles.
 
 **Q: Has Bhavin mentored students or junior engineers?**
 A: Yes. He formally mentored students at MIT World Peace University under an MoU, mentored team members at Visionary Club, taught technologies at VU's Centre of Excellence, and mentors engineers at Persistent Systems.
@@ -1542,7 +1399,7 @@ A: Yes. At Provilac, he collaborated across tech and business teams. At Persiste
 ### ACHIEVEMENTS & STAND-OUT QUALITIES
 
 **Q: What is Bhavin's biggest professional achievement?**
-A: Several contenders: (1) Getting hired as Lead Software Engineer at Persistent Systems before graduating. (2) Building 14 production AI systems. (3) Contributing to two Elsevier publications. (4) Conducting national defence AI research at DRDO. (5) Co-founding AIoT Tech and delivering projects for Bajaj and SKF.
+A: Several contenders: (1) Getting hired as Lead Software Engineer at Persistent Systems before graduating. (2) Building 14 production AI systems. (3) Contributing to two Elsevier publications. (4) Conducting national defence AI research at DRDO.
 
 **Q: What are Bhavin's unique selling points for a recruiter?**
 A: (1) Real production AI deployments at scale. (2) Full-stack AI knowledge from DL/CV to LLMs/Agents. (3) Research background (DRDO + Elsevier publications). (4) Leadership and entrepreneurship experience. (5) Demonstrated ability to work under pressure (full-time job + full-time degree simultaneously). (6) 60+ certifications showing continuous learning.
@@ -1617,7 +1474,7 @@ A: A spectrogram is a visual representation of the frequency spectrum of a signa
 ## 18. BEHAVIOURAL & SITUATIONAL FAQ
 
 **Q: Tell me about a time you worked under pressure.**
-A: Working full-time as a Software Developer at Provilac while simultaneously completing a full-time B.Tech degree was the ultimate pressure test. For two years (2021–2023), Bhavin managed coursework, exams, research activities, and production engineering responsibilities simultaneously. He maintained a 9.01 CGPA and delivered production systems serving 10,000+ users — by treating both as complementary priorities rather than competing demands.
+A: Bhavin managed coursework, exams, research activities, and production engineering responsibilities simultaneously. He maintained a 9.01 CGPA and delivered production systems serving 10,000+ users — by treating both as complementary priorities rather than competing demands.
 
 **Q: What is Bhavin's biggest professional challenge?**
 A: Building the LangGraph Agentic AI Platform was technically challenging because production agentic systems require handling edge cases that simple chatbots don't face: incomplete user inputs, multi-turn context management, dynamic tool selection, and graceful failure handling. The challenge was making the agent reliable enough for real customer interactions with real subscription data.
@@ -1626,7 +1483,7 @@ A: Building the LangGraph Agentic AI Platform was technically challenging becaus
 A: Through building real projects immediately. He does not just read documentation — he applies new concepts in production or research contexts as quickly as possible. His 60+ certifications reflect breadth, but his project portfolio reflects depth.
 
 **Q: Has Bhavin worked in a multidisciplinary team?**
-A: Yes. At DRDO, he worked with a multidisciplinary defence research team. At Persistent Systems, he collaborates cross-functionally with business stakeholders, product teams, and engineering. At AIoT Tech, he managed relationships with diverse industry clients.
+A: Yes. At DRDO, he worked with a multidisciplinary defence research team. At Persistent Systems, he collaborates cross-functionally with business stakeholders, product teams, and engineering.
 
 **Q: What does Bhavin consider his greatest strength?**
 A: The combination of production engineering experience and research depth. Most engineers have one or the other. Bhavin has built systems serving tens of thousands of users while also publishing in peer-reviewed journals and conducting defence AI research — a rare combination.
@@ -1636,9 +1493,6 @@ A: He is a technically hands-on leader who writes code alongside his team. He in
 
 **Q: How does Bhavin stay current with AI developments?**
 A: Through continuous learning (60+ certifications), active experimentation (26+ GitHub repos), content creation (YourFatherAI YouTube/Instagram), academic research collaborations (MIT WPU, VU), and production exposure at the frontier of enterprise GenAI at Persistent Systems.
-
-**Q: Describe Bhavin's entrepreneurial experience.**
-A: He co-founded AIoT Tech in February 2024, building it from zero to a company delivering three major AI projects for clients including Bajaj and SKF within 1.5 years. He handled everything: technical architecture, client acquisition, team management, project delivery, and stakeholder communication — while simultaneously conducting research at DRDO.
 
 **Q: What motivates Bhavin professionally?**
 A: Building AI systems that solve real business and operational problems. His career philosophy is that AI should create measurable impact, not just demonstrate technical capability. Whether it is reducing delivery fraud at Provilac or enabling non-technical business users to query enterprise databases, the motivation is always the practical outcome.

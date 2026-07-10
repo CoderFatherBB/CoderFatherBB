@@ -46,7 +46,7 @@ export default function Hero() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="text-lg text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed"
           >
-            Researcher in Deep Learning, Generative AI, LLMs, RAG Systems, and Computer Vision. I build state-of-the-art intelligent systems, co-founded AIoT Tech, and hold over <a href="https://www.linkedin.com/in/bhavin-baldota-103553234/details/certifications/" target="_blank" rel="noreferrer" className="font-bold text-blue-400 hover:text-blue-300 transition-colors underline decoration-blue-500/30 underline-offset-4">60+ technical certifications</a>.
+            Researcher in Deep Learning, Generative AI, LLMs, RAG Systems, and Computer Vision. I build state-of-the-art intelligent systems and hold over <a href="https://www.linkedin.com/in/bhavin-baldota-103553234/details/certifications/" target="_blank" rel="noreferrer" className="font-bold text-blue-400 hover:text-blue-300 transition-colors underline decoration-blue-500/30 underline-offset-4">60+ technical certifications</a>.
           </motion.p>
 
           <motion.div

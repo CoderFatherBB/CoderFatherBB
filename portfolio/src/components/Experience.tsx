@@ -71,22 +71,6 @@ const experiences: Experience[] = [
     ]
   },
   {
-    id: "aiot",
-    role: "Co-Founder",
-    company: "AIoT Tech",
-    domain: "aiot.com",
-    logoId: "aiot",
-    date: "Feb 2024 - Jul 2025",
-    type: "Self-employed | Hybrid",
-    description: "Co-founded startup specializing in AI/ML solutions. Delivered tailored predictive analytics and computer vision solutions for industry clients. Directed engineering team.",
-    skills: ["Start-up Leadership", "Project Management", "Predictive Analytics"],
-    metrics: [
-      "Secured $50K+ in early-stage contracts by delivering bespoke computer vision solutions to 4 B2B clients.",
-      "Managed the end-to-end product lifecycle, accelerating MVP delivery times by 35% through agile methodologies.",
-      "Directed a team of 6 developers, fostering a culture of rapid innovation and maintaining a 0% churn rate."
-    ]
-  },
-  {
     id: "drdo",
     role: "Research Intern",
     company: "DRDO, Ministry of Defence",
@@ -118,23 +102,6 @@ const experiences: Experience[] = [
       "Developed and trained ML/DL models with 90%+ accuracy on selected datasets.",
       "Worked on data collection, cleaning, annotation, feature engineering, and model evaluation.",
       "Contributed to technical research documentation and publications."
-    ]
-  },
-  {
-    id: "provilac-dev",
-    role: "Software Developer",
-    company: "Provilac Milk",
-    domain: "provilac.com",
-    logoId: "provilac",
-    date: "Jun 2020 - Sep 2023",
-    type: "Full-time | On-site",
-    description: "Worked as a Python Software Developer focusing on backend development, automation, and operational software solutions.",
-    skills: ["Python", "APIs", "Backend Development", "SQL", "Flask/FastAPI", "Data Processing"],
-    metrics: [
-      "Developed Python-based backend utilities and automation scripts.",
-      "Worked on data processing, API integrations, backend workflows, and operational dashboards.",
-      "Assisted in maintaining and improving internal software systems.",
-      "Collaborated with teams to improve operational efficiency using automation."
     ]
   }
 ];

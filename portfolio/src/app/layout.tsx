@@ -17,7 +17,7 @@ const outfit = Outfit({
 
 export const metadata: Metadata = {
   title: "Bhavin Baldota | AI/ML Engineer",
-  description: "Lead Software Engineer (GenAI/ML) at Persistent, Co-Founder of AIoT Tech, and Researcher in Deep Learning.",
+  description: "Lead Software Engineer (GenAI/ML) at Persistent, and Researcher in Deep Learning.",
 };
 
 export default function RootLayout({
