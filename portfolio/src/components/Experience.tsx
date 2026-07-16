@@ -102,7 +102,7 @@ const experiences: Experience[] = [
 ];
 
 export default function Experience() {
-  const [expandedExp, setExpandedExp] = useState<string | null>(null);
+  const [expandedExp, setExpandedExp] = useState<string | null>("persistent");
 
   return (
     <>

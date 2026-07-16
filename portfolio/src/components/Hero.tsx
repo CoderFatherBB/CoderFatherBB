@@ -47,7 +47,7 @@ export default function Hero({ onStartGame }: HeroProps) {
             transition={{ duration: 0.5, delay: 0.2 }}
               className="mt-8 max-w-2xl text-lg leading-8 text-slate-300 md:text-xl"
           >
-              I&apos;m <strong className="font-semibold text-white">Bhavin Baldota</strong>, a Lead Software Engineer in GenAI/ML at Persistent—turning LLMs, RAG, vision, and multi-agent ideas into systems people can actually use.
+              I&apos;m <strong className="font-semibold text-white">Bhavin Baldota</strong>, a Lead Software Engineer in GenAI/ML at <strong className="font-bold text-[#f15a24]">Persistent Systems</strong>—turning LLMs, RAG, vision, and multi-agent ideas into systems people can actually use.
             </motion.p>
 
             <motion.div
