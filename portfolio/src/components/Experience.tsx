@@ -1,15 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Briefcase, Calendar, ChevronRight, BarChart } from "lucide-react";
+import { motion } from "framer-motion";
+import { BarChart, Briefcase, Calendar, ChevronDown, ChevronRight } from "lucide-react";
 import Image from "next/image";
 
 type Experience = {
   id: string;
   role: string;
   company: string;
-  domain: string;
   logoId: string;
   date: string;
   type: string;
@@ -23,7 +22,6 @@ const experiences: Experience[] = [
     id: "persistent",
     role: "Lead Software Engineer (GenAI/ML)",
     company: "Persistent Systems",
-    domain: "persistent.com",
     logoId: "persistent",
     date: "Sep 2025 - Present",
     type: "Full-time | Hybrid",
@@ -41,7 +39,6 @@ const experiences: Experience[] = [
     id: "mit",
     role: "Expert Collaborator & AI Mentor",
     company: "MIT World Peace University",
-    domain: "mitwpu.edu.in",
     logoId: "mitwpu",
     date: "Apr 2025 - Dec 2025",
     type: "Freelance | Hybrid",
@@ -58,7 +55,6 @@ const experiences: Experience[] = [
     id: "provilac-ai",
     role: "AI / ML Engineer",
     company: "Provilac Milk",
-    domain: "provilac.com",
     logoId: "provilac",
     date: "Nov 2024 - Aug 2025",
     type: "Full-time | On-site",
@@ -75,7 +71,6 @@ const experiences: Experience[] = [
     id: "drdo",
     role: "Research Intern",
     company: "DRDO, Ministry of Defence",
-    domain: "drdo.gov.in",
     logoId: "drdo",
     date: "Jul 2024 - Dec 2024",
     type: "Internship | Hybrid",
@@ -92,7 +87,6 @@ const experiences: Experience[] = [
     id: "vu",
     role: "Research And Development Intern",
     company: "Vishwakarma University - VU",
-    domain: "vupune.ac.in",
     logoId: "vu",
     date: "Jul 2023 - Jan 2024",
     type: "Internship | Hybrid",
@@ -108,7 +102,7 @@ const experiences: Experience[] = [
 ];
 
 export default function Experience() {
-  const [hoveredExp, setHoveredExp] = useState<string | null>(null);
+  const [expandedExp, setExpandedExp] = useState<string | null>(null);
 
   return (
     <>
@@ -126,114 +120,100 @@ export default function Experience() {
             </h2>
             <div className="w-20 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
             <p className="mt-4 text-white/50 tracking-widest text-sm uppercase">
-              <span className="hidden md:inline">Hover</span><span className="inline md:hidden">Tap</span> cards to expand details
+              Select a card to expand details
             </p>
           </motion.div>
 
           <div className="relative border-l border-white/10 ml-3 md:ml-6 space-y-12">
             {experiences.map((exp, index) => (
-              <motion.div
+              <motion.article
                 key={exp.id}
-                layout
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="relative pl-8 md:pl-12 cursor-pointer"
-                onHoverStart={() => setHoveredExp(exp.id)}
-                onHoverEnd={() => setHoveredExp(null)}
-                onClick={() => setHoveredExp(hoveredExp === exp.id ? null : exp.id)}
+                className="relative pl-8 md:pl-12"
               >
                 {/* Timeline dot */}
                 <div className="absolute w-6 h-6 bg-blue-500 rounded-full border-4 border-[#0f1115] light:border-[#bae6fd] timeline-dot-bg -left-[13px] top-1 shadow-[0_0_15px_rgba(59,130,246,0.5)] z-10"></div>
                 
-                <motion.div 
-                  layout
-                  className={`glass-card rounded-2xl p-6 md:p-8 transition-all duration-300 overflow-hidden relative ${hoveredExp === exp.id ? 'border-blue-500/50 exp-card-hover shadow-2xl shadow-blue-500/10' : 'border-white/10'}`}
+                <div
+                  className={`glass-card relative overflow-hidden rounded-2xl border p-6 transition-[border-color,background-color,box-shadow] duration-200 md:p-8 ${expandedExp === exp.id ? "border-blue-500/50 exp-card-hover shadow-2xl shadow-blue-500/10" : "border-white/10"}`}
                 >
-                  <div className="flex flex-col md:flex-row md:items-start justify-between mb-4">
-                    <div className="flex items-start gap-4">
-                      {/* Company Logo Thumbnail */}
-                      <motion.div 
-                        layout
-                        className={`${hoveredExp === exp.id ? 'w-20 h-20 md:w-24 md:h-24 shadow-lg shadow-blue-500/20' : 'w-12 h-12'} rounded-xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden shrink-0 transition-all duration-300`}
-                      >
-                        <Image
-                          src={`/logos/${exp.logoId}.png`} 
-                          alt={exp.company}
-                          width={96}
-                          height={96}
-                          unoptimized
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            if (!e.currentTarget.src.includes('clearbit') && !e.currentTarget.src.includes('ui-avatars')) {
-                              e.currentTarget.src = `https://logo.clearbit.com/${exp.domain}`;
-                            } else if (e.currentTarget.src.includes('clearbit')) {
-                              e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(exp.company)}&background=0D8ABC&color=fff`;
-                            }
-                          }}
+                  <button
+                    type="button"
+                    aria-expanded={expandedExp === exp.id}
+                    aria-controls={`experience-details-${exp.id}`}
+                    onClick={() => setExpandedExp(expandedExp === exp.id ? null : exp.id)}
+                    className="w-full rounded-xl text-left outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-4 focus-visible:ring-offset-slate-950"
+                  >
+                    <div className="mb-4 flex flex-col justify-between md:flex-row md:items-start">
+                      <div className="flex items-start gap-4">
+                        <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
+                          <Image
+                            src={`/logos/${exp.logoId}.png`}
+                            alt={`${exp.company} logo`}
+                            width={96}
+                            height={96}
+                            className="h-full w-full object-contain"
+                          />
+                        </div>
+                        <div>
+                          <h3 className={`text-xl font-bold transition-colors md:text-2xl ${expandedExp === exp.id ? "text-blue-400" : "text-white"}`}>{exp.role}</h3>
+                          <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 font-medium text-slate-300">
+                            <Briefcase size={16} className="text-blue-400" />
+                            <span>{exp.company}</span>
+                            <span className="text-white/20">•</span>
+                            <span className="text-sm">{exp.type}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mt-4 flex h-fit shrink-0 items-center gap-3 md:mt-0">
+                        <span className="flex items-center gap-2 rounded-full border border-white/5 bg-white/5 px-3 py-1.5 text-sm text-slate-400">
+                          <Calendar size={14} />
+                          <span>{exp.date}</span>
+                        </span>
+                        <ChevronDown
+                          size={20}
+                          className={`text-blue-300 transition-transform duration-200 ${expandedExp === exp.id ? "rotate-180" : ""}`}
                         />
-                      </motion.div>
-                      <div>
-                        <motion.h3 layout className={`text-xl md:text-2xl font-bold transition-colors ${hoveredExp === exp.id ? 'text-blue-400' : 'text-white'}`}>{exp.role}</motion.h3>
-                        <motion.div layout className="flex items-center space-x-2 text-slate-300 mt-1 font-medium">
-                          <Briefcase size={16} className="text-blue-400" />
-                          <span>{exp.company}</span>
-                          <span className="text-white/20">•</span>
-                          <span className="text-sm">{exp.type}</span>
-                        </motion.div>
                       </div>
                     </div>
-                    <motion.div layout className="flex items-center space-x-2 text-slate-400 text-sm mt-4 md:mt-0 bg-white/5 px-3 py-1.5 rounded-full border border-white/5 h-fit shrink-0">
-                      <Calendar size={14} />
-                      <span>{exp.date}</span>
-                    </motion.div>
-                  </div>
-                  
-                  <motion.p layout className="text-slate-400 leading-relaxed mb-6">{exp.description}</motion.p>
-                  
-                  <AnimatePresence>
-                    {hoveredExp === exp.id && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="overflow-hidden"
-                      >
-                        <div className="pt-4 pb-8 border-t border-white/10">
-                          <div className="flex items-center gap-3 mb-4">
-                            <BarChart className="text-blue-400" size={20} />
-                            <h4 className="text-xl font-bold text-white">Key Projects & Contributions</h4>
-                          </div>
-                          <ul className="space-y-3">
-                            {exp.metrics.map((metric, i) => (
-                              <motion.li 
-                                key={i}
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.1 + (i * 0.05) }}
-                                className="flex items-start gap-3 text-slate-300 text-sm md:text-base"
-                              >
-                                <ChevronRight size={18} className="text-blue-500 shrink-0 mt-0.5" />
-                                <span>{metric}</span>
-                              </motion.li>
-                            ))}
-                          </ul>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                    <p className="mb-6 leading-relaxed text-slate-400">{exp.description}</p>
+                  </button>
 
-                  <motion.div layout className="flex flex-wrap gap-2 mt-auto">
-                    {exp.skills.map((skill, i) => (
-                      <span key={i} className="text-xs font-medium text-blue-300 bg-blue-500/10 border border-blue-500/20 px-3 py-1 rounded-full">
+                  <div
+                    id={`experience-details-${exp.id}`}
+                    aria-hidden={expandedExp !== exp.id}
+                    className={`experience-details-grid ${expandedExp === exp.id ? "is-open" : ""}`}
+                  >
+                    <div>
+                      <div className="border-t border-white/10 pb-8 pt-4">
+                        <div className="mb-4 flex items-center gap-3">
+                          <BarChart className="text-blue-400" size={20} />
+                          <h4 className="text-xl font-bold text-white">Key Projects & Contributions</h4>
+                        </div>
+                        <ul className="space-y-3">
+                          {exp.metrics.map((metric) => (
+                            <li key={metric} className="flex items-start gap-3 text-sm text-slate-300 md:text-base">
+                              <ChevronRight size={18} className="mt-0.5 shrink-0 text-blue-500" />
+                              <span>{metric}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-auto flex flex-wrap gap-2">
+                    {exp.skills.map((skill) => (
+                      <span key={skill} className="rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-medium text-blue-300">
                         {skill}
                       </span>
                     ))}
-                  </motion.div>
-                </motion.div>
-              </motion.div>
+                  </div>
+                </div>
+              </motion.article>
             ))}
           </div>
         </div>

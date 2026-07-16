@@ -969,6 +969,23 @@ html.light-theme .glass-card {
   background-color: #0a101f;
 }
 
+.experience-details-grid {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 200ms ease, opacity 150ms ease;
+}
+
+.experience-details-grid.is-open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.experience-details-grid > div {
+  min-height: 0;
+  overflow: hidden;
+}
+
 .timeline-dot-bg {
   border-color: #0f1115;
 }
