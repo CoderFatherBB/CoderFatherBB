@@ -6,7 +6,7 @@ import { Menu, Play, X } from "lucide-react";
 import { FaGithub, FaLinkedin, FaYoutube, FaInstagram } from "react-icons/fa";
 
 type NavbarProps = {
-  onStartQuest: () => void;
+  onStartGame: () => void;
 };
 
 const navLinks = [
@@ -16,7 +16,7 @@ const navLinks = [
   { name: "Projects", href: "#projects" },
 ];
 
-export default function Navbar({ onStartQuest }: NavbarProps) {
+export default function Navbar({ onStartGame }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -40,7 +40,7 @@ export default function Navbar({ onStartQuest }: NavbarProps) {
           transition={{ duration: 0.5 }}
           className="flex items-center gap-3"
         >
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-emerald-300/20 bg-emerald-300/10 font-mono text-xs font-bold text-emerald-200">BB</span>
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-blue-300/20 bg-blue-300/10 font-mono text-xs font-bold text-blue-200">BB</span>
           <span className="hidden sm:block">
             <span className="block text-sm font-semibold leading-none text-white">Bhavin Baldota</span>
             <span className="mt-1 block font-mono text-[9px] uppercase tracking-[0.18em] text-slate-500">AI systems engineer</span>
@@ -65,17 +65,17 @@ export default function Navbar({ onStartQuest }: NavbarProps) {
         <div className="flex items-center gap-2">
           <button
             type="button"
-            onClick={onStartQuest}
+            onClick={onStartGame}
             className="nav-play-button"
-            aria-label="Play portfolio quest"
+            aria-label="Play portfolio exploration game"
           >
             <Play size={13} fill="currentColor" />
-            <span className="hidden sm:inline">Play quest</span>
+            <span className="hidden sm:inline">Play game</span>
           </button>
           <button
             type="button"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="nav-menu-button quest-icon-button lg:hidden"
+            className="nav-menu-button game-icon-button lg:hidden"
             aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
             aria-expanded={isMobileMenuOpen}
           >

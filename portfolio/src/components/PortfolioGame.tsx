@@ -1,11 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
+  ArrowDown,
+  ArrowLeft,
   ArrowRight,
+  ArrowUp,
   Check,
   ExternalLink,
+  Gamepad2,
+  LockKeyhole,
+  Map,
   RotateCcw,
   Sparkles,
   X,
@@ -16,308 +22,557 @@ type PortfolioGameProps = {
   onClose: () => void;
 };
 
-type Choice = {
-  label: string;
-  isCorrect: boolean;
+type Point = {
+  x: number;
+  y: number;
 };
 
-type Mission = {
+type DiscoveryZone = {
   id: string;
+  label: string;
+  mapLabel: string;
   eyebrow: string;
-  title: string;
-  prompt: string;
-  fact: string;
+  description: string;
+  facts: string[];
   sectionId: string;
-  choices: Choice[];
+  position: Point;
+  symbol: string;
 };
 
-const missions: Mission[] = [
+type Direction = "up" | "down" | "left" | "right";
+
+const WORLD_WIDTH = 1280;
+const WORLD_HEIGHT = 720;
+const PLAYER_SIZE = 42;
+const DISCOVERY_RADIUS = 112;
+const START_POSITION = { x: 390, y: 330 };
+
+const discoveryZones: DiscoveryZone[] = [
   {
-    id: "signal",
-    eyebrow: "Signal 01 · Core profile",
-    title: "Decode the engineer",
-    prompt: "Which combination best describes Bhavin's current technical focus?",
-    fact: "Bhavin works across Generative AI, multi-agent systems, RAG, computer vision, and production ML engineering.",
+    id: "origin",
+    label: "Origin Terminal",
+    mapLabel: "ORIGIN",
+    eyebrow: "Profile fragment 01",
+    description: "Meet the engineer behind the systems: Bhavin Baldota, a builder who likes research ideas best when they survive contact with production.",
+    facts: ["Lead Software Engineer · GenAI/ML", "B.Tech in Artificial Intelligence · 9.01 CGPA", "60+ technical certifications"],
     sectionId: "about",
-    choices: [
-      { label: "Only frontend engineering", isCorrect: false },
-      { label: "GenAI + ML systems + applied research", isCorrect: true },
-      { label: "Only data reporting", isCorrect: false },
-    ],
+    position: { x: 155, y: 170 },
+    symbol: "BB",
   },
   {
     id: "career",
-    eyebrow: "Signal 02 · Career log",
-    title: "Trace the production system",
-    prompt: "Where did Bhavin help build an enterprise Text-to-SQL multi-agent platform?",
-    fact: "At Persistent Systems, he has worked on multi-agent workflows spanning schema retrieval, SQL generation, data summarization, and dynamic visualization.",
+    label: "Career Mainframe",
+    mapLabel: "CAREER",
+    eyebrow: "Profile fragment 02",
+    description: "A timeline spanning enterprise GenAI, applied ML, logistics intelligence, defence research, and university R&D.",
+    facts: ["Persistent Systems · Lead Software Engineer", "Production Text-to-SQL multi-agent workflows", "Experience across five organizations"],
     sectionId: "experience",
-    choices: [
-      { label: "Persistent Systems", isCorrect: true },
-      { label: "Mahaveer Jr. College", isCorrect: false },
-      { label: "Elsevier", isCorrect: false },
-    ],
+    position: { x: 570, y: 145 },
+    symbol: "05",
   },
   {
     id: "research",
-    eyebrow: "Signal 03 · Research archive",
-    title: "Recover the dataset",
-    prompt: "How many images are documented across Bhavin's two published datasets?",
-    fact: "The river pothole dataset contains 3,992 images and the coconut disease dataset contains 5,798—9,790 annotated images in total.",
+    label: "Research Archive",
+    mapLabel: "RESEARCH",
+    eyebrow: "Profile fragment 03",
+    description: "Two peer-reviewed Elsevier datasets turn difficult visual environments into useful training data for machine learning.",
+    facts: ["2 published research datasets", "9,790 annotated images", "Computer vision · YOLO · disease detection"],
     sectionId: "publications",
-    choices: [
-      { label: "4,200", isCorrect: false },
-      { label: "9,790", isCorrect: true },
-      { label: "60,000", isCorrect: false },
-    ],
+    position: { x: 1080, y: 170 },
+    symbol: "02",
   },
   {
     id: "projects",
-    eyebrow: "Signal 04 · Project vault",
-    title: "Identify the learning agent",
-    prompt: "Which project includes agents that learn Lunar Landing, pole balancing, and Mario?",
-    fact: "Bhavin's Deep Reinforcement Learning repository explores game-playing and control agents built with PyTorch and Python.",
+    label: "Project Workshop",
+    mapLabel: "PROJECTS",
+    eyebrow: "Profile fragment 04",
+    description: "A hands-on build space for OCR, delivery intelligence, crop diagnosis, NLP, and agents that learn to play games.",
+    facts: ["Deep reinforcement learning agents", "Offline OCR and summarization", "AI logistics and crop disease detection"],
     sectionId: "projects",
-    choices: [
-      { label: "Offline OCR & Summary", isCorrect: false },
-      { label: "Crop Doctor", isCorrect: false },
-      { label: "Deep Reinforcement Learning", isCorrect: true },
-    ],
+    position: { x: 270, y: 565 },
+    symbol: "06",
+  },
+  {
+    id: "systems",
+    label: "Systems Reactor",
+    mapLabel: "STACK",
+    eyebrow: "Profile fragment 05",
+    description: "The technical core: models, retrieval, orchestration, APIs, databases, vision pipelines, and the engineering needed to connect them.",
+    facts: ["Python · FastAPI · PyTorch · TensorFlow", "LLMs · RAG · multi-agent systems", "PostgreSQL · Docker · OpenCV"],
+    sectionId: "experience",
+    position: { x: 735, y: 545 },
+    symbol: "AI",
   },
 ];
 
-export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
-  const [missionIndex, setMissionIndex] = useState(0);
-  const [selectedChoice, setSelectedChoice] = useState<number | null>(null);
-  const [score, setScore] = useState(0);
-  const [isComplete, setIsComplete] = useState(false);
+const portalPosition = { x: 1120, y: 550 };
 
-  const mission = missions[missionIndex];
-  const progress = isComplete ? 100 : (missionIndex / missions.length) * 100;
+const movementKeys: Record<string, Direction> = {
+  ArrowUp: "up",
+  w: "up",
+  W: "up",
+  ArrowDown: "down",
+  s: "down",
+  S: "down",
+  ArrowLeft: "left",
+  a: "left",
+  A: "left",
+  ArrowRight: "right",
+  d: "right",
+  D: "right",
+};
+
+const directionVectors: Record<Direction, Point> = {
+  up: { x: 0, y: -1 },
+  down: { x: 0, y: 1 },
+  left: { x: -1, y: 0 },
+  right: { x: 1, y: 0 },
+};
+
+function distanceBetween(first: Point, second: Point) {
+  return Math.hypot(first.x - second.x, first.y - second.y);
+}
+
+function clamp(value: number, minimum: number, maximum: number) {
+  return Math.min(Math.max(value, minimum), maximum);
+}
+
+export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
+  const [hasStarted, setHasStarted] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
+  const [player, setPlayer] = useState<Point>(START_POSITION);
+  const [facing, setFacing] = useState<Direction>("down");
+  const [isMoving, setIsMoving] = useState(false);
+  const [discoveredIds, setDiscoveredIds] = useState<string[]>([]);
+  const [stageSize, setStageSize] = useState({ width: 840, height: 560 });
+  const stageRef = useRef<HTMLDivElement>(null);
+  const pressedDirectionsRef = useRef<Set<Direction>>(new Set());
+  const playerRef = useRef<Point>(START_POSITION);
+  const discoveredIdsRef = useRef<string[]>([]);
+
+  const playerCenter = useMemo(() => ({
+    x: player.x + PLAYER_SIZE / 2,
+    y: player.y + PLAYER_SIZE / 2,
+  }), [player]);
+  const activeZone = useMemo(() => discoveryZones.find(
+    (zone) => distanceBetween(playerCenter, zone.position) <= DISCOVERY_RADIUS,
+  ) ?? null, [playerCenter]);
+  const isNearPortal = useMemo(
+    () => distanceBetween(playerCenter, portalPosition) <= DISCOVERY_RADIUS,
+    [playerCenter],
+  );
+  const progress = (discoveredIds.length / discoveryZones.length) * 100;
+  const portalUnlocked = discoveredIds.length === discoveryZones.length;
+
+  const camera = useMemo(() => {
+    const targetX = stageSize.width / 2 - (player.x + PLAYER_SIZE / 2);
+    const targetY = stageSize.height / 2 - (player.y + PLAYER_SIZE / 2);
+
+    return {
+      x: clamp(targetX, Math.min(0, stageSize.width - WORLD_WIDTH), 0),
+      y: clamp(targetY, Math.min(0, stageSize.height - WORLD_HEIGHT), 0),
+    };
+  }, [player, stageSize]);
+
+  useEffect(() => {
+    if (!isOpen || !stageRef.current) return;
+
+    const stage = stageRef.current;
+    const updateStageSize = () => {
+      setStageSize({ width: stage.clientWidth, height: stage.clientHeight });
+    };
+    const resizeObserver = new ResizeObserver(updateStageSize);
+
+    updateStageSize();
+    resizeObserver.observe(stage);
+    return () => resizeObserver.disconnect();
+  }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) return;
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
+    let animationFrame = 0;
+    let previousTime = performance.now();
+    const pressedDirections = pressedDirectionsRef.current;
+
+    const updatePlayerPosition = (horizontalDelta: number, verticalDelta: number) => {
+      const currentPlayer = playerRef.current;
+      const nextPlayer = {
+        x: clamp(currentPlayer.x + horizontalDelta, 24, WORLD_WIDTH - PLAYER_SIZE - 24),
+        y: clamp(currentPlayer.y + verticalDelta, 24, WORLD_HEIGHT - PLAYER_SIZE - 24),
+      };
+      const nextCenter = {
+        x: nextPlayer.x + PLAYER_SIZE / 2,
+        y: nextPlayer.y + PLAYER_SIZE / 2,
+      };
+      const nearbyZone = discoveryZones.find(
+        (zone) => distanceBetween(nextCenter, zone.position) <= DISCOVERY_RADIUS,
+      );
+
+      playerRef.current = nextPlayer;
+      setPlayer(nextPlayer);
+
+      if (nearbyZone && !discoveredIdsRef.current.includes(nearbyZone.id)) {
+        const nextDiscoveredIds = [...discoveredIdsRef.current, nearbyZone.id];
+        discoveredIdsRef.current = nextDiscoveredIds;
+        setDiscoveredIds(nextDiscoveredIds);
+      }
+
+      if (
+        discoveredIdsRef.current.length === discoveryZones.length &&
+        distanceBetween(nextCenter, portalPosition) <= DISCOVERY_RADIUS
+      ) {
+        setIsComplete(true);
+      }
     };
 
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+        return;
+      }
+
+      const direction = movementKeys[event.key];
+      if (direction && hasStarted && !isComplete) {
+        event.preventDefault();
+        pressedDirections.add(direction);
+        setFacing(direction);
+        setIsMoving(true);
+
+        if (!event.repeat) {
+          const vector = directionVectors[direction];
+          updatePlayerPosition(vector.x * 16, vector.y * 16);
+        }
+      }
+    };
+
+    const handleKeyUp = (event: KeyboardEvent) => {
+      const direction = movementKeys[event.key];
+      if (direction) {
+        pressedDirections.delete(direction);
+        if (pressedDirections.size === 0) setIsMoving(false);
+      }
+    };
+
+    const movePlayer = (time: number) => {
+      const elapsedSeconds = Math.min((time - previousTime) / 1000, 0.04);
+      previousTime = time;
+      if (hasStarted && !isComplete && pressedDirections.size > 0) {
+        let horizontal = 0;
+        let vertical = 0;
+
+        pressedDirections.forEach((direction) => {
+          horizontal += directionVectors[direction].x;
+          vertical += directionVectors[direction].y;
+        });
+
+        const vectorLength = Math.hypot(horizontal, vertical) || 1;
+        const speed = 235 * elapsedSeconds;
+
+        updatePlayerPosition(
+          (horizontal / vectorLength) * speed,
+          (vertical / vectorLength) * speed,
+        );
+      }
+
+      animationFrame = window.requestAnimationFrame(movePlayer);
+    };
+
+    const handleWindowBlur = () => {
+      pressedDirections.clear();
+      setIsMoving(false);
+    };
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    document.body.classList.add("quest-active");
+    document.body.classList.add("game-active");
     window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    window.addEventListener("blur", handleWindowBlur);
+    animationFrame = window.requestAnimationFrame(movePlayer);
 
     return () => {
       document.body.style.overflow = previousOverflow;
-      document.body.classList.remove("quest-active");
+      document.body.classList.remove("game-active");
       window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+      window.removeEventListener("blur", handleWindowBlur);
+      pressedDirections.clear();
+      window.cancelAnimationFrame(animationFrame);
     };
-  }, [isOpen, onClose]);
+  }, [hasStarted, isComplete, isOpen, onClose]);
 
-  const selectChoice = (choiceIndex: number) => {
-    if (selectedChoice !== null) return;
-
-    setSelectedChoice(choiceIndex);
-    setScore((currentScore) =>
-      currentScore + (mission.choices[choiceIndex].isCorrect ? 100 : 40),
-    );
-  };
-
-  const continueMission = () => {
-    if (missionIndex === missions.length - 1) {
-      setIsComplete(true);
-      return;
+  const setDirectionPressed = (direction: Direction, isPressed: boolean) => {
+    if (isPressed) {
+      pressedDirectionsRef.current.add(direction);
+      setFacing(direction);
+      setIsMoving(true);
+    } else {
+      pressedDirectionsRef.current.delete(direction);
+      if (pressedDirectionsRef.current.size === 0) setIsMoving(false);
     }
-
-    setMissionIndex((currentIndex) => currentIndex + 1);
-    setSelectedChoice(null);
   };
 
   const restart = () => {
-    setMissionIndex(0);
-    setSelectedChoice(null);
-    setScore(0);
+    setPlayer(START_POSITION);
+    playerRef.current = START_POSITION;
+    setFacing("down");
+    setIsMoving(false);
+    setDiscoveredIds([]);
+    discoveredIdsRef.current = [];
     setIsComplete(false);
+    setHasStarted(true);
   };
 
-  const closeAndExplore = (sectionId?: string) => {
+  const closeAndExplore = (sectionId: string) => {
     onClose();
-    if (sectionId) {
-      window.setTimeout(() => {
-        document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
-      }, 150);
-    }
+    window.setTimeout(() => {
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
+    }, 150);
   };
 
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="quest-overlay"
+          className="game-overlay"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           role="dialog"
           aria-modal="true"
-          aria-labelledby="quest-title"
+          aria-labelledby="game-title"
         >
           <motion.div
-            className="quest-window"
-            initial={{ opacity: 0, y: 28, scale: 0.97 }}
+            className="game-window"
+            initial={{ opacity: 0, y: 24, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.98 }}
-            transition={{ type: "spring", stiffness: 260, damping: 26 }}
+            exit={{ opacity: 0, y: 18, scale: 0.98 }}
           >
-            <div className="quest-topbar">
+            <header className="game-topbar">
               <div className="flex items-center gap-3">
-                <span className="quest-live-dot" />
-                <span className="hud-label">BB / PROFILE QUEST</span>
+                <span className="game-live-dot" />
+                <div>
+                  <p className="hud-label text-blue-200">Bhavin&apos;s AI Lab</p>
+                  <p className="hidden text-[10px] text-slate-500 sm:block">Exploration build · BB-1505</p>
+                </div>
               </div>
-              <div className="flex items-center gap-3">
-                <span className="hidden text-xs text-slate-400 sm:inline">
-                  XP {score.toString().padStart(3, "0")}
-                </span>
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="quest-icon-button"
-                  aria-label="Close profile quest"
-                >
+
+              <div className="flex items-center gap-4">
+                <div className="hidden items-center gap-2 sm:flex">
+                  <Map size={14} className="text-blue-300" />
+                  <span className="font-mono text-xs text-slate-400">{discoveredIds.length}/5 fragments</span>
+                </div>
+                <button type="button" onClick={onClose} className="game-icon-button" aria-label="Close exploration game">
                   <X size={18} />
                 </button>
               </div>
+            </header>
+
+            <div className="game-progress-track">
+              <motion.div className="game-progress-value" animate={{ width: `${progress}%` }} />
             </div>
 
-            <div className="h-1 bg-white/5">
-              <motion.div
-                className="h-full bg-gradient-to-r from-emerald-400 to-cyan-400"
-                animate={{ width: `${progress}%` }}
-                transition={{ duration: 0.4 }}
-              />
-            </div>
-
-            {!isComplete ? (
-              <div className="grid min-h-0 flex-1 lg:grid-cols-[0.65fr_1.35fr]">
-                <aside className="quest-sidebar">
-                  <p className="hud-label text-emerald-300">Mission map</p>
-                  <div className="mt-7 space-y-5">
-                    {missions.map((item, index) => {
-                      const isCurrent = index === missionIndex;
-                      const isDone = index < missionIndex;
-
-                      return (
-                        <div
-                          key={item.id}
-                          className={`quest-map-item ${isCurrent ? "is-current" : ""}`}
-                        >
-                          <span className={`quest-map-index ${isDone ? "is-done" : ""}`}>
-                            {isDone ? <Check size={14} /> : String(index + 1).padStart(2, "0")}
-                          </span>
-                          <div>
-                            <p className="text-sm font-semibold text-white">{item.title}</p>
-                            <p className="mt-1 text-xs text-slate-500">
-                              {isDone ? "Signal decoded" : isCurrent ? "Active mission" : "Encrypted"}
-                            </p>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </aside>
-
-                <motion.section
-                  key={mission.id}
-                  className="quest-content"
-                  initial={{ opacity: 0, x: 18 }}
-                  animate={{ opacity: 1, x: 0 }}
+            <div className="game-layout">
+              <div ref={stageRef} className="game-stage" aria-label="Explore Bhavin's AI Lab with arrow keys or WASD">
+                <motion.div
+                  className="game-world"
+                  style={{ width: WORLD_WIDTH, height: WORLD_HEIGHT }}
+                  animate={{ x: camera.x, y: camera.y }}
+                  transition={{ type: "spring", damping: 32, stiffness: 260, mass: 0.55 }}
                 >
-                  <p className="hud-label text-cyan-300">{mission.eyebrow}</p>
-                  <h2 id="quest-title" className="mt-4 text-3xl font-bold tracking-tight text-white md:text-5xl">
-                    {mission.title}
-                  </h2>
-                  <p className="mt-5 max-w-2xl text-base leading-7 text-slate-300 md:text-lg">
-                    {mission.prompt}
-                  </p>
+                  <div className="game-grid-floor" />
+                  <div className="game-path game-path-horizontal" />
+                  <div className="game-path game-path-vertical" />
+                  <div className="game-room-outline room-one" />
+                  <div className="game-room-outline room-two" />
+                  <div className="game-room-outline room-three" />
 
-                  <div className="mt-8 grid gap-3">
-                    {mission.choices.map((choice, index) => {
-                      const isSelected = selectedChoice === index;
-                      const shouldRevealCorrect =
-                        selectedChoice !== null && choice.isCorrect;
+                  {discoveryZones.map((zone) => {
+                    const isDiscovered = discoveredIds.includes(zone.id);
+                    const isActive = activeZone?.id === zone.id;
 
-                      return (
-                        <button
-                          key={choice.label}
-                          type="button"
-                          onClick={() => selectChoice(index)}
-                          disabled={selectedChoice !== null}
-                          className={`quest-choice ${isSelected ? "is-selected" : ""} ${
-                            shouldRevealCorrect ? "is-correct" : ""
-                          }`}
-                        >
-                          <span className="quest-choice-key">{String.fromCharCode(65 + index)}</span>
-                          <span>{choice.label}</span>
-                          {shouldRevealCorrect && <Check className="ml-auto text-emerald-300" size={18} />}
-                        </button>
-                      );
-                    })}
+                    return (
+                      <div
+                        key={zone.id}
+                        className={`game-zone ${isDiscovered ? "is-discovered" : ""} ${isActive ? "is-active" : ""}`}
+                        style={{ left: zone.position.x, top: zone.position.y }}
+                      >
+                        <div className="game-zone-beacon" />
+                        <div className="game-zone-building">
+                          <span className="game-zone-symbol">{isDiscovered ? <Check size={19} /> : zone.symbol}</span>
+                          <span className="hud-label">{zone.mapLabel}</span>
+                        </div>
+                        {isActive && <span className="game-zone-prompt">Fragment collected</span>}
+                      </div>
+                    );
+                  })}
+
+                  <div
+                    className={`game-zone game-portal ${portalUnlocked ? "is-unlocked" : ""} ${isNearPortal ? "is-active" : ""}`}
+                    style={{ left: portalPosition.x, top: portalPosition.y }}
+                  >
+                    <div className="game-zone-beacon" />
+                    <div className="game-portal-core">
+                      {portalUnlocked ? <Sparkles size={24} /> : <LockKeyhole size={22} />}
+                    </div>
+                    <span className="hud-label">EXIT</span>
+                    {isNearPortal && (
+                      <span className="game-zone-prompt">
+                        {portalUnlocked ? "Enter the portal" : `${5 - discoveredIds.length} fragments required`}
+                      </span>
+                    )}
                   </div>
 
-                  <AnimatePresence>
-                    {selectedChoice !== null && (
-                      <motion.div
-                        className="quest-reveal"
-                        initial={{ opacity: 0, y: 12 }}
-                        animate={{ opacity: 1, y: 0 }}
-                      >
-                        <div>
-                          <p className="hud-label text-emerald-300">Intel recovered</p>
-                          <p className="mt-2 text-sm leading-6 text-slate-300">{mission.fact}</p>
+                  <div
+                    className={`game-player facing-${facing} ${isMoving ? "is-moving" : ""}`}
+                    style={{ transform: `translate3d(${player.x}px, ${player.y}px, 0)` }}
+                    aria-label="Player"
+                  >
+                    <span className="game-player-shadow" />
+                    <span className="game-player-body">BB</span>
+                    <span className="game-player-sensor" />
+                  </div>
+                </motion.div>
+
+                <div className="game-stage-hud">
+                  <div>
+                    <p className="hud-label text-blue-200">Current objective</p>
+                    <p className="mt-1 text-xs text-white">
+                      {portalUnlocked ? "Reach the exit portal" : "Explore the glowing locations"}
+                    </p>
+                  </div>
+                  <div className="game-key-hint">
+                    <span>W</span><span>A</span><span>S</span><span>D</span>
+                  </div>
+                </div>
+
+                <div className="game-mobile-controls" aria-label="Movement controls">
+                  <button
+                    type="button"
+                    aria-label="Move up"
+                    onPointerDown={() => setDirectionPressed("up", true)}
+                    onPointerUp={() => setDirectionPressed("up", false)}
+                    onPointerCancel={() => setDirectionPressed("up", false)}
+                    onPointerLeave={() => setDirectionPressed("up", false)}
+                  ><ArrowUp size={20} /></button>
+                  <button
+                    type="button"
+                    aria-label="Move left"
+                    onPointerDown={() => setDirectionPressed("left", true)}
+                    onPointerUp={() => setDirectionPressed("left", false)}
+                    onPointerCancel={() => setDirectionPressed("left", false)}
+                    onPointerLeave={() => setDirectionPressed("left", false)}
+                  ><ArrowLeft size={20} /></button>
+                  <button
+                    type="button"
+                    aria-label="Move down"
+                    onPointerDown={() => setDirectionPressed("down", true)}
+                    onPointerUp={() => setDirectionPressed("down", false)}
+                    onPointerCancel={() => setDirectionPressed("down", false)}
+                    onPointerLeave={() => setDirectionPressed("down", false)}
+                  ><ArrowDown size={20} /></button>
+                  <button
+                    type="button"
+                    aria-label="Move right"
+                    onPointerDown={() => setDirectionPressed("right", true)}
+                    onPointerUp={() => setDirectionPressed("right", false)}
+                    onPointerCancel={() => setDirectionPressed("right", false)}
+                    onPointerLeave={() => setDirectionPressed("right", false)}
+                  ><ArrowRight size={20} /></button>
+                </div>
+
+                <AnimatePresence>
+                  {!hasStarted && (
+                    <motion.div className="game-intro" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                      <motion.div className="game-intro-card" initial={{ y: 16 }} animate={{ y: 0 }}>
+                        <div className="game-intro-icon"><Gamepad2 size={28} /></div>
+                        <p className="hud-label mt-5 text-blue-300">Exploration mode</p>
+                        <h2 id="game-title" className="mt-3 text-3xl font-semibold text-white md:text-5xl">Enter Bhavin&apos;s AI Lab</h2>
+                        <p className="mx-auto mt-4 max-w-lg text-sm leading-6 text-slate-300 md:text-base">
+                          Move through the lab, approach five glowing locations, and collect the story fragments hidden inside. No quiz—just explore.
+                        </p>
+                        <div className="mt-6 flex flex-wrap justify-center gap-3 text-xs text-slate-400">
+                          <span className="game-instruction-chip">WASD / arrows to move</span>
+                          <span className="game-instruction-chip">Touch controls on mobile</span>
                         </div>
-                        <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                          <button
-                            type="button"
-                            onClick={() => closeAndExplore(mission.sectionId)}
-                            className="inline-flex items-center gap-2 text-sm font-semibold text-cyan-300 transition-colors hover:text-cyan-200"
-                          >
-                            Inspect full chapter <ExternalLink size={14} />
+                        <button type="button" onClick={() => setHasStarted(true)} className="game-primary-button mt-7">
+                          Enter the lab <ArrowRight size={17} />
+                        </button>
+                      </motion.div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <AnimatePresence>
+                  {isComplete && (
+                    <motion.div className="game-intro" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                      <motion.div className="game-intro-card" initial={{ scale: 0.97 }} animate={{ scale: 1 }}>
+                        <div className="game-intro-icon"><Sparkles size={28} /></div>
+                        <p className="hud-label mt-5 text-blue-300">Exploration complete</p>
+                        <h2 className="mt-3 text-3xl font-semibold text-white md:text-5xl">You mapped the whole lab.</h2>
+                        <p className="mx-auto mt-4 max-w-lg text-sm leading-6 text-slate-300 md:text-base">
+                          You found Bhavin&apos;s career, research, projects, technical stack, and the person connecting all of it.
+                        </p>
+                        <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
+                          <button type="button" onClick={() => closeAndExplore("experience")} className="game-primary-button">
+                            Enter full portfolio <ExternalLink size={16} />
                           </button>
-                          <button type="button" onClick={continueMission} className="quest-primary-button">
-                            {missionIndex === missions.length - 1 ? "Complete quest" : "Next mission"}
-                            <ArrowRight size={17} />
+                          <button type="button" onClick={restart} className="game-secondary-button">
+                            <RotateCcw size={16} /> Explore again
                           </button>
                         </div>
                       </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.section>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-            ) : (
-              <motion.div
-                className="quest-complete"
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-              >
-                <div className="quest-complete-icon">
-                  <Sparkles size={30} />
+
+              <aside className="game-discovery-panel" aria-live="polite">
+                <div className="flex items-center justify-between">
+                  <p className="hud-label text-blue-300">Discovery log</p>
+                  <span className="font-mono text-[10px] text-slate-500">{Math.round(progress)}%</span>
                 </div>
-                <p className="hud-label mt-7 text-emerald-300">Profile unlocked</p>
-                <h2 id="quest-title" className="mt-4 text-4xl font-bold tracking-tight text-white md:text-6xl">
-                  You found the human<br />behind the systems.
-                </h2>
-                <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-slate-300 md:text-lg">
-                  Lead engineer. Applied AI researcher. Builder of production systems. Your final score is {score} XP—but the real story is in the work below.
-                </p>
-                <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                  <button type="button" onClick={() => closeAndExplore("experience")} className="quest-primary-button">
-                    Explore the full portfolio <ArrowRight size={17} />
-                  </button>
-                  <button type="button" onClick={restart} className="quest-secondary-button">
-                    <RotateCcw size={16} /> Replay
-                  </button>
+
+                <AnimatePresence mode="wait">
+                  {activeZone ? (
+                    <motion.div key={activeZone.id} initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -8 }}>
+                      <p className="hud-label mt-8 text-cyan-300">{activeZone.eyebrow}</p>
+                      <h3 className="mt-3 text-2xl font-semibold text-white">{activeZone.label}</h3>
+                      <p className="mt-4 text-sm leading-6 text-slate-400">{activeZone.description}</p>
+                      <ul className="mt-6 space-y-3">
+                        {activeZone.facts.map((fact) => (
+                          <li key={fact} className="flex gap-3 text-sm text-slate-300">
+                            <Check size={15} className="mt-0.5 shrink-0 text-blue-300" />
+                            <span>{fact}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <button type="button" onClick={() => closeAndExplore(activeZone.sectionId)} className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-blue-300 hover:text-blue-200">
+                        Open full chapter <ExternalLink size={14} />
+                      </button>
+                    </motion.div>
+                  ) : (
+                    <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="game-log-empty">
+                      <Map size={25} className="text-blue-300" />
+                      <h3 className="mt-5 text-lg font-semibold text-white">Nothing in range</h3>
+                      <p className="mt-2 text-sm leading-6 text-slate-500">Move toward a pulsing blue location to recover a profile fragment.</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <div className="game-fragment-list">
+                  {discoveryZones.map((zone) => {
+                    const isDiscovered = discoveredIds.includes(zone.id);
+                    return (
+                      <div key={zone.id} className={isDiscovered ? "is-discovered" : ""}>
+                        <span>{isDiscovered ? <Check size={12} /> : "·"}</span>
+                        <span>{zone.mapLabel}</span>
+                      </div>
+                    );
+                  })}
                 </div>
-              </motion.div>
-            )}
+              </aside>
+            </div>
           </motion.div>
         </motion.div>
       )}

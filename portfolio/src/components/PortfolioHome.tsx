@@ -11,14 +11,14 @@ import Projects from "@/components/Projects";
 import Publications from "@/components/Publications";
 
 export default function PortfolioHome() {
-  const [isQuestOpen, setIsQuestOpen] = useState(false);
-  const openQuest = useCallback(() => setIsQuestOpen(true), []);
-  const closeQuest = useCallback(() => setIsQuestOpen(false), []);
+  const [isGameOpen, setIsGameOpen] = useState(false);
+  const openGame = useCallback(() => setIsGameOpen(true), []);
+  const closeGame = useCallback(() => setIsGameOpen(false), []);
 
   return (
     <main className="portfolio-shell min-h-screen">
-      <Navbar onStartQuest={openQuest} />
-      <Hero onStartQuest={openQuest} />
+      <Navbar onStartGame={openGame} />
+      <Hero onStartGame={openGame} />
       <div className="portfolio-chapters">
         <Experience />
         <Education />
@@ -26,7 +26,7 @@ export default function PortfolioHome() {
         <Projects />
       </div>
       <Footer />
-      <PortfolioGame isOpen={isQuestOpen} onClose={closeQuest} />
+      <PortfolioGame isOpen={isGameOpen} onClose={closeGame} />
     </main>
   );
 }

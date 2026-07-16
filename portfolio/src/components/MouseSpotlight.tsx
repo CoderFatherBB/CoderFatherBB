@@ -22,7 +22,7 @@ export default function MouseSpotlight() {
   return (
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
       <motion.div
-        className="absolute h-[520px] w-[520px] rounded-full bg-emerald-400/10 blur-[110px] mix-blend-screen"
+        className="absolute h-[520px] w-[520px] rounded-full bg-blue-500/12 blur-[110px] mix-blend-screen"
         style={{
           x: mouseX,
           y: mouseY,

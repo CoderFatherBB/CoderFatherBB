@@ -231,7 +231,7 @@ export default function Chatbot() {
                 <div>
                   <h3 className="chat-title text-sm font-semibold text-white">Bhavin&apos;s Assistant</h3>
                   <p className="text-xs text-slate-400 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-sky-400 inline-block animate-pulse"></span>
                     Online
                   </p>
                 </div>

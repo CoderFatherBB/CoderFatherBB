@@ -4,12 +4,12 @@ import { motion } from "framer-motion";
 import { ArrowDownRight, ArrowRight, Play, Sparkles } from "lucide-react";
 
 type HeroProps = {
-  onStartQuest: () => void;
+  onStartGame: () => void;
 };
 
 const expertise = ["Generative AI", "Multi-agent systems", "RAG", "Computer vision"];
 
-export default function Hero({ onStartQuest }: HeroProps) {
+export default function Hero({ onStartGame }: HeroProps) {
   return (
     <section id="about" className="hero-lab relative flex min-h-[100svh] items-center overflow-hidden pt-28">
       <div className="hero-grid" aria-hidden="true" />
@@ -22,13 +22,13 @@ export default function Hero({ onStartQuest }: HeroProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-              className="mb-7 inline-flex items-center gap-3 rounded-full border border-emerald-300/20 bg-emerald-300/[0.07] px-4 py-2"
+              className="mb-7 inline-flex items-center gap-3 rounded-full border border-blue-300/20 bg-blue-300/[0.07] px-4 py-2"
           >
               <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-60" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-300" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-300 opacity-60" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-300" />
             </span>
-              <span className="hud-label text-emerald-200">Open to ambitious AI missions</span>
+              <span className="hud-label text-blue-200">Open to ambitious AI missions</span>
           </motion.div>
 
           <motion.h1
@@ -69,13 +69,13 @@ export default function Hero({ onStartQuest }: HeroProps) {
           >
               <button
                 type="button"
-                onClick={onStartQuest}
+                onClick={onStartGame}
                 className="hero-primary-button group"
             >
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-950 text-emerald-300">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-950 text-blue-300">
                   <Play size={14} fill="currentColor" />
                 </span>
-                <span>Play my portfolio</span>
+                <span>Explore my AI lab</span>
                 <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
               </button>
             <a
@@ -94,7 +94,7 @@ export default function Hero({ onStartQuest }: HeroProps) {
               className="mt-10 flex items-center gap-3 text-sm text-slate-500"
             >
               <Sparkles size={15} className="text-cyan-300" />
-              <span>The interactive route takes about two minutes.</span>
+              <span>Move, explore, and discover the story in about two minutes.</span>
             </motion.div>
           </div>
 
@@ -106,7 +106,7 @@ export default function Hero({ onStartQuest }: HeroProps) {
           >
             <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
               <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-emerald-300 shadow-[0_0_12px_rgba(110,231,183,0.8)]" />
+                <span className="h-2 w-2 rounded-full bg-blue-300 shadow-[0_0_12px_rgba(96,165,250,0.8)]" />
                 <span className="hud-label text-slate-300">Candidate signal / live</span>
               </div>
               <span className="font-mono text-[10px] text-slate-500">BB-1505</span>
@@ -118,7 +118,7 @@ export default function Hero({ onStartQuest }: HeroProps) {
               <div className="signal-orbit signal-orbit-three" />
               <div className="signal-core">
                 <span className="text-4xl font-semibold tracking-[-0.05em] text-white">BB</span>
-                <span className="hud-label mt-2 text-emerald-300">AI / ML</span>
+                <span className="hud-label mt-2 text-blue-300">AI / ML</span>
               </div>
               <span className="signal-node signal-node-one">LLM</span>
               <span className="signal-node signal-node-two">RAG</span>
