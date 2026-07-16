@@ -164,7 +164,7 @@ export default function Chatbot() {
               setIsOpen(true);
               setShowTooltip(false);
             }}
-            className="fixed bottom-6 right-6 w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-blue-500/20 hover:bg-blue-700 transition-colors z-50 group"
+            className="chat-trigger fixed bottom-6 right-6 w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-blue-500/20 hover:bg-blue-700 transition-colors z-50 group"
           >
             <MessageCircle size={24} className="group-hover:scale-110 transition-transform" />
           </motion.button>
@@ -178,7 +178,7 @@ export default function Chatbot() {
             initial={{ opacity: 0, y: 10, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            className="fixed bottom-24 right-6 bg-blue-600 text-white text-sm px-4 py-2 rounded-2xl rounded-br-sm shadow-xl z-50 flex items-center gap-2 cursor-pointer"
+            className="chat-tooltip fixed bottom-24 right-6 bg-blue-600 text-white text-sm px-4 py-2 rounded-2xl rounded-br-sm shadow-xl z-50 flex items-center gap-2 cursor-pointer"
             onClick={() => {
               setIsOpen(true);
               setShowTooltip(false);

@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Briefcase, Calendar, X, ChevronRight, BarChart } from "lucide-react";
+import { Briefcase, Calendar, ChevronRight, BarChart } from "lucide-react";
+import Image from "next/image";
 
 type Experience = {
   id: string;
@@ -157,9 +158,12 @@ export default function Experience() {
                         layout
                         className={`${hoveredExp === exp.id ? 'w-20 h-20 md:w-24 md:h-24 shadow-lg shadow-blue-500/20' : 'w-12 h-12'} rounded-xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden shrink-0 transition-all duration-300`}
                       >
-                        <img 
+                        <Image
                           src={`/logos/${exp.logoId}.png`} 
                           alt={exp.company}
+                          width={96}
+                          height={96}
+                          unoptimized
                           className="w-full h-full object-cover"
                           onError={(e) => {
                             if (!e.currentTarget.src.includes('clearbit') && !e.currentTarget.src.includes('ui-avatars')) {

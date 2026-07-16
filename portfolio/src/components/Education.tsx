@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { GraduationCap, Award } from "lucide-react";
+import Image from "next/image";
 
 const education = [
   {
@@ -54,9 +55,12 @@ export default function Education() {
               <div className="flex items-start gap-4 mb-6">
                 {/* Institution Logo */}
                 <div className="w-14 h-14 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden shrink-0">
-                  <img 
+                  <Image
                     src={`/logos/${edu.logoId}.png`} 
                     alt={edu.institution}
+                    width={56}
+                    height={56}
+                    unoptimized
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       if (!e.currentTarget.src.includes('clearbit') && !e.currentTarget.src.includes('ui-avatars')) {

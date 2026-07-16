@@ -1,37 +1,28 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, useSpring } from "framer-motion";
+import { useEffect } from "react";
+import { motion, useMotionValue, useSpring } from "framer-motion";
 
 export default function MouseSpotlight() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const pointerX = useMotionValue(-800);
+  const pointerY = useMotionValue(-800);
+  const mouseX = useSpring(pointerX, { damping: 30, stiffness: 180, mass: 0.5 });
+  const mouseY = useSpring(pointerY, { damping: 30, stiffness: 180, mass: 0.5 });
 
   useEffect(() => {
     const updateMousePosition = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+      pointerX.set(e.clientX);
+      pointerY.set(e.clientY);
     };
 
     window.addEventListener("mousemove", updateMousePosition);
     return () => window.removeEventListener("mousemove", updateMousePosition);
-  }, []);
-
-  const springConfig = { damping: 30, stiffness: 200, mass: 0.5 };
-  
-  // Use framer-motion spring for buttery smooth following
-  const mouseX = useSpring(mousePosition.x, springConfig);
-  const mouseY = useSpring(mousePosition.y, springConfig);
-
-  useEffect(() => {
-    mouseX.set(mousePosition.x);
-    mouseY.set(mousePosition.y);
-  }, [mousePosition, mouseX, mouseY]);
+  }, [pointerX, pointerY]);
 
   return (
-    <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-      
-      {/* Dynamic following glowing orb */}
+    <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
       <motion.div
-        className="absolute w-[600px] h-[600px] rounded-full bg-blue-500/20 blur-[100px] mix-blend-screen"
+        className="absolute h-[520px] w-[520px] rounded-full bg-emerald-400/10 blur-[110px] mix-blend-screen"
         style={{
           x: mouseX,
           y: mouseY,
@@ -39,17 +30,6 @@ export default function MouseSpotlight() {
           translateY: "-50%",
         }}
       />
-      
-      {/* Spotlight reveal layer (everything else is slightly blurred and dimmed, mouse reveals clearly) */}
-      <motion.div 
-        className="absolute inset-0 backdrop-blur-[4px] bg-[#040b16]/30"
-        style={{
-          WebkitMaskImage: `radial-gradient(circle 400px at ${mousePosition.x}px ${mousePosition.y}px, transparent 0%, black 100%)`,
-          maskImage: `radial-gradient(circle 400px at ${mousePosition.x}px ${mousePosition.y}px, transparent 0%, black 100%)`,
-          transition: "mask-position 0.1s ease-out, -webkit-mask-position 0.1s ease-out"
-        }}
-      />
-      
     </div>
   );
 }

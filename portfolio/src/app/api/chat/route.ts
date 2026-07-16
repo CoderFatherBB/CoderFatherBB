@@ -31,8 +31,9 @@ export async function POST(req: NextRequest) {
         "x-vercel-ai-data-stream": "v1",
       },
     });
-  } catch (error: any) {
-    return new Response(JSON.stringify({ error: error.message }), {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Unknown chat error";
+    return new Response(JSON.stringify({ error: message }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
