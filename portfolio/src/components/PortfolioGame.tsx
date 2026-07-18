@@ -92,7 +92,6 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
   const progress = (discoveredIds.length / discoveryZones.length) * 100;
   const portalUnlocked = discoveredIds.length === discoveryZones.length;
   const openChapter = discoveryZones.find((zone) => zone.id === openChapterId) ?? null;
-  const discoveredZones = discoveryZones.filter((zone) => discoveredIds.includes(zone.id));
 
   const camera = useMemo(() => {
     const targetX = stageSize.width / 2 - (player.x + PLAYER_SIZE / 2);
@@ -528,7 +527,8 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
                   <GameChapterView
                     key={`chapter-${openChapter.id}`}
                     zone={openChapter}
-                    discoveredZones={discoveredZones}
+                    zones={discoveryZones}
+                    discoveredIds={discoveredIds}
                     onBack={() => setOpenChapterId(null)}
                     onSelectChapter={showChapter}
                   />

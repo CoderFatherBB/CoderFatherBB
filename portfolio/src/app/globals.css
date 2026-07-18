@@ -886,6 +886,13 @@ section[id] {
   text-transform: uppercase;
 }
 
+.game-chapter-nav-help {
+  margin: -0.35rem 0 0.85rem;
+  color: #52627a;
+  font-size: 0.62rem;
+  line-height: 1.45;
+}
+
 .game-chapter-nav {
   display: grid;
   gap: 0.55rem;
@@ -903,14 +910,20 @@ section[id] {
   text-align: left;
 }
 
-.game-chapter-nav button:hover,
+.game-chapter-nav button:not(:disabled):hover,
 .game-chapter-nav button.is-active {
   border-color: rgba(96, 165, 250, 0.25);
   background: rgba(59, 130, 246, 0.09);
   color: #dbeafe;
 }
 
+.game-chapter-nav button.is-locked {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
 .game-chapter-nav-symbol {
+  position: relative;
   display: flex;
   width: 34px;
   height: 34px;
@@ -923,6 +936,18 @@ section[id] {
   font-family: var(--font-inter), monospace;
   font-size: 0.64rem;
   font-weight: 850;
+}
+
+.game-chapter-nav-lock {
+  position: absolute;
+  right: -5px;
+  bottom: -5px;
+  padding: 2px;
+  border: 1px solid rgba(96, 165, 250, 0.25);
+  border-radius: 50%;
+  background: #071225;
+  color: #64748b;
+  box-sizing: content-box;
 }
 
 .game-chapter-nav strong,
@@ -1216,7 +1241,8 @@ section[id] {
     overflow: hidden;
   }
   .game-chapter-back { flex: 0 0 auto; padding: 0 0.6rem; }
-  .game-chapter-nav-heading { display: none; }
+  .game-chapter-nav-heading,
+  .game-chapter-nav-help { display: none; }
   .game-chapter-nav {
     display: flex;
     min-width: 0;
@@ -1892,7 +1918,8 @@ html.light-theme .game-chapter-back:hover {
 }
 
 html.light-theme .game-chapter-nav-heading,
-html.light-theme .game-chapter-nav small {
+html.light-theme .game-chapter-nav small,
+html.light-theme .game-chapter-nav-help {
   color: #64748b;
 }
 
@@ -1900,7 +1927,7 @@ html.light-theme .game-chapter-nav button {
   color: #475569;
 }
 
-html.light-theme .game-chapter-nav button:hover,
+html.light-theme .game-chapter-nav button:not(:disabled):hover,
 html.light-theme .game-chapter-nav button.is-active {
   border-color: rgba(29, 78, 216, 0.28);
   background: rgba(219, 234, 254, 0.78);
@@ -1910,6 +1937,12 @@ html.light-theme .game-chapter-nav button.is-active {
 html.light-theme .game-chapter-nav-symbol {
   border-color: rgba(29, 78, 216, 0.28);
   color: #1d4ed8;
+}
+
+html.light-theme .game-chapter-nav-lock {
+  border-color: rgba(30, 64, 175, 0.24);
+  background: #f8fbff;
+  color: #64748b;
 }
 
 html.light-theme .game-chapter-hero {

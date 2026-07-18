@@ -2,19 +2,21 @@
 
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Check, Map, Sparkles } from "lucide-react";
+import { ArrowLeft, Check, LockKeyhole, Map, Sparkles } from "lucide-react";
 import type { DiscoveryZone } from "./portfolioGameData";
 
 type GameChapterViewProps = {
   zone: DiscoveryZone;
-  discoveredZones: DiscoveryZone[];
+  zones: DiscoveryZone[];
+  discoveredIds: string[];
   onBack: () => void;
   onSelectChapter: (zoneId: string) => void;
 };
 
 export function GameChapterView({
   zone,
-  discoveredZones,
+  zones,
+  discoveredIds,
   onBack,
   onSelectChapter,
 }: GameChapterViewProps) {
@@ -39,25 +41,36 @@ export function GameChapterView({
 
         <div className="game-chapter-nav-heading">
           <Map size={15} />
-          <span>Recovered chapters</span>
+          <span>Chapters · {discoveredIds.length}/{zones.length} unlocked</span>
         </div>
+        <p className="game-chapter-nav-help">Explore each map location to unlock its chapter.</p>
 
-        <nav aria-label="Recovered game chapters" className="game-chapter-nav">
-          {discoveredZones.map((discoveredZone) => (
-            <button
-              key={discoveredZone.id}
-              type="button"
-              onClick={() => onSelectChapter(discoveredZone.id)}
-              className={discoveredZone.id === zone.id ? "is-active" : ""}
-              aria-current={discoveredZone.id === zone.id ? "page" : undefined}
-            >
-              <span className="game-chapter-nav-symbol">{discoveredZone.symbol}</span>
-              <span>
-                <strong>{discoveredZone.mapLabel}</strong>
-                <small>{discoveredZone.label}</small>
-              </span>
-            </button>
-          ))}
+        <nav aria-label="All game chapters" className="game-chapter-nav">
+          {zones.map((chapterZone) => {
+            const isUnlocked = discoveredIds.includes(chapterZone.id);
+            const isActive = chapterZone.id === zone.id;
+
+            return (
+              <button
+                key={chapterZone.id}
+                type="button"
+                onClick={() => onSelectChapter(chapterZone.id)}
+                className={`${isActive ? "is-active" : ""} ${isUnlocked ? "" : "is-locked"}`.trim()}
+                aria-current={isActive ? "page" : undefined}
+                aria-label={isUnlocked ? `${chapterZone.label} chapter` : `${chapterZone.label} chapter locked. Explore the map to unlock it.`}
+                disabled={!isUnlocked}
+              >
+                <span className="game-chapter-nav-symbol">
+                  {chapterZone.symbol}
+                  {!isUnlocked && <LockKeyhole className="game-chapter-nav-lock" size={11} />}
+                </span>
+                <span>
+                  <strong>{chapterZone.mapLabel}</strong>
+                  <small>{isUnlocked ? chapterZone.label : "Locked · explore to unlock"}</small>
+                </span>
+              </button>
+            );
+          })}
         </nav>
       </div>
 
