@@ -1096,3 +1096,410 @@ html.light-theme .chat-prose a {
 html.light-theme .chat-prose a:hover {
   color: #1d4ed8 !important;
 }
+
+/* Authoritative light palette: portfolio + exploration game */
+html.light-theme {
+  color-scheme: light;
+}
+
+html.light-theme body {
+  --background: #f3f7fd;
+  --foreground: #0f172a;
+  background-color: #f3f7fd;
+  color: #0f172a;
+}
+
+html.light-theme ::selection {
+  background: rgba(37, 99, 235, 0.22);
+  color: #0f172a;
+}
+
+html.light-theme .portfolio-shell {
+  background:
+    radial-gradient(circle at 12% 8%, rgba(59, 130, 246, 0.12), transparent 28%),
+    radial-gradient(circle at 88% 30%, rgba(14, 165, 233, 0.08), transparent 24%),
+    #f3f7fd;
+}
+
+html.light-theme .portfolio-chapters::before {
+  background-image:
+    linear-gradient(rgba(37, 99, 235, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 99, 235, 0.07) 1px, transparent 1px);
+}
+
+html.light-theme .portfolio-chapters > section {
+  border-top-color: rgba(30, 64, 175, 0.18);
+}
+
+html.light-theme .portfolio-chapters > section::after {
+  color: #1d4ed8;
+  font-weight: 800;
+  opacity: 1;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+html.light-theme .hero-lab::before {
+  background:
+    radial-gradient(circle at 76% 44%, rgba(37, 99, 235, 0.12), transparent 30%),
+    radial-gradient(circle at 18% 20%, rgba(14, 165, 233, 0.08), transparent 24%);
+}
+
+html.light-theme .hero-grid {
+  opacity: 0.62;
+  background-image:
+    linear-gradient(rgba(37, 99, 235, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 99, 235, 0.07) 1px, transparent 1px);
+}
+
+html.light-theme .hero-scanline {
+  opacity: 0.08;
+  background: repeating-linear-gradient(to bottom, transparent 0, transparent 3px, rgba(30, 64, 175, 0.12) 4px);
+}
+
+html.light-theme .text-white,
+html.light-theme .hover\:text-white:hover,
+html.light-theme .group:hover .group-hover\:text-white {
+  color: #0f172a !important;
+}
+
+html.light-theme .text-slate-200,
+html.light-theme .text-slate-300,
+html.light-theme .text-slate-400 {
+  color: #334155 !important;
+  font-weight: 500;
+}
+
+html.light-theme .text-slate-500,
+html.light-theme .text-white\/50 {
+  color: #475569 !important;
+  font-weight: 600;
+}
+
+html.light-theme .text-white\/20 {
+  color: #64748b !important;
+}
+
+html.light-theme .text-blue-200,
+html.light-theme .text-blue-300,
+html.light-theme .text-blue-400,
+html.light-theme .hover\:text-blue-300:hover,
+html.light-theme .hover\:text-blue-400:hover,
+html.light-theme .group:hover .group-hover\:text-blue-400 {
+  color: #1d4ed8 !important;
+}
+
+html.light-theme .text-cyan-300 {
+  color: #0e7490 !important;
+}
+
+html.light-theme .expertise-chip {
+  border-color: rgba(30, 64, 175, 0.22);
+  background: rgba(255, 255, 255, 0.76);
+  color: #334155;
+  box-shadow: 0 5px 18px rgba(30, 64, 175, 0.06);
+}
+
+html.light-theme .nav-shell {
+  color: #0f172a;
+}
+
+html.light-theme .nav-shell.is-scrolled,
+html.light-theme .nav-mobile-menu {
+  border-color: rgba(30, 64, 175, 0.2);
+  background: rgba(248, 251, 255, 0.94);
+  box-shadow: 0 14px 38px rgba(30, 64, 175, 0.12);
+}
+
+html.light-theme .nav-shell nav a,
+html.light-theme .nav-mobile-menu nav a {
+  color: #334155 !important;
+}
+
+html.light-theme .nav-shell nav a:hover,
+html.light-theme .nav-mobile-menu nav a:hover {
+  color: #1d4ed8 !important;
+}
+
+html.light-theme .hero-secondary-button,
+html.light-theme .game-secondary-button {
+  border-color: rgba(30, 64, 175, 0.28);
+  background: rgba(255, 255, 255, 0.78);
+  color: #1e3a8a;
+  box-shadow: 0 8px 24px rgba(30, 64, 175, 0.08);
+}
+
+html.light-theme .hero-secondary-button:hover,
+html.light-theme .game-secondary-button:hover {
+  border-color: rgba(29, 78, 216, 0.55);
+  background: #ffffff;
+}
+
+html.light-theme .signal-console {
+  border-color: rgba(30, 64, 175, 0.24);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.96), rgba(232, 241, 253, 0.94));
+  box-shadow: 0 30px 75px rgba(30, 64, 175, 0.18), inset 0 1px 0 #ffffff;
+}
+
+html.light-theme .signal-console::before {
+  background: linear-gradient(115deg, transparent 30%, rgba(37, 99, 235, 0.08), transparent 70%);
+}
+
+html.light-theme .signal-orbit {
+  border-color: rgba(37, 99, 235, 0.24);
+}
+
+html.light-theme .signal-core {
+  border-color: rgba(29, 78, 216, 0.42);
+  background: radial-gradient(circle, rgba(96, 165, 250, 0.2), rgba(239, 246, 255, 0.98) 70%);
+  box-shadow: 0 0 50px rgba(37, 99, 235, 0.14), inset 0 0 22px rgba(59, 130, 246, 0.08);
+}
+
+html.light-theme .signal-node {
+  border-color: rgba(29, 78, 216, 0.28);
+  background: rgba(255, 255, 255, 0.98);
+  color: #1d4ed8;
+  box-shadow: 0 10px 24px rgba(30, 64, 175, 0.16);
+}
+
+html.light-theme .signal-stat {
+  border-color: rgba(30, 64, 175, 0.16);
+}
+
+html.light-theme .glass,
+html.light-theme .glass-card {
+  border-color: rgba(30, 64, 175, 0.2);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(235, 243, 253, 0.94));
+  box-shadow: 0 14px 36px rgba(30, 64, 175, 0.1);
+}
+
+html.light-theme .exp-card-hover {
+  border-color: rgba(29, 78, 216, 0.42) !important;
+  background: linear-gradient(145deg, #ffffff, #e6effc) !important;
+  box-shadow: 0 18px 45px rgba(30, 64, 175, 0.16) !important;
+}
+
+html.light-theme .timeline-dot-bg {
+  border-color: #f3f7fd !important;
+}
+
+html.light-theme .bg-white\/5 {
+  background-color: rgba(37, 99, 235, 0.08) !important;
+}
+
+html.light-theme .bg-white\/10 {
+  background-color: rgba(37, 99, 235, 0.12) !important;
+}
+
+html.light-theme .border-white\/5,
+html.light-theme .border-white\/10 {
+  border-color: rgba(30, 64, 175, 0.18) !important;
+}
+
+html.light-theme .bg-black\/20,
+html.light-theme .bg-black\/40 {
+  background-color: rgba(219, 234, 254, 0.38) !important;
+}
+
+html.light-theme footer {
+  color: #334155;
+}
+
+html.light-theme footer a,
+html.light-theme footer button {
+  color: #334155;
+}
+
+html.light-theme .fixed.bottom-5.left-5 {
+  border-color: rgba(30, 64, 175, 0.24);
+  background: rgba(255, 255, 255, 0.94);
+  color: #1e3a8a;
+  box-shadow: 0 12px 34px rgba(30, 64, 175, 0.16);
+}
+
+/* Light exploration game */
+html.light-theme .game-overlay {
+  background: rgba(51, 65, 85, 0.32);
+}
+
+html.light-theme .game-window {
+  border-color: rgba(30, 64, 175, 0.28);
+  background: #eef4fc;
+  box-shadow: 0 40px 110px rgba(15, 23, 42, 0.3), inset 0 1px 0 #ffffff;
+}
+
+html.light-theme .game-topbar {
+  border-bottom-color: rgba(30, 64, 175, 0.17);
+  background: rgba(248, 251, 255, 0.98);
+}
+
+html.light-theme .game-icon-button {
+  border-color: rgba(30, 64, 175, 0.24);
+  background: rgba(219, 234, 254, 0.55);
+  color: #1e3a8a;
+}
+
+html.light-theme .game-icon-button:hover {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+html.light-theme .game-progress-track {
+  background: rgba(30, 64, 175, 0.1);
+}
+
+html.light-theme .game-stage {
+  background:
+    radial-gradient(circle at 45% 46%, rgba(59, 130, 246, 0.12), transparent 36%),
+    #e9f1fb;
+}
+
+html.light-theme .game-world {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(96, 165, 250, 0.11), transparent 55%),
+    #edf4fd;
+}
+
+html.light-theme .game-grid-floor {
+  background-image:
+    linear-gradient(rgba(30, 64, 175, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 64, 175, 0.1) 1px, transparent 1px);
+}
+
+html.light-theme .game-grid-floor::after {
+  background: repeating-linear-gradient(to bottom, transparent 0, transparent 3px, rgba(30, 64, 175, 0.025) 4px);
+}
+
+html.light-theme .game-path {
+  border-color: rgba(30, 64, 175, 0.14);
+  background: rgba(147, 197, 253, 0.22);
+  box-shadow: inset 0 0 28px rgba(37, 99, 235, 0.05);
+}
+
+html.light-theme .game-room-outline {
+  border-color: rgba(30, 64, 175, 0.2);
+  background: rgba(255, 255, 255, 0.38);
+}
+
+html.light-theme .game-zone {
+  color: #475569;
+}
+
+html.light-theme .game-zone-beacon {
+  border-color: rgba(29, 78, 216, 0.3);
+}
+
+html.light-theme .game-zone-building {
+  border-color: rgba(30, 64, 175, 0.3);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(219, 234, 254, 0.98));
+  color: #334155;
+  box-shadow: 0 15px 32px rgba(30, 64, 175, 0.13), inset 0 1px 0 #ffffff;
+}
+
+html.light-theme .game-zone-symbol {
+  border-color: rgba(29, 78, 216, 0.28);
+  background: rgba(37, 99, 235, 0.1);
+  color: #1d4ed8;
+}
+
+html.light-theme .game-zone.is-active .game-zone-building,
+html.light-theme .game-zone.is-discovered .game-zone-building {
+  border-color: rgba(2, 132, 199, 0.65);
+  color: #0f172a;
+  box-shadow: 0 0 35px rgba(37, 99, 235, 0.18), inset 0 1px 0 #ffffff;
+}
+
+html.light-theme .game-zone.is-discovered .game-zone-symbol {
+  border-color: rgba(2, 132, 199, 0.48);
+  background: rgba(14, 165, 233, 0.14);
+  color: #0369a1;
+}
+
+html.light-theme .game-zone-prompt {
+  border-color: rgba(30, 64, 175, 0.3);
+  background: rgba(255, 255, 255, 0.98);
+  color: #1e3a8a;
+  box-shadow: 0 8px 20px rgba(30, 64, 175, 0.14);
+}
+
+html.light-theme .game-portal-core {
+  border-color: rgba(71, 85, 105, 0.36);
+  background: radial-gradient(circle, rgba(203, 213, 225, 0.72), rgba(241, 245, 249, 0.98) 68%);
+  color: #475569;
+  box-shadow: inset 0 0 24px rgba(100, 116, 139, 0.14);
+}
+
+html.light-theme .game-portal.is-unlocked .game-portal-core {
+  border-color: rgba(2, 132, 199, 0.7);
+  background: radial-gradient(circle, rgba(96, 165, 250, 0.5), rgba(239, 246, 255, 0.98) 68%);
+  color: #1d4ed8;
+}
+
+html.light-theme .game-stage-hud {
+  border-color: rgba(30, 64, 175, 0.25);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 12px 30px rgba(30, 64, 175, 0.13);
+}
+
+html.light-theme .game-key-hint span {
+  border-color: rgba(30, 64, 175, 0.26);
+  background: rgba(219, 234, 254, 0.7);
+  color: #334155;
+}
+
+html.light-theme .game-intro {
+  background: rgba(226, 232, 240, 0.64);
+}
+
+html.light-theme .game-intro-card {
+  border-color: rgba(30, 64, 175, 0.27);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.13), transparent 42%),
+    rgba(255, 255, 255, 0.98);
+  box-shadow: 0 28px 75px rgba(30, 64, 175, 0.2);
+}
+
+html.light-theme .game-intro-icon {
+  border-color: rgba(29, 78, 216, 0.36);
+  background: rgba(219, 234, 254, 0.84);
+  color: #1d4ed8;
+}
+
+html.light-theme .game-instruction-chip {
+  border-color: rgba(30, 64, 175, 0.22);
+  background: rgba(219, 234, 254, 0.6);
+  color: #334155;
+}
+
+html.light-theme .game-discovery-panel {
+  border-left-color: rgba(30, 64, 175, 0.18);
+  background: rgba(248, 251, 255, 0.99);
+}
+
+html.light-theme .game-fragment-list {
+  border-top-color: rgba(30, 64, 175, 0.15);
+}
+
+html.light-theme .game-fragment-list > div {
+  color: #64748b;
+}
+
+html.light-theme .game-fragment-list > div.is-discovered {
+  color: #1d4ed8;
+}
+
+html.light-theme .game-mobile-controls button {
+  border-color: rgba(30, 64, 175, 0.32);
+  background: rgba(255, 255, 255, 0.94);
+  color: #1e3a8a;
+  box-shadow: 0 8px 22px rgba(30, 64, 175, 0.16);
+}
+
+@media (max-width: 640px) {
+  html.light-theme .portfolio-chapters > section::after {
+    display: block;
+    top: 1.1rem;
+    right: 1rem;
+    font-size: 0.52rem;
+    letter-spacing: 0.12em;
+  }
+}
