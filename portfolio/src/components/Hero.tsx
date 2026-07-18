@@ -109,7 +109,7 @@ export default function Hero({ onStartGame }: HeroProps) {
                 <span className="h-2 w-2 rounded-full bg-blue-300 shadow-[0_0_12px_rgba(96,165,250,0.8)]" />
                 <span className="hud-label text-slate-300">Candidate signal / live</span>
               </div>
-              <span className="font-mono text-[10px] text-slate-500">BB-1505</span>
+              <span className="font-mono text-[10px] text-slate-500">BB-1506</span>
             </div>
 
             <div className="relative flex min-h-[360px] items-center justify-center overflow-hidden px-6 py-10">
@@ -124,6 +124,10 @@ export default function Hero({ onStartGame }: HeroProps) {
               <span className="signal-node signal-node-two">RAG</span>
               <span className="signal-node signal-node-three">CV</span>
               <span className="signal-node signal-node-four">RL</span>
+              <span className="signal-node signal-node-five">Python</span>
+              <span className="signal-node signal-node-six">FastAPI</span>
+              <span className="signal-node signal-node-seven">Agents</span>
+              <span className="signal-node signal-node-eight">SQL</span>
             </div>
 
             <div className="grid grid-cols-2 border-t border-white/10">

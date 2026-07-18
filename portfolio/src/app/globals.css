@@ -324,10 +324,12 @@ section[id] {
   position: absolute;
   z-index: 3;
   display: flex;
-  width: 42px;
-  height: 42px;
+  width: auto;
+  min-width: 42px;
+  height: 38px;
   align-items: center;
   justify-content: center;
+  padding: 0 0.55rem;
   border: 1px solid rgba(103, 232, 249, 0.22);
   border-radius: 0.75rem;
   background: rgba(5, 15, 32, 0.94);
@@ -338,10 +340,14 @@ section[id] {
   box-shadow: 0 10px 25px rgba(0,0,0,0.3);
 }
 
-.signal-node-one { top: 18%; left: 23%; }
-.signal-node-two { top: 23%; right: 20%; }
-.signal-node-three { bottom: 19%; left: 19%; }
-.signal-node-four { right: 24%; bottom: 16%; }
+.signal-node-one { top: 15%; left: 23%; }
+.signal-node-two { top: 20%; right: 19%; }
+.signal-node-three { bottom: 18%; left: 17%; }
+.signal-node-four { right: 22%; bottom: 14%; }
+.signal-node-five { top: 45%; left: 5%; }
+.signal-node-six { top: 48%; right: 4%; }
+.signal-node-seven { top: 4%; left: 50%; transform: translateX(-50%); }
+.signal-node-eight { bottom: 3%; left: 50%; transform: translateX(-50%); }
 
 .signal-stat {
   display: flex;
@@ -442,6 +448,18 @@ section[id] {
   min-height: 0;
   flex: 1;
   grid-template-columns: minmax(0, 1fr) 300px;
+}
+
+/* Keep the map mounted so opening a chapter preserves camera and player state. */
+.game-content-stack {
+  position: relative;
+  display: flex;
+  min-height: 0;
+  flex: 1;
+}
+
+.game-content-stack > .game-layout {
+  flex: 1;
 }
 
 .game-stage {
@@ -705,6 +723,8 @@ section[id] {
 
 .game-mobile-controls { display: none; }
 
+.game-mobile-fragment-button { display: none; }
+
 .game-intro {
   position: absolute;
   inset: 0;
@@ -811,6 +831,298 @@ section[id] {
 
 .game-fragment-list > div.is-discovered { color: #60a5fa; }
 
+/* Full chapters stay inside the exploration game. */
+.game-chapter-view {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  min-height: 0;
+  flex: 1;
+  grid-template-columns: 230px minmax(0, 1fr);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 82% 8%, rgba(37, 99, 235, 0.14), transparent 30%),
+    #030a15;
+}
+
+.game-chapter-sidebar {
+  min-height: 0;
+  padding: 1.25rem;
+  border-right: 1px solid rgba(96, 165, 250, 0.12);
+  background: rgba(5, 15, 32, 0.96);
+  overflow-y: auto;
+}
+
+.game-chapter-back {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0 0.75rem;
+  border: 1px solid rgba(96, 165, 250, 0.2);
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.025);
+  color: #bfdbfe;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.game-chapter-back:hover {
+  border-color: rgba(96, 165, 250, 0.45);
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.game-chapter-nav-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 2rem 0 0.75rem;
+  color: #64748b;
+  font-family: var(--font-inter), monospace;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.game-chapter-nav {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.game-chapter-nav button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.7rem;
+  border: 1px solid transparent;
+  border-radius: 0.85rem;
+  color: #8293ac;
+  text-align: left;
+}
+
+.game-chapter-nav button:hover,
+.game-chapter-nav button.is-active {
+  border-color: rgba(96, 165, 250, 0.25);
+  background: rgba(59, 130, 246, 0.09);
+  color: #dbeafe;
+}
+
+.game-chapter-nav-symbol {
+  display: flex;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(96, 165, 250, 0.24);
+  border-radius: 0.65rem;
+  color: #93c5fd;
+  font-family: var(--font-inter), monospace;
+  font-size: 0.64rem;
+  font-weight: 850;
+}
+
+.game-chapter-nav strong,
+.game-chapter-nav small {
+  display: block;
+}
+
+.game-chapter-nav strong {
+  font-family: var(--font-inter), monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+}
+
+.game-chapter-nav small {
+  margin-top: 0.18rem;
+  color: #64748b;
+  font-size: 0.65rem;
+}
+
+.game-chapter-content {
+  min-height: 0;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.game-chapter-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-bottom: 1.6rem;
+  border-bottom: 1px solid rgba(96, 165, 250, 0.12);
+}
+
+.game-chapter-hero > div:first-child {
+  max-width: 720px;
+}
+
+.game-chapter-hero h2 {
+  margin-top: 0.7rem;
+  color: #f8fafc;
+  font-size: clamp(2rem, 4vw, 3.6rem);
+  font-weight: 720;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.game-chapter-hero p:not(.hud-label) {
+  max-width: 680px;
+  margin-top: 1rem;
+  color: #94a3b8;
+  font-size: 0.9rem;
+  line-height: 1.75;
+}
+
+.game-chapter-badge {
+  display: flex;
+  width: 94px;
+  height: 94px;
+  flex: 0 0 94px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  border-radius: 1.35rem;
+  background: linear-gradient(145deg, rgba(30, 64, 175, 0.22), rgba(5, 15, 32, 0.92));
+  color: #bfdbfe;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+}
+
+.game-chapter-badge span {
+  font-family: var(--font-inter), monospace;
+  font-size: 1.15rem;
+  font-weight: 850;
+}
+
+.game-chapter-badge small {
+  color: #60a5fa;
+  font-family: var(--font-inter), monospace;
+  font-size: 0.55rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.game-chapter-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 1.25rem 0 2rem;
+  border: 1px solid rgba(96, 165, 250, 0.14);
+  border-radius: 1rem;
+  background: rgba(15, 32, 58, 0.42);
+  overflow: hidden;
+}
+
+.game-chapter-stats > div {
+  min-width: 0;
+  padding: 1rem;
+  border-right: 1px solid rgba(96, 165, 250, 0.11);
+}
+
+.game-chapter-stats > div:last-child { border-right: 0; }
+
+.game-chapter-stats strong,
+.game-chapter-stats span {
+  display: block;
+}
+
+.game-chapter-stats strong {
+  color: #93c5fd;
+  font-size: 1.05rem;
+}
+
+.game-chapter-stats span {
+  margin-top: 0.3rem;
+  color: #64748b;
+  font-size: 0.66rem;
+  line-height: 1.35;
+}
+
+.game-chapter-sections {
+  display: grid;
+  gap: 2rem;
+}
+
+.game-chapter-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.85rem;
+  color: #60a5fa;
+}
+
+.game-chapter-section-title h3 {
+  color: #dbeafe;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.game-chapter-entry-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.game-chapter-entry {
+  padding: 1rem;
+  border: 1px solid rgba(96, 165, 250, 0.13);
+  border-radius: 1rem;
+  background: rgba(8, 22, 43, 0.72);
+}
+
+.game-chapter-entry-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  color: #60a5fa;
+}
+
+.game-chapter-entry-heading svg { flex: 0 0 auto; margin-top: 0.18rem; }
+
+.game-chapter-entry h4 {
+  color: #f1f5f9;
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.game-chapter-entry-heading p {
+  margin-top: 0.28rem;
+  color: #64748b;
+  font-size: 0.66rem;
+  line-height: 1.45;
+}
+
+.game-chapter-entry-description {
+  margin-top: 0.8rem;
+  color: #94a3b8;
+  font-size: 0.75rem;
+  line-height: 1.65;
+}
+
+.game-chapter-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.85rem;
+}
+
+.game-chapter-tags span {
+  padding: 0.3rem 0.5rem;
+  border: 1px solid rgba(96, 165, 250, 0.16);
+  border-radius: 999px;
+  background: rgba(59, 130, 246, 0.07);
+  color: #93c5fd;
+  font-size: 0.58rem;
+  font-weight: 650;
+}
+
 @keyframes game-beacon {
   0% { opacity: 0.7; transform: scale(0.72); }
   100% { opacity: 0; transform: scale(1.25); }
@@ -827,6 +1139,25 @@ section[id] {
 @media (max-width: 1023px) {
   .game-layout { grid-template-columns: 1fr; }
   .game-discovery-panel { display: none; }
+  .game-mobile-fragment-button {
+    position: absolute;
+    bottom: 1.25rem;
+    left: 1rem;
+    z-index: 40;
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 0.8rem;
+    border: 1px solid rgba(96, 165, 250, 0.3);
+    border-radius: 0.8rem;
+    background: rgba(4, 11, 22, 0.9);
+    color: #bfdbfe;
+    font-size: 0.68rem;
+    font-weight: 750;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.32);
+    backdrop-filter: blur(12px);
+  }
 }
 
 @media (min-width: 1024px) {
@@ -867,6 +1198,43 @@ section[id] {
   .game-mobile-controls button:nth-child(4) { grid-column: 3; grid-row: 2; }
   .game-intro { padding: 0.75rem; }
   .game-intro-card { padding: 1.5rem 1rem; }
+  .game-mobile-fragment-button {
+    left: 0.75rem;
+    max-width: calc(100% - 180px);
+  }
+  .game-chapter-view {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .game-chapter-sidebar {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.65rem 0.75rem;
+    border-right: 0;
+    border-bottom: 1px solid rgba(96, 165, 250, 0.12);
+    overflow: hidden;
+  }
+  .game-chapter-back { flex: 0 0 auto; padding: 0 0.6rem; }
+  .game-chapter-nav-heading { display: none; }
+  .game-chapter-nav {
+    display: flex;
+    min-width: 0;
+    gap: 0.4rem;
+    overflow-x: auto;
+  }
+  .game-chapter-nav button { width: auto; flex: 0 0 auto; padding: 0.4rem; }
+  .game-chapter-nav button > span:last-child { display: none; }
+  .game-chapter-content { padding: 1rem; }
+  .game-chapter-hero { gap: 1rem; padding-bottom: 1rem; }
+  .game-chapter-hero h2 { font-size: 2rem; }
+  .game-chapter-hero p:not(.hud-label) { font-size: 0.78rem; line-height: 1.6; }
+  .game-chapter-badge { display: none; }
+  .game-chapter-stats { margin: 1rem 0 1.4rem; }
+  .game-chapter-stats > div { padding: 0.7rem 0.55rem; }
+  .game-chapter-stats strong { font-size: 0.85rem; }
+  .game-chapter-stats span { font-size: 0.55rem; }
+  .game-chapter-entry-grid { grid-template-columns: 1fr; }
   .portfolio-chapters > section::after { display: none; }
 }
 
@@ -1492,6 +1860,114 @@ html.light-theme .game-mobile-controls button {
   background: rgba(255, 255, 255, 0.94);
   color: #1e3a8a;
   box-shadow: 0 8px 22px rgba(30, 64, 175, 0.16);
+}
+
+html.light-theme .game-mobile-fragment-button {
+  border-color: rgba(30, 64, 175, 0.32);
+  background: rgba(255, 255, 255, 0.96);
+  color: #1e3a8a;
+  box-shadow: 0 8px 22px rgba(30, 64, 175, 0.16);
+}
+
+html.light-theme .game-chapter-view {
+  background:
+    radial-gradient(circle at 82% 8%, rgba(59, 130, 246, 0.13), transparent 30%),
+    #edf4fd;
+}
+
+html.light-theme .game-chapter-sidebar {
+  border-color: rgba(30, 64, 175, 0.18);
+  background: rgba(248, 251, 255, 0.98);
+}
+
+html.light-theme .game-chapter-back {
+  border-color: rgba(30, 64, 175, 0.24);
+  background: rgba(219, 234, 254, 0.58);
+  color: #1e3a8a;
+}
+
+html.light-theme .game-chapter-back:hover {
+  border-color: rgba(29, 78, 216, 0.5);
+  background: #dbeafe;
+}
+
+html.light-theme .game-chapter-nav-heading,
+html.light-theme .game-chapter-nav small {
+  color: #64748b;
+}
+
+html.light-theme .game-chapter-nav button {
+  color: #475569;
+}
+
+html.light-theme .game-chapter-nav button:hover,
+html.light-theme .game-chapter-nav button.is-active {
+  border-color: rgba(29, 78, 216, 0.28);
+  background: rgba(219, 234, 254, 0.78);
+  color: #0f172a;
+}
+
+html.light-theme .game-chapter-nav-symbol {
+  border-color: rgba(29, 78, 216, 0.28);
+  color: #1d4ed8;
+}
+
+html.light-theme .game-chapter-hero {
+  border-bottom-color: rgba(30, 64, 175, 0.16);
+}
+
+html.light-theme .game-chapter-hero h2,
+html.light-theme .game-chapter-entry h4 {
+  color: #0f172a;
+}
+
+html.light-theme .game-chapter-hero p:not(.hud-label),
+html.light-theme .game-chapter-entry-description {
+  color: #475569;
+}
+
+html.light-theme .game-chapter-badge {
+  border-color: rgba(29, 78, 216, 0.3);
+  background: linear-gradient(145deg, #ffffff, #dbeafe);
+  color: #1e3a8a;
+  box-shadow: 0 18px 42px rgba(30, 64, 175, 0.14);
+}
+
+html.light-theme .game-chapter-badge small,
+html.light-theme .game-chapter-stats strong,
+html.light-theme .game-chapter-section-title,
+html.light-theme .game-chapter-entry-heading,
+html.light-theme .game-chapter-tags span {
+  color: #1d4ed8;
+}
+
+html.light-theme .game-chapter-stats {
+  border-color: rgba(30, 64, 175, 0.18);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+html.light-theme .game-chapter-stats > div {
+  border-right-color: rgba(30, 64, 175, 0.15);
+}
+
+html.light-theme .game-chapter-stats span,
+html.light-theme .game-chapter-entry-heading p {
+  color: #64748b;
+}
+
+html.light-theme .game-chapter-section-title h3 {
+  color: #1e3a8a;
+}
+
+html.light-theme .game-chapter-entry {
+  border-color: rgba(30, 64, 175, 0.18);
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: 0 10px 26px rgba(30, 64, 175, 0.07);
+}
+
+html.light-theme .game-chapter-tags span {
+  border-color: rgba(29, 78, 216, 0.2);
+  background: rgba(219, 234, 254, 0.72);
 }
 
 @media (max-width: 640px) {

@@ -7,8 +7,8 @@ import {
   ArrowLeft,
   ArrowRight,
   ArrowUp,
+  BookOpen,
   Check,
-  ExternalLink,
   Gamepad2,
   LockKeyhole,
   Map,
@@ -16,27 +16,12 @@ import {
   Sparkles,
   X,
 } from "lucide-react";
+import { GameChapterView } from "./GameChapterView";
+import { discoveryZones, type Point } from "./portfolioGameData";
 
 type PortfolioGameProps = {
   isOpen: boolean;
   onClose: () => void;
-};
-
-type Point = {
-  x: number;
-  y: number;
-};
-
-type DiscoveryZone = {
-  id: string;
-  label: string;
-  mapLabel: string;
-  eyebrow: string;
-  description: string;
-  facts: string[];
-  sectionId: string;
-  position: Point;
-  symbol: string;
 };
 
 type Direction = "up" | "down" | "left" | "right";
@@ -46,64 +31,6 @@ const WORLD_HEIGHT = 720;
 const PLAYER_SIZE = 42;
 const DISCOVERY_RADIUS = 112;
 const START_POSITION = { x: 390, y: 330 };
-
-const discoveryZones: DiscoveryZone[] = [
-  {
-    id: "origin",
-    label: "Origin Terminal",
-    mapLabel: "ORIGIN",
-    eyebrow: "Profile fragment 01",
-    description: "Meet the engineer behind the systems: Bhavin Baldota, a builder who likes research ideas best when they survive contact with production.",
-    facts: ["Lead Software Engineer · GenAI/ML", "B.Tech in Artificial Intelligence · 9.01 CGPA", "60+ technical certifications"],
-    sectionId: "about",
-    position: { x: 155, y: 170 },
-    symbol: "BB",
-  },
-  {
-    id: "career",
-    label: "Career Mainframe",
-    mapLabel: "CAREER",
-    eyebrow: "Profile fragment 02",
-    description: "A timeline spanning enterprise GenAI, applied ML, logistics intelligence, defence research, and university R&D.",
-    facts: ["Persistent Systems · Lead Software Engineer", "Production Text-to-SQL multi-agent workflows", "Experience across five organizations"],
-    sectionId: "experience",
-    position: { x: 570, y: 145 },
-    symbol: "05",
-  },
-  {
-    id: "research",
-    label: "Research Archive",
-    mapLabel: "RESEARCH",
-    eyebrow: "Profile fragment 03",
-    description: "Two peer-reviewed Elsevier datasets turn difficult visual environments into useful training data for machine learning.",
-    facts: ["2 published research datasets", "9,790 annotated images", "Computer vision · YOLO · disease detection"],
-    sectionId: "publications",
-    position: { x: 1080, y: 170 },
-    symbol: "02",
-  },
-  {
-    id: "projects",
-    label: "Project Workshop",
-    mapLabel: "PROJECTS",
-    eyebrow: "Profile fragment 04",
-    description: "A hands-on build space for OCR, delivery intelligence, crop diagnosis, NLP, and agents that learn to play games.",
-    facts: ["Deep reinforcement learning agents", "Offline OCR and summarization", "AI logistics and crop disease detection"],
-    sectionId: "projects",
-    position: { x: 270, y: 565 },
-    symbol: "06",
-  },
-  {
-    id: "systems",
-    label: "Systems Reactor",
-    mapLabel: "STACK",
-    eyebrow: "Profile fragment 05",
-    description: "The technical core: models, retrieval, orchestration, APIs, databases, vision pipelines, and the engineering needed to connect them.",
-    facts: ["Python · FastAPI · PyTorch · TensorFlow", "LLMs · RAG · multi-agent systems", "PostgreSQL · Docker · OpenCV"],
-    sectionId: "experience",
-    position: { x: 735, y: 545 },
-    symbol: "AI",
-  },
-];
 
 const portalPosition = { x: 1120, y: 550 };
 
@@ -144,6 +71,7 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
   const [facing, setFacing] = useState<Direction>("down");
   const [isMoving, setIsMoving] = useState(false);
   const [discoveredIds, setDiscoveredIds] = useState<string[]>([]);
+  const [openChapterId, setOpenChapterId] = useState<string | null>(null);
   const [stageSize, setStageSize] = useState({ width: 840, height: 560 });
   const stageRef = useRef<HTMLDivElement>(null);
   const pressedDirectionsRef = useRef<Set<Direction>>(new Set());
@@ -163,6 +91,8 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
   );
   const progress = (discoveredIds.length / discoveryZones.length) * 100;
   const portalUnlocked = discoveredIds.length === discoveryZones.length;
+  const openChapter = discoveryZones.find((zone) => zone.id === openChapterId) ?? null;
+  const discoveredZones = discoveryZones.filter((zone) => discoveredIds.includes(zone.id));
 
   const camera = useMemo(() => {
     const targetX = stageSize.width / 2 - (player.x + PLAYER_SIZE / 2);
@@ -228,12 +158,13 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        onClose();
+        if (openChapterId) setOpenChapterId(null);
+        else onClose();
         return;
       }
 
       const direction = movementKeys[event.key];
-      if (direction && hasStarted && !isComplete) {
+      if (direction && hasStarted && !isComplete && !openChapterId) {
         event.preventDefault();
         pressedDirections.add(direction);
         setFacing(direction);
@@ -257,7 +188,7 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
     const movePlayer = (time: number) => {
       const elapsedSeconds = Math.min((time - previousTime) / 1000, 0.04);
       previousTime = time;
-      if (hasStarted && !isComplete && pressedDirections.size > 0) {
+      if (hasStarted && !isComplete && !openChapterId && pressedDirections.size > 0) {
         let horizontal = 0;
         let vertical = 0;
 
@@ -299,7 +230,7 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
       pressedDirections.clear();
       window.cancelAnimationFrame(animationFrame);
     };
-  }, [hasStarted, isComplete, isOpen, onClose]);
+  }, [hasStarted, isComplete, isOpen, onClose, openChapterId]);
 
   const setDirectionPressed = (direction: Direction, isPressed: boolean) => {
     if (isPressed) {
@@ -320,14 +251,14 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
     setDiscoveredIds([]);
     discoveredIdsRef.current = [];
     setIsComplete(false);
+    setOpenChapterId(null);
     setHasStarted(true);
   };
 
-  const closeAndExplore = (sectionId: string) => {
-    onClose();
-    window.setTimeout(() => {
-      document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
-    }, 150);
+  const showChapter = (zoneId: string) => {
+    pressedDirectionsRef.current.clear();
+    setIsMoving(false);
+    setOpenChapterId(zoneId);
   };
 
   return (
@@ -340,7 +271,7 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
           exit={{ opacity: 0 }}
           role="dialog"
           aria-modal="true"
-          aria-labelledby="game-title"
+          aria-label="Bhavin's AI Lab exploration game"
         >
           <motion.div
             className="game-window"
@@ -353,16 +284,24 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
                 <span className="game-live-dot" />
                 <div>
                   <p className="hud-label text-blue-200">Bhavin&apos;s AI Lab</p>
-                  <p className="hidden text-[10px] text-slate-500 sm:block">Exploration build · BB-1505</p>
+                  <p className="hidden text-[10px] text-slate-500 sm:block">Exploration build · BB-1506</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-4">
                 <div className="hidden items-center gap-2 sm:flex">
                   <Map size={14} className="text-blue-300" />
-                  <span className="font-mono text-xs text-slate-400">{discoveredIds.length}/5 fragments</span>
+                  <span className="font-mono text-xs text-slate-400">{discoveredIds.length}/{discoveryZones.length} fragments</span>
                 </div>
-                <button type="button" onClick={onClose} className="game-icon-button" aria-label="Close exploration game">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpenChapterId(null);
+                    onClose();
+                  }}
+                  className="game-icon-button"
+                  aria-label="Close exploration game"
+                >
                   <X size={18} />
                 </button>
               </div>
@@ -372,7 +311,8 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
               <motion.div className="game-progress-value" animate={{ width: `${progress}%` }} />
             </div>
 
-            <div className="game-layout">
+            <div className="game-content-stack">
+            <div className="game-layout" aria-hidden={openChapter ? true : undefined}>
               <div ref={stageRef} className="game-stage" aria-label="Explore Bhavin's AI Lab with arrow keys or WASD">
                 <motion.div
                   className="game-world"
@@ -418,7 +358,7 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
                     <span className="hud-label">EXIT</span>
                     {isNearPortal && (
                       <span className="game-zone-prompt">
-                        {portalUnlocked ? "Enter the portal" : `${5 - discoveredIds.length} fragments required`}
+                        {portalUnlocked ? "Enter the portal" : `${discoveryZones.length - discoveredIds.length} fragments required`}
                       </span>
                     )}
                   </div>
@@ -481,6 +421,16 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
                   ><ArrowRight size={20} /></button>
                 </div>
 
+                {activeZone && hasStarted && !isComplete && (
+                  <button
+                    type="button"
+                    onClick={() => showChapter(activeZone.id)}
+                    className="game-mobile-fragment-button"
+                  >
+                    <BookOpen size={16} /> View {activeZone.mapLabel} chapter
+                  </button>
+                )}
+
                 <AnimatePresence>
                   {!hasStarted && (
                     <motion.div className="game-intro" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
@@ -514,8 +464,8 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
                           You found Bhavin&apos;s career, research, projects, technical stack, and the person connecting all of it.
                         </p>
                         <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
-                          <button type="button" onClick={() => closeAndExplore("experience")} className="game-primary-button">
-                            Enter full portfolio <ExternalLink size={16} />
+                          <button type="button" onClick={() => showChapter("career")} className="game-primary-button">
+                            Review recovered chapters <BookOpen size={16} />
                           </button>
                           <button type="button" onClick={restart} className="game-secondary-button">
                             <RotateCcw size={16} /> Explore again
@@ -547,8 +497,8 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
                           </li>
                         ))}
                       </ul>
-                      <button type="button" onClick={() => closeAndExplore(activeZone.sectionId)} className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-blue-300 hover:text-blue-200">
-                        Open full chapter <ExternalLink size={14} />
+                      <button type="button" onClick={() => showChapter(activeZone.id)} className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-blue-300 hover:text-blue-200">
+                        Open full chapter <BookOpen size={14} />
                       </button>
                     </motion.div>
                   ) : (
@@ -572,6 +522,18 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
                   })}
                 </div>
               </aside>
+            </div>
+              <AnimatePresence>
+                {openChapter && (
+                  <GameChapterView
+                    key={`chapter-${openChapter.id}`}
+                    zone={openChapter}
+                    discoveredZones={discoveredZones}
+                    onBack={() => setOpenChapterId(null)}
+                    onSelectChapter={showChapter}
+                  />
+                )}
+              </AnimatePresence>
             </div>
           </motion.div>
         </motion.div>
