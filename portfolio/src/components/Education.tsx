@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { GraduationCap, Award } from "lucide-react";
+import Image from "next/image";
 
 const education = [
   {
@@ -9,7 +10,6 @@ const education = [
     degree: "Bachelor of Technology - BTech, Artificial Intelligence",
     date: "Jun 2021 - Jun 2025",
     grade: "9.01 CGPA",
-    domain: "vupune.ac.in",
     logoId: "vu",
     skills: ["Deep Learning", "Machine Learning", "Generative AI", "Computer Vision", "Natural Language Processing"]
   },
@@ -18,7 +18,6 @@ const education = [
     degree: "High School, Science",
     date: "Jun 2019 - May 2021",
     grade: "89.88%",
-    domain: "mahaveercollege.org",
     logoId: "mahaveer",
     skills: ["Physics", "Chemistry", "Mathematics"]
   }
@@ -44,7 +43,7 @@ export default function Education() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {education.map((edu, index) => (
             <motion.div
-              key={index}
+              key={edu.institution}
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
@@ -53,18 +52,13 @@ export default function Education() {
             >
               <div className="flex items-start gap-4 mb-6">
                 {/* Institution Logo */}
-                <div className="w-14 h-14 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden shrink-0">
-                  <img 
-                    src={`/logos/${edu.logoId}.png`} 
-                    alt={edu.institution}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      if (!e.currentTarget.src.includes('clearbit') && !e.currentTarget.src.includes('ui-avatars')) {
-                        e.currentTarget.src = `https://logo.clearbit.com/${edu.domain}`;
-                      } else if (e.currentTarget.src.includes('clearbit')) {
-                        e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(edu.institution)}&background=0D8ABC&color=fff`;
-                      }
-                    }}
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
+                  <Image
+                    src={`/logos/${edu.logoId}.png`}
+                    alt={`${edu.institution} logo`}
+                    width={64}
+                    height={64}
+                    className="h-full w-full object-contain"
                   />
                 </div>
                 
@@ -89,8 +83,8 @@ export default function Education() {
 
               <div className="mt-auto">
                 <div className="flex flex-wrap gap-2">
-                  {edu.skills.map((skill, i) => (
-                    <span key={i} className="text-xs font-medium text-slate-300 bg-white/5 border border-white/10 px-3 py-1 rounded-full">
+                  {edu.skills.map((skill) => (
+                    <span key={skill} className="text-xs font-medium text-slate-300 bg-white/5 border border-white/10 px-3 py-1 rounded-full">
                       {skill}
                     </span>
                   ))}
