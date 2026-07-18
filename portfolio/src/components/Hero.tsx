@@ -112,7 +112,7 @@ export default function Hero({ onStartGame }: HeroProps) {
               <span className="font-mono text-[10px] text-slate-500">BB-1506</span>
             </div>
 
-            <div className="relative flex min-h-[360px] items-center justify-center overflow-hidden px-6 py-10">
+            <div className="relative flex min-h-[420px] items-center justify-center overflow-hidden px-6 py-10 sm:min-h-[390px]">
               <div className="signal-orbit signal-orbit-one" />
               <div className="signal-orbit signal-orbit-two" />
               <div className="signal-orbit signal-orbit-three" />
@@ -127,7 +127,11 @@ export default function Hero({ onStartGame }: HeroProps) {
               <span className="signal-node signal-node-five">Python</span>
               <span className="signal-node signal-node-six">FastAPI</span>
               <span className="signal-node signal-node-seven">Agents</span>
-              <span className="signal-node signal-node-eight">SQL</span>
+              <span className="signal-node signal-node-eight">MCP</span>
+              <span className="signal-node signal-node-nine">SDD</span>
+              <span className="signal-node signal-node-ten">LangChain</span>
+              <span className="signal-node signal-node-eleven">Docker</span>
+              <span className="signal-node signal-node-twelve">PostgreSQL</span>
             </div>
 
             <div className="grid grid-cols-2 border-t border-white/10">

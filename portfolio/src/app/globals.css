@@ -338,16 +338,28 @@ section[id] {
   font-size: 0.6rem;
   font-weight: 700;
   box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  animation: signal-node-drift 4.8s ease-in-out infinite alternate;
 }
 
-.signal-node-one { top: 15%; left: 23%; }
-.signal-node-two { top: 20%; right: 19%; }
-.signal-node-three { bottom: 18%; left: 17%; }
-.signal-node-four { right: 22%; bottom: 14%; }
-.signal-node-five { top: 45%; left: 5%; }
-.signal-node-six { top: 48%; right: 4%; }
-.signal-node-seven { top: 4%; left: 50%; transform: translateX(-50%); }
-.signal-node-eight { bottom: 3%; left: 50%; transform: translateX(-50%); }
+.signal-node-one { top: 11%; left: 16%; rotate: -5deg; animation-delay: -1.1s; }
+.signal-node-two { top: 21%; right: 13%; rotate: 6deg; animation-delay: -3.7s; }
+.signal-node-three { bottom: 18%; left: 10%; rotate: 5deg; animation-delay: -2.4s; }
+.signal-node-four { right: 18%; bottom: 9%; rotate: -6deg; animation-delay: -4.2s; }
+.signal-node-five { top: 43%; left: 2%; rotate: -4deg; animation-delay: -0.6s; }
+.signal-node-six { top: 47%; right: 2%; rotate: 5deg; animation-delay: -3.1s; }
+.signal-node-seven { top: 3%; left: 45%; rotate: 3deg; animation-delay: -1.8s; }
+.signal-node-eight { top: 30%; left: 25%; rotate: 7deg; animation-delay: -4.5s; }
+.signal-node-nine { right: 27%; bottom: 28%; rotate: -7deg; animation-delay: -2.8s; }
+.signal-node-ten { bottom: 2%; left: 34%; rotate: 4deg; animation-delay: -0.9s; }
+.signal-node-eleven { top: 4%; right: 5%; rotate: -4deg; animation-delay: -3.4s; }
+.signal-node-twelve { right: 2%; bottom: 24%; rotate: 6deg; animation-delay: -1.5s; }
+
+.signal-node-two,
+.signal-node-five,
+.signal-node-nine,
+.signal-node-eleven {
+  border-radius: 999px;
+}
 
 .signal-stat {
   display: flex;
@@ -363,6 +375,23 @@ section[id] {
 .signal-stat:nth-child(n+3) { border-bottom: 0; }
 
 @keyframes orbit-spin { to { transform: rotate(360deg); } }
+
+@keyframes signal-node-drift {
+  from { translate: 0 -2px; }
+  to { translate: 0 4px; }
+}
+
+@media (max-width: 640px) {
+  .signal-node {
+    min-width: 34px;
+    height: 31px;
+    padding: 0 0.4rem;
+    font-size: 0.5rem;
+  }
+
+  .signal-node-eight { left: 15%; }
+  .signal-node-nine { bottom: 24%; }
+}
 
 /* Movement-driven portfolio game */
 .game-overlay {
