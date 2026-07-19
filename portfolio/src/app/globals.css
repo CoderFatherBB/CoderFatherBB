@@ -1234,6 +1234,9 @@ section[id] {
     grid-template-columns: repeat(3, 48px);
     grid-template-rows: repeat(2, 48px);
     gap: 5px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
   }
   .game-mobile-controls button {
     display: flex;
@@ -1245,6 +1248,15 @@ section[id] {
     color: #bfdbfe;
     box-shadow: 0 8px 24px rgba(0,0,0,0.28);
     touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .game-mobile-controls button svg {
+    pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
   }
   .game-mobile-controls button:first-child { grid-column: 2; }
   .game-mobile-controls button:nth-child(2) { grid-column: 1; grid-row: 2; }
