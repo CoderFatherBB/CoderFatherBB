@@ -26,6 +26,11 @@ type PortfolioGameProps = {
 
 type Direction = "up" | "down" | "left" | "right";
 
+type ZoneFeedback = {
+  id: string;
+  label: string;
+};
+
 const WORLD_WIDTH = 1280;
 const WORLD_HEIGHT = 720;
 const PLAYER_SIZE = 42;
@@ -72,11 +77,13 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
   const [isMoving, setIsMoving] = useState(false);
   const [discoveredIds, setDiscoveredIds] = useState<string[]>([]);
   const [openChapterId, setOpenChapterId] = useState<string | null>(null);
+  const [zoneFeedback, setZoneFeedback] = useState<ZoneFeedback | null>(null);
   const [stageSize, setStageSize] = useState({ width: 840, height: 560 });
   const stageRef = useRef<HTMLDivElement>(null);
   const pressedDirectionsRef = useRef<Set<Direction>>(new Set());
   const playerRef = useRef<Point>(START_POSITION);
   const discoveredIdsRef = useRef<string[]>([]);
+  const zoneFeedbackTimeoutRef = useRef<number | null>(null);
 
   const playerCenter = useMemo(() => ({
     x: player.x + PLAYER_SIZE / 2,
@@ -116,6 +123,12 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
     resizeObserver.observe(stage);
     return () => resizeObserver.disconnect();
   }, [isOpen]);
+
+  useEffect(() => () => {
+    if (zoneFeedbackTimeoutRef.current !== null) {
+      window.clearTimeout(zoneFeedbackTimeoutRef.current);
+    }
+  }, []);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -243,6 +256,10 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
   };
 
   const restart = () => {
+    if (zoneFeedbackTimeoutRef.current !== null) {
+      window.clearTimeout(zoneFeedbackTimeoutRef.current);
+      zoneFeedbackTimeoutRef.current = null;
+    }
     setPlayer(START_POSITION);
     playerRef.current = START_POSITION;
     setFacing("down");
@@ -251,13 +268,36 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
     discoveredIdsRef.current = [];
     setIsComplete(false);
     setOpenChapterId(null);
+    setZoneFeedback(null);
     setHasStarted(true);
   };
 
   const showChapter = (zoneId: string) => {
+    if (zoneFeedbackTimeoutRef.current !== null) {
+      window.clearTimeout(zoneFeedbackTimeoutRef.current);
+      zoneFeedbackTimeoutRef.current = null;
+    }
     pressedDirectionsRef.current.clear();
     setIsMoving(false);
+    setZoneFeedback(null);
     setOpenChapterId(zoneId);
+  };
+
+  const handleZoneClick = (zoneId: string, mapLabel: string, isDiscovered: boolean) => {
+    if (isDiscovered) {
+      showChapter(zoneId);
+      return;
+    }
+
+    if (zoneFeedbackTimeoutRef.current !== null) {
+      window.clearTimeout(zoneFeedbackTimeoutRef.current);
+    }
+
+    setZoneFeedback({ id: zoneId, label: mapLabel });
+    zoneFeedbackTimeoutRef.current = window.setTimeout(() => {
+      setZoneFeedback(null);
+      zoneFeedbackTimeoutRef.current = null;
+    }, 2400);
   };
 
   return (
@@ -331,10 +371,13 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
                     const isActive = activeZone?.id === zone.id;
 
                     return (
-                      <div
+                      <button
+                        type="button"
                         key={zone.id}
-                        className={`game-zone ${isDiscovered ? "is-discovered" : ""} ${isActive ? "is-active" : ""}`}
+                        className={`game-zone game-fragment-zone ${isDiscovered ? "is-discovered" : ""} ${isActive ? "is-active" : ""}`}
                         style={{ left: zone.position.x, top: zone.position.y }}
+                        onClick={() => handleZoneClick(zone.id, zone.mapLabel, isDiscovered)}
+                        aria-label={`${zone.mapLabel} fragment. ${isDiscovered ? "Unlocked. Open chapter." : "Locked. Move closer to unlock."}`}
                       >
                         <div className="game-zone-beacon" />
                         <div className="game-zone-building">
@@ -342,7 +385,7 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
                           <span className="hud-label">{zone.mapLabel}</span>
                         </div>
                         {isActive && <span className="game-zone-prompt">Fragment collected</span>}
-                      </div>
+                      </button>
                     );
                   })}
 
@@ -384,6 +427,22 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
                     <span>W</span><span>A</span><span>S</span><span>D</span>
                   </div>
                 </div>
+
+                <AnimatePresence mode="wait">
+                  {zoneFeedback && (
+                    <motion.div
+                      key={zoneFeedback.id}
+                      className="game-zone-feedback"
+                      role="status"
+                      initial={{ opacity: 0, y: -8, scale: 0.96 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -6, scale: 0.97 }}
+                    >
+                      <LockKeyhole size={16} />
+                      <span><strong>{zoneFeedback.label}</strong> is too far away. Move closer to unlock it.</span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 <div className="game-mobile-controls" aria-label="Movement controls">
                   <button
