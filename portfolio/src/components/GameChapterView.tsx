@@ -20,6 +20,8 @@ export function GameChapterView({
   onBack,
   onSelectChapter,
 }: GameChapterViewProps) {
+  const contentRef = useRef<HTMLDivElement>(null);
+  useEffect(() => { contentRef.current?.scrollTo({ top: 0 }); }, [zone.id]);
   const backButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -74,7 +76,7 @@ export function GameChapterView({
         </nav>
       </div>
 
-      <div className="game-chapter-content">
+      <div ref={contentRef} className="game-chapter-content">
         <div className="game-chapter-hero">
           <div>
             <p className="hud-label text-cyan-300">{zone.eyebrow}</p>
@@ -114,7 +116,7 @@ export function GameChapterView({
                         {entry.meta && <p>{entry.meta}</p>}
                       </div>
                     </div>
-                    <p className="game-chapter-entry-description">{entry.description}</p>
+                    <p className="game-chapter-entry-description">{entry.description}</p>{entry.link && <a className="game-chapter-link" href={entry.link} target="_blank" rel="noreferrer">Explore source ↗</a>}
                     {entry.tags && (
                       <div className="game-chapter-tags">
                         {entry.tags.map((tag) => <span key={tag}>{tag}</span>)}

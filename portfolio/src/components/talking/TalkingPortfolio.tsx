@@ -78,7 +78,7 @@ function Heading({ index, label, title, accent }: { index: string; label: string
   return <div className="section-heading reveal"><p className="eyebrow">{index} — {label}</p><h2>{title} <em>{accent}</em></h2></div>;
 }
 
-function TalkingHero() {
+function TalkingHero({ experienceOpen }: { experienceOpen: boolean }) {
   const video = useRef<HTMLVideoElement>(null);
   const section = useRef<HTMLElement>(null);
   const visible = useRef(false);
@@ -95,9 +95,9 @@ function TalkingHero() {
     if (!player || !section.current) return;
     const reduced = matchMedia("(prefers-reduced-motion: reduce)");
     const sync = () => {
-      if (visible.current && !document.hidden && !pausedByUser.current && !reduced.matches) {
+      if (!experienceOpen && visible.current && !document.hidden && !pausedByUser.current && !reduced.matches) {
         void player.play().catch(error => {
-          if (error.name !== "NotAllowedError" || !visible.current || document.hidden || pausedByUser.current || reduced.matches) return;
+          if (error.name !== "NotAllowedError" || experienceOpen || !visible.current || document.hidden || pausedByUser.current || reduced.matches) return;
           // Audible autoplay is browser-controlled. Keep the video running and
           // retry sound on the visitor's first interaction while it is visible.
           blockedAudio.current = true;
@@ -120,7 +120,7 @@ function TalkingHero() {
     observer.observe(player);
     const enableBlockedAudio = (event: Event) => {
       if (event.target instanceof Element && event.target.closest(".video-controls")) return;
-      if (!blockedAudio.current || !visible.current || document.hidden || pausedByUser.current || reduced.matches) return;
+      if (experienceOpen || !blockedAudio.current || !visible.current || document.hidden || pausedByUser.current || reduced.matches) return;
       player.muted = false;
       void player.play().then(() => { blockedAudio.current = false; setAudioBlocked(false); setSound(true); }).catch(() => { player.muted = true; });
     };
@@ -128,7 +128,7 @@ function TalkingHero() {
     document.addEventListener("pointerdown", enableBlockedAudio);
     document.addEventListener("keydown", enableBlockedAudio);
     return () => { observer.disconnect(); document.removeEventListener("visibilitychange", sync); reduced.removeEventListener("change", sync); document.removeEventListener("pointerdown", enableBlockedAudio); document.removeEventListener("keydown", enableBlockedAudio); player.pause(); };
-  }, []);
+  }, [experienceOpen]);
   function toggleSound() {
     const player = video.current;
     if (!player) return;
@@ -184,7 +184,7 @@ function About() {
       <div className="about-copy reveal"><h3 id="about-title">Hi, I’m Bhavin.</h3><p>{PROFILE.summary}</p><p className="about-note">My research interest: reliability and evaluation of LLM-based agentic systems.</p><div className="link-row"><a href={PROFILE.github} target="_blank" rel="noreferrer">GitHub ↗</a><a href={PROFILE.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a></div><div className="resume-links"><a className="text-link" href={PROFILE.resume} download>Download résumé ↓</a></div></div>
       <div className="id-holder reveal"><div className="lanyard" aria-hidden="true">BHAVIN · AI</div><button type="button" className={`id-card ${flipped ? "flipped" : ""}`} aria-label={flipped ? "Show front of Bhavin's ID card" : "Flip Bhavin's ID card"} aria-pressed={flipped} onClick={() => setFlipped(!flipped)}>
         <span className="id-front" aria-hidden={flipped}><span className="id-band">RESEARCHER / ENGINEER</span><span className="id-portrait"><Image src="/portrait-bhavin.jpg" alt="Bhavin Baldota wearing a black blazer and burgundy shirt" width={960} height={1280} sizes="106px" /></span><strong>Bhavin Baldota</strong><span>AI · ML · GENERATIVE AI</span><span className="id-rows"><span>BASED IN <b>Pune, India</b></span><span>DEGREE <b>B.Tech · AI & DS</b></span><span>CLASS OF <b>2025</b></span></span><span className="barcode" aria-hidden="true" /><span className="mono flip-hint">TAP TO FLIP ↻</span></span>
-        <span className="id-back" aria-hidden={!flipped}><span className="eyebrow">THE OTHER SIDE</span><strong>Research.<br />Develop.<br /><em>Deploy.</em></strong><span>Lead Software Engineer · GenAI</span><span>B.Tech · 9.01/10 CGPA</span><span>DRDO research experience</span><span>Co-founder · AIoT Tech</span><span className="signature">Bhavin.</span><span className="mono flip-hint">TAP TO RETURN ↻</span></span>
+        <span className="id-back" aria-hidden={!flipped}><span className="eyebrow">THE OTHER SIDE</span><strong>Research.<br />Develop.<br /><em>Deploy.</em></strong><span>Lead Software Engineer · GenAI</span><span>B.Tech · 9.01/10 CGPA</span><span>DRDO research experience</span><span>{PROFILE.venture}</span><span className="signature">Bhavin.</span><span className="mono flip-hint">TAP TO RETURN ↻</span></span>
       </button></div>
       <div className="quick-facts reveal"><p className="eyebrow">THE SHORT VERSION</p>{[["Location", PROFILE.location], ["Current role", "Lead Software Engineer"], ["Focus", "GenAI · Agents · Applied ML"], ["Education", "B.Tech · AI & Data Science"]].map(([label, value]) => <div key={label}><span>{label}</span><strong>{value}</strong></div>)}<blockquote>“Turning research ideas into production applications.”</blockquote><a className="text-link" href={`mailto:${PROFILE.email}`}>Say hello ↗</a></div>
     </div>
@@ -224,7 +224,7 @@ function Work() {
 function Research() {
   return <section id="research" className="section" aria-labelledby="research-label">
     <Heading index="04" label="Research & contributions" title="Driven by" accent="questions." />
-    <div className="research-layout"><div className="research-statement reveal"><p className="eyebrow">CURRENT RESEARCH INTEREST</p><h3 id="research-label">How do we make<br />intelligent agents<br /><em>more reliable?</em></h3><p>Detecting and correcting compounding errors in multi-step tool-calling pipelines, and evaluating agents in open-ended environments.</p><blockquote className="research-motto">“Researching the unseen, creating the unthinkable.”</blockquote><span className="research-status"><span className="status-dot" /> Papers in preparation · 2025–2026</span><p className="small-copy">Work in preparation covers applied deep learning and agent reliability, including DeliverIQ. These papers have not yet been published.</p></div>
+    <div className="research-layout"><div className="research-statement reveal"><p className="eyebrow">CURRENT RESEARCH INTEREST</p><h3 id="research-label">How do we make<br />intelligent agents<br /><em>more reliable?</em></h3><p>Detecting and correcting compounding errors in multi-step tool-calling pipelines, and evaluating agents in open-ended environments.</p><blockquote className="research-motto">“{PROFILE.motto}”</blockquote><span className="research-status"><span className="status-dot" /> Papers in preparation · 2025–2026</span><p className="small-copy">Work in preparation covers applied deep learning and agent reliability, including DeliverIQ. These papers have not yet been published.</p></div>
       <div className="research-papers">{RESEARCH.map((paper, i) => <article className="paper-card reveal" key={paper.title}><p className="eyebrow">0{i + 1} / DATASET CONTRIBUTION</p><h3>{paper.title}</h3><p className="paper-publisher">{paper.publication}</p><p>{paper.detail}</p><a className="text-link" href={paper.link} target="_blank" rel="noreferrer">Read published work ↗</a></article>)}</div></div>
   </section>;
 }
@@ -296,16 +296,16 @@ function Achievements() {
   return <section id="achievements" className="achievements-section" ref={section} aria-label="Achievements"><div className="achievements-sticky section"><Heading index="07" label="Milestones, not finish lines" title="A few things" accent="along the way." /><div className="achievement-progress" aria-hidden="true"><div ref={rail} /></div><div className="achievement-window"><div className="achievement-track" ref={track}>{ACHIEVEMENTS.map((item, i) => <article className="achievement-card" key={item.label} tabIndex={0} onFocus={event => { if (matchMedia("(max-width:760px), (prefers-reduced-motion:reduce)").matches) return; const root = section.current, cards = track.current; if (!root || !cards) return; const travel = Math.max(0, cards.scrollWidth - cards.clientWidth); window.scrollTo({ top: scrollY + root.getBoundingClientRect().top + Math.min(travel, event.currentTarget.offsetLeft) }); }}><span className="eyebrow">0{i + 1} / 0{ACHIEVEMENTS.length}</span><CountedValue value={item.value} /><h3>{item.label}</h3><p>{item.detail}</p></article>)}</div></div></div></section>;
 }
 
-function Contact({ onOpenGame, onOpenChat, chatLoaded }: { onOpenGame: () => void; onOpenChat: () => void; chatLoaded: boolean }) {
+function Contact() {
   const [copy, setCopy] = useState("");
   async function copyEmail() {
     try { await navigator.clipboard.writeText(PROFILE.email); setCopy("Copied ✓"); }
     catch { setCopy("Copy unavailable — use the email link."); }
   }
-  return <section id="contact" className="section contact-section" aria-labelledby="contact-title"><p className="eyebrow">08 — LET’S TALK</p><h2 id="contact-title">Let’s build<br />something <em>meaningful.</em></h2><div className="contact-email"><a href={`mailto:${PROFILE.email}`}>{PROFILE.email}</a><button type="button" className="pill" onClick={copyEmail}>Copy ↗</button></div><p className="copy-status" role="status">{copy}</p><div className="contact-links"><a href={PROFILE.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a><a href={PROFILE.github} target="_blank" rel="noreferrer">GitHub ↗</a><a href={`tel:${PROFILE.phoneHref}`}>{PROFILE.phone} ↗</a></div><div className="optional-experiences"><span className="eyebrow">A DIFFERENT WAY TO EXPLORE</span><button type="button" className="text-link" onClick={onOpenGame}>Enter my interactive AI lab ↗</button>{!chatLoaded && <button type="button" className="text-link" onClick={onOpenChat}>Ask my AI assistant ↗</button>}</div><footer className="portfolio-footer"><span>© {new Date().getFullYear()} {PROFILE.name}</span><span>Built with Next.js</span><a href="#home">Back to top ↑</a></footer></section>;
+  return <section id="contact" className="section contact-section" aria-labelledby="contact-title"><p className="eyebrow">08 — LET’S TALK</p><h2 id="contact-title">Let’s build<br />something <em>meaningful.</em></h2><div className="contact-email"><a href={`mailto:${PROFILE.email}`}>{PROFILE.email}</a><button type="button" className="pill" onClick={copyEmail}>Copy ↗</button></div><p className="copy-status" role="status">{copy}</p><div className="contact-links"><a href={PROFILE.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a><a href={PROFILE.github} target="_blank" rel="noreferrer">GitHub ↗</a><a href={`tel:${PROFILE.phoneHref}`}>{PROFILE.phone} ↗</a></div><footer className="portfolio-footer"><span>© {new Date().getFullYear()} {PROFILE.name}</span><span>Built with Next.js</span><a href="#home">Back to top ↑</a></footer></section>;
 }
 
-export default function TalkingPortfolio(props: { onOpenGame: () => void; onOpenChat: () => void; chatLoaded: boolean }) {
+export default function TalkingPortfolio({ experienceOpen = false }: { experienceOpen?: boolean }) {
   const root = useRef<HTMLElement>(null);
   useEffect(() => {
     const reduced = matchMedia("(prefers-reduced-motion: reduce)");
@@ -323,5 +323,5 @@ export default function TalkingPortfolio(props: { onOpenGame: () => void; onOpen
     });
     return () => { observer.disconnect(); cancelled = true; stopScroll?.(); };
   }, []);
-  return <main className="talking-portfolio" id="main-content" ref={root}><Navigation /><TalkingHero /><About /><Skills /><Work /><Research /><Certifications /><Timeline /><Achievements /><Contact {...props} /></main>;
+  return <main className="talking-portfolio" id="main-content" ref={root}><Navigation /><TalkingHero experienceOpen={experienceOpen} /><About /><Skills /><Work /><Research /><Certifications /><Timeline /><Achievements /><Contact /></main>;
 }

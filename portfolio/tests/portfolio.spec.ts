@@ -49,6 +49,10 @@ test('video defaults to captions and sound, with playback controls and visibilit
   await page.getByRole('button', { name: 'CC: Show captions' }).click();
   if (await video.evaluate((el: HTMLVideoElement) => el.muted)) await page.getByRole('button', { name: 'Enable introduction sound' }).click();
   expect(await video.evaluate((el: HTMLVideoElement) => el.muted)).toBe(false);
+  await page.getByRole('button', { name: 'Ask my AI assistant' }).click();
+  await expect.poll(() => video.evaluate((el: HTMLVideoElement) => el.paused)).toBe(true);
+  await page.getByRole('button', { name: 'Close assistant' }).click();
+  await expect.poll(() => video.evaluate((el: HTMLVideoElement) => el.paused)).toBe(false);
   await page.locator('#skills').scrollIntoViewIfNeeded();
   await pauseScroll(page);
   await expect.poll(() => video.evaluate((el: HTMLVideoElement) => el.paused)).toBe(true);
@@ -162,11 +166,11 @@ test('assistant streams responses, handles errors, and fits small screens in bot
   await page.goto('/');
   for (const theme of ['light', 'dark']) {
     if (theme === 'dark') await page.getByRole('button', { name: 'Use dark theme' }).click();
-    await page.getByRole('button', { name: theme === 'light' ? 'Ask my AI assistant' : 'Open Bhavin’s assistant' }).click();
+    await page.getByRole('button', { name: 'Ask my AI assistant' }).click();
     const dialog = page.getByRole('dialog', { name: 'Bhavin’s assistant' });
     await expect(dialog).toBeVisible();
     await page.waitForTimeout(1000);
-    const audit = await new AxeBuilder({ page }).include('.chat-bg').withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+    const audit = await new AxeBuilder({ page }).include('.assistant-panel').withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
     expect(audit.violations.map(v => ({ id: v.id, nodes: v.nodes.map(n => ({ target: n.target, summary: n.failureSummary })) }))).toEqual([]);
     const bounds = await dialog.boundingBox();
     expect(bounds!.x).toBeGreaterThanOrEqual(0); expect(bounds!.y).toBeGreaterThanOrEqual(0);
@@ -174,15 +178,16 @@ test('assistant streams responses, handles errors, and fits small screens in bot
     await page.getByRole('textbox', { name: 'Ask about Bhavin' }).fill('What has Bhavin delivered?');
     await page.getByRole('button', { name: 'Send message' }).click();
     await expect(dialog.getByText('Bhavin delivered 14 production AI/ML systems.').first()).toBeVisible();
+    await expect(page.getByRole('textbox', { name: 'Ask about Bhavin' })).toBeFocused();
     await page.keyboard.press('Escape');
     await expect(dialog).toHaveCount(0);
   }
   await page.unroute('**/api/chat');
   await page.route('**/api/chat', route => route.fulfill({ status: 503, body: 'Unavailable' }));
-  await page.getByRole('button', { name: 'Open Bhavin’s assistant' }).click();
+  await page.getByRole('button', { name: 'Ask my AI assistant' }).click();
   await page.getByRole('textbox', { name: 'Ask about Bhavin' }).fill('Tell me more');
   await page.getByRole('button', { name: 'Send message' }).click();
-  await expect(page.getByText('Sorry, I encountered an error connecting to the backend. Please try again.')).toBeVisible();
+  await expect(page.getByText('I couldn’t answer that right now. Try a CV highlight below, or contact Bhavin directly.')).toBeVisible();
   await page.getByRole('button', { name: 'Close assistant' }).click();
 });
 
@@ -199,10 +204,10 @@ test('short-screen navigation and lab movement, discovery, chapter, and close in
     await page.waitForTimeout(1200);
     const audit = await new AxeBuilder({ page }).include('.game-overlay').withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
     expect(audit.violations.map(v => ({ id: v.id, nodes: v.nodes.map(n => ({ target: n.target, summary: n.failureSummary })) }))).toEqual([]);
-    await page.getByRole('button', { name: 'Enter the lab', exact: true }).click();
+    if (await page.getByRole('button', { name: 'Enter the lab', exact: true }).count()) await page.getByRole('button', { name: 'Enter the lab', exact: true }).click();
     const initial = await page.getByLabel('Player', { exact: true }).getAttribute('style');
-    await page.keyboard.down('ArrowUp'); await page.waitForTimeout(550); await page.keyboard.up('ArrowUp');
-    await page.keyboard.down('ArrowRight'); await page.waitForTimeout(450); await page.keyboard.up('ArrowRight');
+    for (let step = 0; step < 10; step++) await page.keyboard.press('ArrowUp');
+    for (let step = 0; step < 10; step++) await page.keyboard.press('ArrowRight');
     expect(await page.getByLabel('Player', { exact: true }).getAttribute('style')).not.toBe(initial);
     const career = page.getByRole('button', { name: 'CAREER fragment. Unlocked. Open chapter.' });
     await expect(career).toBeVisible();
@@ -285,4 +290,55 @@ test('video starts with audible sound and captions when the browser permits auto
     await expect.poll(() => video.evaluate((el: HTMLVideoElement) => el.textTracks[0].mode)).toBe('showing');
     await expect(page.getByRole('button', { name: 'Mute introduction' })).toHaveAttribute('aria-pressed', 'true');
   } finally { await browser.close(); }
+});
+
+test('shared launchers persist, adapt to phone and desktop, and CV highlights work without AI', async ({ page }) => {
+  await page.route('**/api/chat', route => route.abort());
+  await page.goto('/');
+  for (const width of [390, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    const dock = page.getByRole('navigation', { name: 'Interactive portfolio experiences' });
+    const ai = dock.getByRole('button', { name: 'Ask my AI assistant' });
+    const game = dock.getByRole('button', { name: 'Enter my interactive AI lab' });
+    const a = (await ai.boundingBox())!, g = (await game.boundingBox())!;
+    expect(width < 760 ? Math.abs(a.x - g.x) : Math.abs(a.y - g.y)).toBeLessThan(1);
+    expect(width < 760 ? g.y - a.y : g.x - a.x).toBeGreaterThan(70);
+    await ai.click();
+    for (const label of ['Production impact', 'Research contributions', 'Projects & stack']) {
+      await page.getByRole('button', { name: label, exact: true }).click();
+    }
+    await expect(page.getByRole('log')).toContainText('14 production AI/ML systems');
+    await expect(page.getByRole('log')).toContainText('Coconut tree disease dataset');
+    await expect(page.getByRole('log')).toContainText('DeliverIQ');
+    await page.keyboard.press('Escape');
+    await expect(ai).toBeFocused();
+    await expect(ai).toBeVisible(); await expect(game).toBeVisible();
+    await ai.click();
+    await expect(page.getByRole('log')).toContainText('DeliverIQ');
+    await page.getByRole('button', { name: 'New conversation' }).click();
+    await expect(page.getByRole('log')).not.toContainText('DeliverIQ');
+    await page.getByRole('button', { name: 'Close assistant' }).click();
+  }
+});
+
+test('guided lab tour exposes all seven chapters and keeps progress after closing', async ({ page }) => {
+  await page.goto('/');
+  for (const theme of ['light', 'dark']) {
+    if (theme === 'dark') await page.getByRole('button', { name: 'Use dark theme' }).click();
+    await page.getByRole('button', { name: 'Enter my interactive AI lab' }).click();
+    await expect(page.getByRole('dialog')).toBeVisible();
+    if (await page.getByRole('button', { name: 'Take a guided tour' }).count()) await page.getByRole('button', { name: 'Take a guided tour' }).click();
+    else await page.getByRole('button', { name: 'ORIGIN fragment. Unlocked. Open chapter.' }).click();
+    const chapters = page.getByRole('navigation', { name: 'All game chapters' }).getByRole('button');
+    await expect(chapters).toHaveCount(7);
+    for (let i = 0; i < 7; i++) {
+      await chapters.nth(i).click();
+      await expect(page.locator('#game-chapter-title')).toBeVisible();
+    }
+    await expect(page.locator('#game-chapter-title')).toHaveText('Building with others');
+    const audit = await new AxeBuilder({ page }).include('.game-overlay').withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+    expect(audit.violations.map(v => ({ id: v.id, nodes: v.nodes.map(n => ({ target: n.target, summary: n.failureSummary })) }))).toEqual([]);
+    await page.getByRole('button', { name: 'Close exploration game' }).click();
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+  }
 });

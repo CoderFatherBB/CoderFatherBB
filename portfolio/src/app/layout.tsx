@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import "./talking.css";
+import "./experiences.css";
 
 const inter = localFont({ src: "../fonts/InterTight.woff2", variable: "--font-inter", display: "swap" });
 const serif = localFont({ src: "../fonts/InstrumentSerif-Italic.woff2", variable: "--font-serif", display: "swap" });

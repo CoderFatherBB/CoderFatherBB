@@ -1,6 +1,6 @@
 # Bhavin Baldota — talking portfolio
 
-A light-by-default personal portfolio with a matching dark theme, restrained blue accents, and Bhavin's generated talking avatar. Built on the existing Next.js 16 / React 19 / TypeScript project; the original AI-lab game and assistant are available on demand from Contact.
+A light-by-default personal portfolio with a matching dark theme, restrained blue accents, and Bhavin's generated talking avatar. Built on the existing Next.js 16 / React 19 / TypeScript project; the AI lab and assistant are available from a persistent pair of circular launchers.
 
 ## Run and verify
 
@@ -35,11 +35,12 @@ All new profile data lives in `src/lib/data.ts`. Facts and metrics come from the
 | Certifications | Known certification and an aggregate learning record, with ink-fill hover/focus |
 | Experience | Education, research, engineering, and mentoring in a chronological timeline |
 | Achievements | Desktop sticky horizontal gallery and count-up milestones; touch-scroll gallery on mobile |
-| Contact | Email/copy, phone, GitHub, LinkedIn, optional AI lab and assistant |
+| Contact | Email/copy, phone, GitHub, LinkedIn |
+| Floating experiences | Robot and gamepad launchers; vertical on phones, horizontal on desktops |
 
 Light is the default. Theme preference is saved in `localStorage` under `portfolio-theme`. A small pre-paint script restores it without a flash of the opposite theme. Decorative animation, smooth scrolling, autoplay, and desktop pinning respect reduced-motion preferences. Sound and English captions are enabled by default. If the browser blocks audible autoplay, the video plays muted with a sound hint and retries audio on the first interaction while visible. A deliberate mute stays muted. The introduction pauses when the video is less than half visible, the tab becomes hidden, or the visitor pauses it.
 
-The legacy game is preserved rather than rewritten. Its existing content/components remain under `src/components/`. Both the game and chat UI are dynamically imported only when requested. The assistant still uses the existing `/api/chat` proxy and requires the existing backend, selected with `BACKEND_API_URL`; no credentials are included in this repository.
+The assistant and AI lab share the main page’s paper surfaces, blue accents, typography, and theme variables in `experiences.css`. Both load only when requested, and preserve conversation or exploration progress when closed. The lab has seven stops, a guided tour that unlocks all chapters, source links, and a restart control. The assistant offers three instant CV highlights generated from the shared profile data, a fresh-conversation control, and Markdown answers. Free-form AI questions use the existing `/api/chat` proxy and configured backend (`BACKEND_API_URL`); CV highlights work without that service. No credentials are included in this repository. Opening either experience pauses the introduction video.
 
 ## Updating the introduction
 

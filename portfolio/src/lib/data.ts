@@ -4,6 +4,8 @@ export const PROFILE = {
   email: "bhavinbaldota16@gmail.com", phone: "+91 7755934707", phoneHref: "+917755934707",
   github: "https://github.com/CoderFatherBB", linkedin: "https://www.linkedin.com/in/bhavin-baldota-103553234/",
   resume: "/resumes/Bhavin_Baldota_CV_ATS.pdf",
+  venture: "Co-founder · AIoT Tech",
+  motto: "Researching the unseen, creating the unthinkable.",
   introduction: "From applied machine learning to generative AI and intelligent agents, I turn research ideas into production applications.",
   summary: "I connect research, development, and deployment across machine learning, computer vision, and generative AI. At Persistent Systems, I architected 5+ enterprise GenAI systems supporting 10,000+ daily queries and semantic search across 50,000+ documents. Previously, I independently delivered 14 production AI/ML systems at Provilac. My research includes audio localization at DRDO and contributions to two Elsevier Data in Brief datasets.",
   transcript: "Hi, I'm Bhavin Baldota. I research, develop, and deploy AI systems, from machine learning and computer vision to generative AI and intelligent agents. I turn research ideas into real-world applications. Welcome to my portfolio.",

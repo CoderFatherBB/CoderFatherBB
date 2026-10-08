@@ -1,341 +1,93 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, Bot, User, Loader2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Bot, X, Send, Loader2, RotateCcw, ArrowUpRight } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { EXPERIENCE, PROFILE, PROJECTS, RESEARCH } from "@/lib/data";
 
+type Message = { id: string; role: "user" | "assistant"; content: string };
+const welcome: Message = { id: "welcome", role: "assistant", content: "Hi, I’m Bhavin’s portfolio assistant. Explore a CV highlight below, or ask me about his work, research, and experience." };
+const highlights = [
+  { label: "Production impact", answer: EXPERIENCE.filter(item => item.place === "Persistent Systems" || item.role === "AI & ML Engineer").reverse().map(item => `### ${item.role} · ${item.place}\n\n${item.detail}`).join("\n\n") },
+  { label: "Research contributions", answer: RESEARCH.map(item => `**[${item.title}](${item.link})** · ${item.publication}\n\n${item.detail}`).join("\n\n") + "\n\n" + EXPERIENCE.find(item => item.place === "DRDO")!.detail + "\n\nPapers on applied deep learning and agent reliability remain in preparation." },
+  { label: "Projects & stack", answer: PROJECTS.map(item => `### ${item.title}\n\n${item.description}\n\n${item.features.join(" · ")}\n\n**Stack:** ${item.tech.join(", ")}`).join("\n\n") },
+];
 
-type Message = {
-  id: string;
-  role: "user" | "assistant" | "system";
-  content: string;
-};
-
-export default function Chatbot({ initialOpen = false }: { initialOpen?: boolean }) {
-  const [isOpen, setIsOpen] = useState(initialOpen);
+export default function Chatbot({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const [messages, setMessages] = useState<Message[]>([welcome]);
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "welcome",
-      role: "assistant",
-      content: "Hi! I'm Bhavin's AI Assistant. Ask me anything about his experience, projects, or skills!"
-    }
-  ]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(false);
-  const [dimensions, setDimensions] = useState({ w: 380, h: 600 });
-  const resizingRef = useRef(false);
-  
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
+  const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const dialog = useRef<HTMLDivElement>(null);
+  const log = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!isOpen) return;
     const previous = document.activeElement as HTMLElement | null;
-    inputRef.current?.focus();
-    const key = (event: KeyboardEvent) => { if (event.key === "Escape") setIsOpen(false); };
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    if (inputRef.current?.disabled) dialog.current?.querySelector<HTMLButtonElement>("button")?.focus();
+    else inputRef.current?.focus();
+    const key = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+      if (event.key !== "Tab") return;
+      const nodes = dialog.current?.querySelectorAll<HTMLElement>('button:not(:disabled),input:not(:disabled),a[href],[tabindex="0"]');
+      if (!nodes?.length) return;
+      const first = nodes[0], last = nodes[nodes.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    };
     window.addEventListener("keydown", key);
-    return () => { window.removeEventListener("keydown", key); previous?.focus(); };
-  }, [isOpen]);
+    return () => { document.body.style.overflow = overflow; window.removeEventListener("keydown", key); previous?.focus(); };
+  }, [isOpen, onClose]);
+  useEffect(() => { if (isOpen && !loading) inputRef.current?.focus(); }, [isOpen, loading]);
+  useEffect(() => { if (log.current) log.current.scrollTop = log.current.scrollHeight; }, [messages, isOpen]);
 
-  // Handle custom window resizing
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!resizingRef.current) return;
-      
-      // Calculate new dimensions based on mouse position (anchored at bottom-24 and right-24)
-      const newWidth = Math.max(320, window.innerWidth - e.clientX - 24);
-      const newHeight = Math.max(400, window.innerHeight - e.clientY - 24);
-      
-      setDimensions({ 
-        w: Math.min(newWidth, window.innerWidth * 0.9), 
-        h: Math.min(newHeight, window.innerHeight * 0.9) 
-      });
-    };
-    
-    const handleMouseUp = () => {
-      resizingRef.current = false;
-      document.body.style.userSelect = '';
-    };
-    
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
-    
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, []);
-
-  // Show tooltip after 2 seconds
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowTooltip(true);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Auto-scroll to bottom when new messages arrive
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messages]);
-
-  const handleFormSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim() || isLoading) return;
-    
-    const userMessage: Message = { id: Date.now().toString(), role: "user", content: input };
-    setMessages((prev) => [...prev, userMessage]);
-    setInput("");
-    setIsLoading(true);
-
+  async function send(event: React.FormEvent) {
+    event.preventDefault();
+    if (!input.trim() || loading) return;
+    const user: Message = { id: crypto.randomUUID(), role: "user", content: input.trim() };
+    const history = [...messages, user];
+    setMessages(history); setInput(""); setLoading(true);
+    const id = crypto.randomUUID();
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 25000);
     try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: [...messages, userMessage] }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch response");
-      }
-
-      if (!response.body) {
-        throw new Error("No response body");
-      }
-
-      // Add a placeholder assistant message that we will stream into
-      const assistantMessageId = (Date.now() + 1).toString();
-      setMessages((prev) => [...prev, { id: assistantMessageId, role: "assistant", content: "" }]);
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let assistantContent = "";
-
-      let pending = "";
+      const response = await fetch("/api/chat", { method: "POST", signal: controller.signal, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: history }) });
+      if (!response.ok || !response.body) throw new Error("Assistant unavailable");
+      setMessages(prev => [...prev, { id, role: "assistant", content: "" }]);
+      const reader = response.body.getReader(), decoder = new TextDecoder();
+      let pending = "", content = "";
       const consume = (line: string) => {
         const payload = line.trim().replace(/^data:\s*/, "");
         if (payload.startsWith("3:")) throw new Error("Assistant stream failed");
         if (!payload.startsWith("0:")) return;
         const text = JSON.parse(payload.slice(2));
         if (typeof text !== "string") return;
-        assistantContent += text;
-        setMessages(prev => prev.map(message => message.id === assistantMessageId ? { ...message, content: assistantContent } : message));
+        content += text;
+        setMessages(prev => prev.map(message => message.id === id ? { ...message, content } : message));
       };
       try {
         while (true) {
           const { value, done } = await reader.read();
           pending += done ? decoder.decode() : decoder.decode(value, { stream: true });
-          const lines = pending.split("\n");
-          pending = lines.pop() || "";
-          lines.forEach(consume);
+          const lines = pending.split("\n"); pending = lines.pop() || ""; lines.forEach(consume);
           if (done) { if (pending.trim()) consume(pending); break; }
         }
+        if (!content.trim()) throw new Error("Empty answer");
       } finally { reader.releaseLock(); }
-
-    } catch (error) {
-      console.error("Chat error:", error);
-      setMessages((prev) => [...prev, { 
-        id: Date.now().toString(), 
-        role: "assistant", 
-        content: "Sorry, I encountered an error connecting to the backend. Please try again." 
-      }]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return (
-    <>
-      {/* Floating Action Button */}
-      <AnimatePresence>
-        {!isOpen && (
-          <motion.button
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0, opacity: 0 }}
-            aria-label="Open Bhavin’s assistant"
-            onClick={() => {
-              setIsOpen(true);
-              setShowTooltip(false);
-            }}
-            className="chat-trigger fixed bottom-6 right-6 w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-blue-500/20 hover:bg-blue-700 transition-colors z-50 group"
-          >
-            <MessageCircle size={24} className="group-hover:scale-110 transition-transform" />
-          </motion.button>
-        )}
-      </AnimatePresence>
-
-      {/* Welcome Tooltip */}
-      <AnimatePresence>
-        {!isOpen && showTooltip && (
-          <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            className="chat-tooltip fixed bottom-24 right-6 bg-blue-600 text-white text-sm px-4 py-2 rounded-2xl rounded-br-sm shadow-xl z-50 flex items-center gap-2 cursor-pointer"
-            onClick={() => {
-              setIsOpen(true);
-              setShowTooltip(false);
-            }}
-          >
-            <span>👋 Chat with me to know more about Bhavin!</span>
-            <button 
-              aria-label="Dismiss assistant tip"
-              onClick={(e) => { 
-                e.stopPropagation(); 
-                setShowTooltip(false); 
-              }} 
-              className="p-1 hover:bg-white/20 rounded-full transition-colors"
-            >
-              <X size={14} />
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Chat Window */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
-            role="dialog" aria-label="Bhavin’s assistant" data-lenis-prevent
-            style={{ width: dimensions.w, height: dimensions.h }}
-            className="chat-bg fixed bottom-6 right-6 flex flex-col bg-[#0f1629] border border-white/10 rounded-2xl shadow-2xl shadow-black/50 z-50 overflow-hidden"
-          >
-            {/* Custom Resize Handle (Top Left) */}
-            <div 
-              onMouseDown={(e) => { 
-                e.preventDefault();
-                resizingRef.current = true; 
-                document.body.style.userSelect = 'none';
-              }}
-              className="absolute top-0 left-0 w-6 h-6 cursor-nwse-resize z-50 hover:bg-white/10 rounded-tl-2xl transition-colors flex items-start justify-start p-1.5"
-            >
-              <div className="w-2 h-2 rounded-full border-t border-l border-white/30" />
-            </div>
-
-            <div className="flex flex-col h-full w-full">
-            {/* Header */}
-            <div className="chat-header flex items-center justify-between px-4 py-3 bg-[#0a101f]/80 backdrop-blur-md border-b border-white/10">
-              <div className="flex items-center gap-3">
-                <div className="chat-bot-icon w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
-                  <Bot size={18} />
-                </div>
-                <div>
-                  <h3 className="chat-title text-sm font-semibold text-white">Bhavin&apos;s Assistant</h3>
-                  <p className="text-xs text-slate-400 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-sky-400 inline-block animate-pulse"></span>
-                    Portfolio questions
-                  </p>
-                </div>
-              </div>
-              <button 
-                aria-label="Close assistant"
-                onClick={() => setIsOpen(false)}
-                className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            {/* Messages Area */}
-            <div role="log" aria-live="polite" aria-label="Conversation" className="flex-1 min-h-0 overflow-y-auto p-4 scroll-smooth">
-              <div className="flex flex-col space-y-4">
-                {messages.map((m) => (
-                  <motion.div
-                    key={m.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className={`flex gap-3 w-full ${m.role === 'user' ? 'ml-auto flex-row-reverse' : ''}`}
-                  >
-                    <div className={`w-7 h-7 shrink-0 rounded-full flex items-center justify-center mt-1 ${
-                      m.role === 'user' 
-                        ? 'bg-blue-600 text-white' 
-                        : 'chat-bot-icon bg-slate-800 border border-white/10 text-blue-400'
-                    }`}>
-                      {m.role === 'user' ? <User size={14} /> : <Bot size={14} />}
-                    </div>
-                    
-                    <div className={`rounded-2xl px-4 py-3 text-sm overflow-x-auto max-w-[85%] ${
-                      m.role === 'user' 
-                        ? 'bg-blue-600 text-white rounded-tr-sm' 
-                        : 'chat-bot-bubble bg-slate-800/80 border border-white/10 text-slate-200 rounded-tl-sm shadow-inner'
-                    }`}>
-                      <div className={`chat-prose prose prose-sm max-w-none 
-                        prose-p:leading-relaxed prose-p:mb-3 prose-li:my-1
-                        [&_table]:border-collapse [&_table]:w-full [&_table]:my-4 [&_table]:border [&_table]:border-slate-500
-                        [&_th]:border [&_th]:border-slate-500 [&_th]:bg-slate-700/80 [&_th]:p-3 [&_th]:text-left [&_th]:text-white
-                        [&_td]:border [&_td]:border-slate-600 [&_td]:p-3
-                        prose-strong:text-white prose-a:text-blue-400 hover:prose-a:text-blue-300
-                        ${m.role === 'user' ? 'prose-invert text-white' : 'prose-invert text-slate-200'}
-                      `}>
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                          {m.content}
-                        </ReactMarkdown>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-                
-                {/* Loading indicator */}
-                {isLoading && messages[messages.length - 1]?.role !== 'assistant' && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="flex gap-3 w-full"
-                  >
-                    <div className="chat-bot-icon w-7 h-7 shrink-0 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center mt-1 text-blue-400">
-                      <Bot size={14} />
-                    </div>
-                    <div className="chat-bot-bubble bg-slate-800/50 border border-white/5 rounded-2xl rounded-tl-sm px-4 py-3 flex items-center gap-1.5 shadow-sm">
-                      <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                      <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                      <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce"></div>
-                    </div>
-                  </motion.div>
-                )}
-                <div ref={messagesEndRef} />
-              </div>
-            </div>
-
-            {/* Input Area */}
-            <div className="chat-footer p-3 bg-[#0a101f]/80 backdrop-blur-md border-t border-white/10">
-              <form
-                onSubmit={handleFormSubmit}
-                className="chat-input-wrapper flex items-center gap-2 bg-white/5 border border-white/10 rounded-full pl-4 pr-1.5 py-1.5 focus-within:border-blue-500/50 focus-within:bg-white/10 transition-colors"
-              >
-                <input
-                  ref={inputRef}
-                  aria-label="Ask about Bhavin"
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask about my projects..."
-                  className="chat-input flex-1 bg-transparent text-sm text-white placeholder:text-slate-500 focus:outline-none"
-                  disabled={isLoading}
-                />
-                <button
-                  aria-label="Send message"
-                  type="submit"
-                  disabled={isLoading || !input.trim()}
-                  className="chat-send-btn w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white disabled:opacity-50 disabled:bg-slate-700 transition-colors"
-                >
-                  {isLoading ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} className="ml-0.5" />}
-                </button>
-              </form>
-            </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
-  );
+    } catch {
+      setMessages(prev => [...prev.filter(message => message.id !== id || message.content), { id: crypto.randomUUID(), role: "assistant", content: "I couldn’t answer that right now. Try a CV highlight below, or contact Bhavin directly." }]);
+    } finally { clearTimeout(timeout); setLoading(false); }
+  }
+  if (!isOpen) return null;
+  return <div className="assistant-overlay" onClick={event => { if (event.target === event.currentTarget) onClose(); }}>
+    <div ref={dialog} className="assistant-panel" role="dialog" aria-modal="true" aria-label="Bhavin’s assistant" data-lenis-prevent>
+      <header className="experience-header"><span className="experience-header-icon"><Bot size={24} aria-hidden="true" /></span><div><p className="eyebrow">A CONVERSATION WITH MY WORK</p><h2>Bhavin’s assistant</h2></div><button className="experience-icon-button" onClick={onClose} aria-label="Close assistant"><X size={20} /></button></header>
+      <div ref={log} className="assistant-log" tabIndex={0} role="log" aria-live="polite" aria-label="Conversation" aria-busy={loading}>{messages.map(message => <article key={message.id} className={`assistant-message ${message.role}`}><span className="eyebrow">{message.role === "user" ? "YOU" : "BHAVIN’S ASSISTANT"}</span><ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content || "Thinking…"}</ReactMarkdown></article>)}</div>
+      <div className="assistant-highlights"><span className="eyebrow">CV HIGHLIGHTS</span><div>{highlights.map(item => <button key={item.label} disabled={loading} onClick={() => setMessages(prev => [...prev, { id: crypto.randomUUID(), role: "user", content: item.label }, { id: crypto.randomUUID(), role: "assistant", content: item.answer }])}>{item.label} <ArrowUpRight size={13} aria-hidden="true" /></button>)}</div></div>
+      <form className="assistant-form" onSubmit={send}><input ref={inputRef} aria-label="Ask about Bhavin" placeholder="What would you like to know?" value={input} onChange={event => setInput(event.target.value)} disabled={loading} maxLength={2000} /><button className="experience-send" aria-label="Send message" disabled={loading || !input.trim()}>{loading ? <Loader2 size={18} className="assistant-spinner" /> : <Send size={18} />}</button></form>
+      <footer className="assistant-footer"><a href={`mailto:${PROFILE.email}`}>Contact Bhavin ↗</a><button disabled={loading} onClick={() => { setMessages([welcome]); setInput(""); inputRef.current?.focus(); }}><RotateCcw size={12} aria-hidden="true" /> New conversation</button></footer>
+    </div>
+  </div>;
 }
