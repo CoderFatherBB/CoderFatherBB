@@ -13,8 +13,8 @@ type Message = {
   content: string;
 };
 
-export default function Chatbot() {
-  const [isOpen, setIsOpen] = useState(false);
+export default function Chatbot({ initialOpen = false }: { initialOpen?: boolean }) {
+  const [isOpen, setIsOpen] = useState(initialOpen);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([
     {
