@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send, Bot, User, Loader2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import rehypeRaw from "rehype-raw";
+
 
 type Message = {
   id: string;
@@ -29,6 +29,16 @@ export default function Chatbot({ initialOpen = false }: { initialOpen?: boolean
   const resizingRef = useRef(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (!isOpen) return;
+    const previous = document.activeElement as HTMLElement | null;
+    inputRef.current?.focus();
+    const key = (event: KeyboardEvent) => { if (event.key === "Escape") setIsOpen(false); };
+    window.addEventListener("keydown", key);
+    return () => { window.removeEventListener("keydown", key); previous?.focus(); };
+  }, [isOpen]);
 
   // Handle custom window resizing
   useEffect(() => {
@@ -106,39 +116,27 @@ export default function Chatbot({ initialOpen = false }: { initialOpen?: boolean
       const decoder = new TextDecoder();
       let assistantContent = "";
 
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        
-        const chunk = decoder.decode(value, { stream: true });
-        
-        // Vercel AI SDK and our FastAPI backend format streams as `0:"text"` or similar.
-        // Let's parse the chunks safely.
-        const lines = chunk.split('\n');
-        
-        for (const line of lines) {
-          const trimmedLine = line.trim();
-          if (trimmedLine.startsWith('data: 0:')) {
-            try {
-              // Extract the JSON string part after 'data: 0:'
-              const textChunk = JSON.parse(trimmedLine.substring(8));
-              assistantContent += textChunk;
-              
-              // Update the last message in state
-              setMessages((prev) => {
-                const newMessages = [...prev];
-                const lastIndex = newMessages.length - 1;
-                newMessages[lastIndex] = { ...newMessages[lastIndex], content: assistantContent };
-                return newMessages;
-              });
-            } catch (e) {
-              console.error("Error parsing stream chunk:", e);
-            }
-          } else if (trimmedLine.startsWith('data: 3:')) {
-            console.error("Stream error:", trimmedLine);
-          }
+      let pending = "";
+      const consume = (line: string) => {
+        const payload = line.trim().replace(/^data:\s*/, "");
+        if (payload.startsWith("3:")) throw new Error("Assistant stream failed");
+        if (!payload.startsWith("0:")) return;
+        const text = JSON.parse(payload.slice(2));
+        if (typeof text !== "string") return;
+        assistantContent += text;
+        setMessages(prev => prev.map(message => message.id === assistantMessageId ? { ...message, content: assistantContent } : message));
+      };
+      try {
+        while (true) {
+          const { value, done } = await reader.read();
+          pending += done ? decoder.decode() : decoder.decode(value, { stream: true });
+          const lines = pending.split("\n");
+          pending = lines.pop() || "";
+          lines.forEach(consume);
+          if (done) { if (pending.trim()) consume(pending); break; }
         }
-      }
+      } finally { reader.releaseLock(); }
+
     } catch (error) {
       console.error("Chat error:", error);
       setMessages((prev) => [...prev, { 
@@ -160,6 +158,7 @@ export default function Chatbot({ initialOpen = false }: { initialOpen?: boolean
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
+            aria-label="Open Bhavin’s assistant"
             onClick={() => {
               setIsOpen(true);
               setShowTooltip(false);
@@ -186,6 +185,7 @@ export default function Chatbot({ initialOpen = false }: { initialOpen?: boolean
           >
             <span>👋 Chat with me to know more about Bhavin!</span>
             <button 
+              aria-label="Dismiss assistant tip"
               onClick={(e) => { 
                 e.stopPropagation(); 
                 setShowTooltip(false); 
@@ -206,6 +206,7 @@ export default function Chatbot({ initialOpen = false }: { initialOpen?: boolean
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
+            role="dialog" aria-label="Bhavin’s assistant" data-lenis-prevent
             style={{ width: dimensions.w, height: dimensions.h }}
             className="chat-bg fixed bottom-6 right-6 flex flex-col bg-[#0f1629] border border-white/10 rounded-2xl shadow-2xl shadow-black/50 z-50 overflow-hidden"
           >
@@ -232,11 +233,12 @@ export default function Chatbot({ initialOpen = false }: { initialOpen?: boolean
                   <h3 className="chat-title text-sm font-semibold text-white">Bhavin&apos;s Assistant</h3>
                   <p className="text-xs text-slate-400 flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-sky-400 inline-block animate-pulse"></span>
-                    Online
+                    Portfolio questions
                   </p>
                 </div>
               </div>
               <button 
+                aria-label="Close assistant"
                 onClick={() => setIsOpen(false)}
                 className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
               >
@@ -245,7 +247,7 @@ export default function Chatbot({ initialOpen = false }: { initialOpen?: boolean
             </div>
 
             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-4 scroll-smooth">
+            <div role="log" aria-live="polite" aria-label="Conversation" className="flex-1 min-h-0 overflow-y-auto p-4 scroll-smooth">
               <div className="flex flex-col space-y-4">
                 {messages.map((m) => (
                   <motion.div
@@ -275,7 +277,7 @@ export default function Chatbot({ initialOpen = false }: { initialOpen?: boolean
                         prose-strong:text-white prose-a:text-blue-400 hover:prose-a:text-blue-300
                         ${m.role === 'user' ? 'prose-invert text-white' : 'prose-invert text-slate-200'}
                       `}>
-                        <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
                           {m.content}
                         </ReactMarkdown>
                       </div>
@@ -311,6 +313,8 @@ export default function Chatbot({ initialOpen = false }: { initialOpen?: boolean
                 className="chat-input-wrapper flex items-center gap-2 bg-white/5 border border-white/10 rounded-full pl-4 pr-1.5 py-1.5 focus-within:border-blue-500/50 focus-within:bg-white/10 transition-colors"
               >
                 <input
+                  ref={inputRef}
+                  aria-label="Ask about Bhavin"
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
@@ -319,6 +323,7 @@ export default function Chatbot({ initialOpen = false }: { initialOpen?: boolean
                   disabled={isLoading}
                 />
                 <button
+                  aria-label="Send message"
                   type="submit"
                   disabled={isLoading || !input.trim()}
                   className="chat-send-btn w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white disabled:opacity-50 disabled:bg-slate-700 transition-colors"

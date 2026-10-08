@@ -28,7 +28,7 @@ All new profile data lives in `src/lib/data.ts`. Facts and metrics come from the
 | Section | Experience |
 | --- | --- |
 | Hero | Research/develop/deploy positioning; muted talking avatar; explicit sound, playback, captions, and transcript controls |
-| About | Profile, swaying/flippable ID card, quick facts, industry and research CV downloads |
+| About | Profile, swaying/flippable ID card, quick facts, original portrait and one industry résumé download |
 | Skills | Periodic-table tiles, family filters, local brand logos, and a skill/project inspector |
 | Work | Expanding project panels with labeled illustrative workflows |
 | Research | Agent reliability interests, papers in preparation, and published dataset contributions |
@@ -49,10 +49,9 @@ The reproducible Piper → Wav2Lip rendering workflow and source avatar are in [
 
 ```bash
 ffmpeg -i avatar.png -vf 'scale=1280:720' -frames:v 1 public/hero/poster.webp
-ffmpeg -i avatar.png -vf 'crop=240:300:705:0,scale=480:600' -frames:v 1 public/portrait-bust.webp
 ```
 
-MP4 includes faststart for web playback. Captions are optional, and the full transcript works even without video playback. Original PDFs are bundled in `public/resumes/` so download links work without third-party hosting.
+MP4 includes faststart for web playback. Captions are optional, and the full transcript works even without video playback. The strongest industry ATS résumé is bundled in `public/resumes/` so download links work without third-party hosting.
 
 ## Credits and licenses
 
@@ -64,3 +63,7 @@ MP4 includes faststart for web playback. Captions are optional, and the full tra
 ## Review and deployment
 
 Changes are prepared on `codex/talking-portfolio`. The existing Vercel deployment configuration is retained. Review the branch (or its Vercel preview, when available) before merging; pushing this branch does not merge it into `main`.
+
+The ID card uses Bhavin’s original supplied portrait. All résumé downloads serve the industry ATS CV, which best connects research to production engineering and measured impact.
+
+Profile and interactive-lab content share `src/lib/data.ts`. After updating these verified facts, synchronize the backend assistant context with `node --experimental-strip-types scripts/sync-knowledge.mjs` (Node 22+). Keep metrics attached to their role or project; dataset contributions and unpublished papers have separate labels.

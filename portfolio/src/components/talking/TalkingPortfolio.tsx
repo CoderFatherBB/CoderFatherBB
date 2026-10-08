@@ -7,8 +7,9 @@ import TechLogo from "./TechLogo";
 
 const subscribeTheme = (callback: () => void) => {
   window.addEventListener("portfolio-theme", callback);
-  window.addEventListener("storage", callback);
-  return () => { window.removeEventListener("portfolio-theme", callback); window.removeEventListener("storage", callback); };
+  const storage = (event: StorageEvent) => { if (event.key === "portfolio-theme") { document.documentElement.dataset.theme = event.newValue === "dark" ? "dark" : "light"; callback(); } };
+  window.addEventListener("storage", storage);
+  return () => { window.removeEventListener("portfolio-theme", callback); window.removeEventListener("storage", storage); };
 };
 function ThemeButton() {
   const theme = useSyncExternalStore(subscribeTheme, () => document.documentElement.dataset.theme || "light", () => "light");
@@ -31,7 +32,7 @@ function Navigation() {
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => { if (entry.isIntersecting) setActive(entry.target.id); });
     }, { rootMargin: "-20% 0px -55% 0px" });
-    NAV.forEach(item => { const el = document.getElementById(item.toLowerCase()); if (el) observer.observe(el); });
+    ["Home", ...NAV].forEach(item => { const el = document.getElementById(item.toLowerCase()); if (el) observer.observe(el); });
     let frame = 0;
     const update = () => {
       cancelAnimationFrame(frame);
@@ -157,9 +158,9 @@ function About() {
   return <section id="about" className="section about-section" aria-labelledby="about-title">
     <Heading index="01" label="A little about me" title="Curiosity meets" accent="craft." />
     <div className="about-grid">
-      <div className="about-copy reveal"><h3 id="about-title">Hi, I’m Bhavin.</h3><p>{PROFILE.summary}</p><p className="about-note">My research interest: reliability and evaluation of LLM-based agentic systems.</p><div className="link-row"><a href={PROFILE.github} target="_blank" rel="noreferrer">GitHub ↗</a><a href={PROFILE.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a></div><div className="resume-links"><a className="text-link" href={PROFILE.resume} download>Industry CV ↓</a><a className="text-link" href={PROFILE.researchResume} download>Research CV ↓</a></div></div>
+      <div className="about-copy reveal"><h3 id="about-title">Hi, I’m Bhavin.</h3><p>{PROFILE.summary}</p><p className="about-note">My research interest: reliability and evaluation of LLM-based agentic systems.</p><div className="link-row"><a href={PROFILE.github} target="_blank" rel="noreferrer">GitHub ↗</a><a href={PROFILE.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a></div><div className="resume-links"><a className="text-link" href={PROFILE.resume} download>Download résumé ↓</a></div></div>
       <div className="id-holder reveal"><div className="lanyard" aria-hidden="true">BHAVIN · AI</div><button type="button" className={`id-card ${flipped ? "flipped" : ""}`} aria-label={flipped ? "Show front of Bhavin's ID card" : "Flip Bhavin's ID card"} aria-pressed={flipped} onClick={() => setFlipped(!flipped)}>
-        <span className="id-front" aria-hidden={flipped}><span className="id-band">RESEARCHER / ENGINEER</span><span className="id-portrait"><Image src="/portrait-bust.webp" alt="Bhavin's illustrated avatar" width={480} height={600} /></span><strong>Bhavin Baldota</strong><span>AI · ML · GENERATIVE AI</span><span className="id-rows"><span>BASED IN <b>Pune, India</b></span><span>DEGREE <b>B.Tech · AI & DS</b></span><span>CLASS OF <b>2025</b></span></span><span className="barcode" aria-hidden="true" /><span className="mono flip-hint">TAP TO FLIP ↻</span></span>
+        <span className="id-front" aria-hidden={flipped}><span className="id-band">RESEARCHER / ENGINEER</span><span className="id-portrait"><Image src="/portrait-bhavin.jpg" alt="Bhavin Baldota wearing a black blazer and burgundy shirt" width={960} height={1280} sizes="106px" /></span><strong>Bhavin Baldota</strong><span>AI · ML · GENERATIVE AI</span><span className="id-rows"><span>BASED IN <b>Pune, India</b></span><span>DEGREE <b>B.Tech · AI & DS</b></span><span>CLASS OF <b>2025</b></span></span><span className="barcode" aria-hidden="true" /><span className="mono flip-hint">TAP TO FLIP ↻</span></span>
         <span className="id-back" aria-hidden={!flipped}><span className="eyebrow">THE OTHER SIDE</span><strong>Research.<br />Develop.<br /><em>Deploy.</em></strong><span>Lead Software Engineer · GenAI</span><span>B.Tech · 9.01/10 CGPA</span><span>DRDO research experience</span><span>Co-founder · AIoT Tech</span><span className="signature">Bhavin.</span><span className="mono flip-hint">TAP TO RETURN ↻</span></span>
       </button></div>
       <div className="quick-facts reveal"><p className="eyebrow">THE SHORT VERSION</p>{[["Location", PROFILE.location], ["Current role", "Lead Software Engineer"], ["Focus", "GenAI · Agents · Applied ML"], ["Education", "B.Tech · AI & Data Science"]].map(([label, value]) => <div key={label}><span>{label}</span><strong>{value}</strong></div>)}<blockquote>“Turning research ideas into production applications.”</blockquote><a className="text-link" href={`mailto:${PROFILE.email}`}>Say hello ↗</a></div>
@@ -177,8 +178,8 @@ function Skills() {
   return <section id="skills" className="section" aria-labelledby="skills-label">
     <Heading index="02" label="Tools of the trade" title="The elements of" accent="my stack." />
     <p id="skills-label" className="section-intro">From model experimentation to the infrastructure that brings it to life.</p>
-    <div className="filter-row" role="group" aria-label="Filter skills by family">{["All", ...SKILL_GROUPS.map(group => group.name)].map(item => <button type="button" key={item} aria-pressed={family === item} onClick={() => setFamily(item)}>{item}</button>)}</div>
-    <div className="skills-layout"><div className="elements-grid">{skills.map((item, i) => <button type="button" key={item.name} className={`element reveal ${family !== "All" && family !== item.family ? "dimmed" : ""} ${selected === item.name ? "selected" : ""}`} aria-pressed={selected === item.name} onClick={() => setSelected(item.name)} onFocus={() => setSelected(item.name)} onMouseEnter={() => setSelected(item.name)} style={{ transitionDelay: `${((i % 8) + Math.floor(i / 8)) * 15}ms` }}><span className="element-number">{String(i + 1).padStart(2, "0")}</span><strong>{SYMBOLS[item.name] || item.name.replace(/[^A-Za-z]/g, "").slice(0, 2)}</strong><span className="element-name">{item.name}</span></button>)}</div>
+    <div className="filter-row" role="group" aria-label="Filter skills by family">{["All", ...SKILL_GROUPS.map(group => group.name)].map(item => <button type="button" key={item} aria-pressed={family === item} onClick={() => { setFamily(item); if (item !== "All") setSelected(SKILL_GROUPS.find(group => group.name === item)!.skills[0]); }}>{item}</button>)}</div>
+    <div className="skills-layout"><div className="elements-grid">{skills.map((item, i) => <button type="button" key={item.name} disabled={family !== "All" && family !== item.family} className={`element reveal ${family !== "All" && family !== item.family ? "dimmed" : ""} ${selected === item.name ? "selected" : ""}`} aria-pressed={selected === item.name} onClick={() => setSelected(item.name)} onFocus={() => setSelected(item.name)} style={{ transitionDelay: `${((i % 8) + Math.floor(i / 8)) * 15}ms` }}><span className="element-number">{String(i + 1).padStart(2, "0")}</span><strong>{SYMBOLS[item.name] || item.name.replace(/[^A-Za-z]/g, "").slice(0, 2)}</strong><span className="element-name">{item.name}</span></button>)}</div>
       <aside className="skill-inspector" aria-label="Selected skill details"><p className="eyebrow">ELEMENT INSPECTOR</p><TechLogo name={selected} symbol={SYMBOLS[selected] || selected.slice(0, 2)} /><h3>{selected}</h3><p>{skill.family}</p><div className="inspector-projects"><span className="eyebrow">IN MY WORK</span>{projects.length ? projects.map(project => <a key={project.id} href="#work">{project.title} ↗</a>) : <p>Part of my technical toolkit.<br />See the CV for the full stack.</p>}</div></aside>
     </div>
   </section>;
@@ -200,7 +201,7 @@ function Work() {
 function Research() {
   return <section id="research" className="section" aria-labelledby="research-label">
     <Heading index="04" label="Research & contributions" title="Driven by" accent="questions." />
-    <div className="research-layout"><div className="research-statement reveal"><p className="eyebrow">CURRENT RESEARCH INTEREST</p><h3 id="research-label">How do we make<br />intelligent agents<br /><em>more reliable?</em></h3><p>Detecting and correcting compounding errors in multi-step tool-calling pipelines, and evaluating agents in open-ended environments.</p><span className="research-status"><span className="status-dot" /> Papers in preparation · 2025–2026</span><p className="small-copy">Applied deep learning and agentic-system reliability, including DeliverIQ. Research spans applied deep learning and agentic-system reliability.</p></div>
+    <div className="research-layout"><div className="research-statement reveal"><p className="eyebrow">CURRENT RESEARCH INTEREST</p><h3 id="research-label">How do we make<br />intelligent agents<br /><em>more reliable?</em></h3><p>Detecting and correcting compounding errors in multi-step tool-calling pipelines, and evaluating agents in open-ended environments.</p><span className="research-status"><span className="status-dot" /> Papers in preparation · 2025–2026</span><p className="small-copy">Work in preparation covers applied deep learning and agent reliability, including DeliverIQ. These papers have not yet been published.</p></div>
       <div className="research-papers">{RESEARCH.map((paper, i) => <article className="paper-card reveal" key={paper.title}><p className="eyebrow">0{i + 1} / DATASET CONTRIBUTION</p><h3>{paper.title}</h3><p className="paper-publisher">{paper.publication}</p><p>{paper.detail}</p><a className="text-link" href={paper.link} target="_blank" rel="noreferrer">Read published work ↗</a></article>)}</div></div>
   </section>;
 }

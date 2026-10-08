@@ -1515,76 +1515,76 @@ html.light-theme .hover\:bg-white\/\[0\.08\]:hover {
 }
 
 /* Chatbot Light Mode Overrides */
-html.light-theme .chat-bg {
+html[data-theme="light"] .chat-bg {
   background-color: #f0f9ff !important; /* sky-50 */
   border-color: rgba(14, 165, 233, 0.2) !important;
   box-shadow: 0 10px 40px -10px rgba(14, 165, 233, 0.15) !important;
 }
-html.light-theme .chat-header {
+html[data-theme="light"] .chat-header {
   background-color: rgba(224, 242, 254, 0.95) !important; /* sky-100 */
   border-bottom-color: rgba(14, 165, 233, 0.2) !important;
 }
-html.light-theme .chat-title {
+html[data-theme="light"] .chat-title {
   color: #0c4a6e !important; /* sky-900 */
 }
-html.light-theme .chat-bot-bubble {
+html[data-theme="light"] .chat-bot-bubble {
   background-color: #e0f2fe !important; /* sky-100 */
   border-color: rgba(14, 165, 233, 0.15) !important;
   box-shadow: none !important;
 }
-html.light-theme .chat-bot-icon {
+html[data-theme="light"] .chat-bot-icon {
   background-color: #bae6fd !important; /* sky-200 */
   border-color: rgba(14, 165, 233, 0.2) !important;
   color: #0f172a !important; /* Very dark slate for max contrast */
 }
-html.light-theme .chat-footer {
+html[data-theme="light"] .chat-footer {
   background-color: rgba(224, 242, 254, 0.95) !important; /* sky-100 */
   border-top-color: rgba(14, 165, 233, 0.2) !important;
 }
-html.light-theme .chat-input-wrapper {
+html[data-theme="light"] .chat-input-wrapper {
   background-color: #ffffff !important;
   border-color: rgba(14, 165, 233, 0.3) !important;
 }
-html.light-theme .chat-input-wrapper:focus-within {
+html[data-theme="light"] .chat-input-wrapper:focus-within {
   background-color: #f8fafc !important;
   border-color: #3b82f6 !important;
 }
-html.light-theme .chat-input {
+html[data-theme="light"] .chat-input {
   color: #0f172a !important;
 }
-html.light-theme .chat-input::placeholder {
+html[data-theme="light"] .chat-input::placeholder {
   color: #64748b !important;
 }
-html.light-theme .chat-send-btn:disabled {
+html[data-theme="light"] .chat-send-btn:disabled {
   background-color: #93c5fd !important; /* blue-300 instead of slate-700 */
   opacity: 0.7 !important;
 }
 
 /* Chatbot Prose Light Mode Overrides */
-html.light-theme .chat-prose {
+html[data-theme="light"] .chat-prose {
   color: #1e293b !important;
 }
-html.light-theme .chat-prose strong,
-html.light-theme .chat-prose h1,
-html.light-theme .chat-prose h2,
-html.light-theme .chat-prose h3 {
+html[data-theme="light"] .chat-prose strong,
+html[data-theme="light"] .chat-prose h1,
+html[data-theme="light"] .chat-prose h2,
+html[data-theme="light"] .chat-prose h3 {
   color: #0f172a !important;
 }
-html.light-theme .chat-prose table {
+html[data-theme="light"] .chat-prose table {
   border-color: #cbd5e1 !important;
 }
-html.light-theme .chat-prose th,
-html.light-theme .chat-prose td {
+html[data-theme="light"] .chat-prose th,
+html[data-theme="light"] .chat-prose td {
   border-color: #cbd5e1 !important;
 }
-html.light-theme .chat-prose th {
+html[data-theme="light"] .chat-prose th {
   background-color: #e2e8f0 !important;
   color: #0f172a !important;
 }
-html.light-theme .chat-prose a {
+html[data-theme="light"] .chat-prose a {
   color: #2563eb !important;
 }
-html.light-theme .chat-prose a:hover {
+html[data-theme="light"] .chat-prose a:hover {
   color: #1d4ed8 !important;
 }
 
@@ -1712,7 +1712,7 @@ html.light-theme .nav-mobile-menu nav a:hover {
 }
 
 html.light-theme .hero-secondary-button,
-html.light-theme .game-secondary-button {
+html[data-theme="light"] .game-secondary-button {
   border-color: rgba(30, 64, 175, 0.28);
   background: rgba(255, 255, 255, 0.78);
   color: #1e3a8a;
@@ -1720,7 +1720,7 @@ html.light-theme .game-secondary-button {
 }
 
 html.light-theme .hero-secondary-button:hover,
-html.light-theme .game-secondary-button:hover {
+html[data-theme="light"] .game-secondary-button:hover {
   border-color: rgba(29, 78, 216, 0.55);
   background: #ffffff;
 }
@@ -1808,140 +1808,140 @@ html.light-theme .fixed.bottom-5.left-5 {
 }
 
 /* Light exploration game */
-html.light-theme .game-overlay {
+html[data-theme="light"] .game-overlay {
   background: rgba(51, 65, 85, 0.32);
 }
 
-html.light-theme .game-window {
+html[data-theme="light"] .game-window {
   border-color: rgba(30, 64, 175, 0.28);
   background: #eef4fc;
   box-shadow: 0 40px 110px rgba(15, 23, 42, 0.3), inset 0 1px 0 #ffffff;
 }
 
-html.light-theme .game-topbar {
+html[data-theme="light"] .game-topbar {
   border-bottom-color: rgba(30, 64, 175, 0.17);
   background: rgba(248, 251, 255, 0.98);
 }
 
-html.light-theme .game-icon-button {
+html[data-theme="light"] .game-icon-button {
   border-color: rgba(30, 64, 175, 0.24);
   background: rgba(219, 234, 254, 0.55);
   color: #1e3a8a;
 }
 
-html.light-theme .game-icon-button:hover {
+html[data-theme="light"] .game-icon-button:hover {
   background: #dbeafe;
   color: #1d4ed8;
 }
 
-html.light-theme .game-progress-track {
+html[data-theme="light"] .game-progress-track {
   background: rgba(30, 64, 175, 0.1);
 }
 
-html.light-theme .game-stage {
+html[data-theme="light"] .game-stage {
   background:
     radial-gradient(circle at 45% 46%, rgba(59, 130, 246, 0.12), transparent 36%),
     #e9f1fb;
 }
 
-html.light-theme .game-world {
+html[data-theme="light"] .game-world {
   background:
     radial-gradient(circle at 50% 50%, rgba(96, 165, 250, 0.11), transparent 55%),
     #edf4fd;
 }
 
-html.light-theme .game-grid-floor {
+html[data-theme="light"] .game-grid-floor {
   background-image:
     linear-gradient(rgba(30, 64, 175, 0.1) 1px, transparent 1px),
     linear-gradient(90deg, rgba(30, 64, 175, 0.1) 1px, transparent 1px);
 }
 
-html.light-theme .game-grid-floor::after {
+html[data-theme="light"] .game-grid-floor::after {
   background: repeating-linear-gradient(to bottom, transparent 0, transparent 3px, rgba(30, 64, 175, 0.025) 4px);
 }
 
-html.light-theme .game-path {
+html[data-theme="light"] .game-path {
   border-color: rgba(30, 64, 175, 0.14);
   background: rgba(147, 197, 253, 0.22);
   box-shadow: inset 0 0 28px rgba(37, 99, 235, 0.05);
 }
 
-html.light-theme .game-room-outline {
+html[data-theme="light"] .game-room-outline {
   border-color: rgba(30, 64, 175, 0.2);
   background: rgba(255, 255, 255, 0.38);
 }
 
-html.light-theme .game-zone {
+html[data-theme="light"] .game-zone {
   color: #475569;
 }
 
-html.light-theme .game-zone-beacon {
+html[data-theme="light"] .game-zone-beacon {
   border-color: rgba(29, 78, 216, 0.3);
 }
 
-html.light-theme .game-zone-building {
+html[data-theme="light"] .game-zone-building {
   border-color: rgba(30, 64, 175, 0.3);
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(219, 234, 254, 0.98));
   color: #334155;
   box-shadow: 0 15px 32px rgba(30, 64, 175, 0.13), inset 0 1px 0 #ffffff;
 }
 
-html.light-theme .game-zone-symbol {
+html[data-theme="light"] .game-zone-symbol {
   border-color: rgba(29, 78, 216, 0.28);
   background: rgba(37, 99, 235, 0.1);
   color: #1d4ed8;
 }
 
-html.light-theme .game-zone.is-active .game-zone-building,
-html.light-theme .game-zone.is-discovered .game-zone-building {
+html[data-theme="light"] .game-zone.is-active .game-zone-building,
+html[data-theme="light"] .game-zone.is-discovered .game-zone-building {
   border-color: rgba(2, 132, 199, 0.65);
   color: #0f172a;
   box-shadow: 0 0 35px rgba(37, 99, 235, 0.18), inset 0 1px 0 #ffffff;
 }
 
-html.light-theme .game-zone.is-discovered .game-zone-symbol {
+html[data-theme="light"] .game-zone.is-discovered .game-zone-symbol {
   border-color: rgba(2, 132, 199, 0.48);
   background: rgba(14, 165, 233, 0.14);
   color: #0369a1;
 }
 
-html.light-theme .game-zone-prompt {
+html[data-theme="light"] .game-zone-prompt {
   border-color: rgba(30, 64, 175, 0.3);
   background: rgba(255, 255, 255, 0.98);
   color: #1e3a8a;
   box-shadow: 0 8px 20px rgba(30, 64, 175, 0.14);
 }
 
-html.light-theme .game-portal-core {
+html[data-theme="light"] .game-portal-core {
   border-color: rgba(71, 85, 105, 0.36);
   background: radial-gradient(circle, rgba(203, 213, 225, 0.72), rgba(241, 245, 249, 0.98) 68%);
   color: #475569;
   box-shadow: inset 0 0 24px rgba(100, 116, 139, 0.14);
 }
 
-html.light-theme .game-portal.is-unlocked .game-portal-core {
+html[data-theme="light"] .game-portal.is-unlocked .game-portal-core {
   border-color: rgba(2, 132, 199, 0.7);
   background: radial-gradient(circle, rgba(96, 165, 250, 0.5), rgba(239, 246, 255, 0.98) 68%);
   color: #1d4ed8;
 }
 
-html.light-theme .game-stage-hud {
+html[data-theme="light"] .game-stage-hud {
   border-color: rgba(30, 64, 175, 0.25);
   background: rgba(255, 255, 255, 0.9);
   box-shadow: 0 12px 30px rgba(30, 64, 175, 0.13);
 }
 
-html.light-theme .game-key-hint span {
+html[data-theme="light"] .game-key-hint span {
   border-color: rgba(30, 64, 175, 0.26);
   background: rgba(219, 234, 254, 0.7);
   color: #334155;
 }
 
-html.light-theme .game-intro {
+html[data-theme="light"] .game-intro {
   background: rgba(226, 232, 240, 0.64);
 }
 
-html.light-theme .game-intro-card {
+html[data-theme="light"] .game-intro-card {
   border-color: rgba(30, 64, 175, 0.27);
   background:
     radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.13), transparent 42%),
@@ -1949,164 +1949,164 @@ html.light-theme .game-intro-card {
   box-shadow: 0 28px 75px rgba(30, 64, 175, 0.2);
 }
 
-html.light-theme .game-intro-icon {
+html[data-theme="light"] .game-intro-icon {
   border-color: rgba(29, 78, 216, 0.36);
   background: rgba(219, 234, 254, 0.84);
   color: #1d4ed8;
 }
 
-html.light-theme .game-instruction-chip {
+html[data-theme="light"] .game-instruction-chip {
   border-color: rgba(30, 64, 175, 0.22);
   background: rgba(219, 234, 254, 0.6);
   color: #334155;
 }
 
-html.light-theme .game-discovery-panel {
+html[data-theme="light"] .game-discovery-panel {
   border-left-color: rgba(30, 64, 175, 0.18);
   background: rgba(248, 251, 255, 0.99);
 }
 
-html.light-theme .game-fragment-list {
+html[data-theme="light"] .game-fragment-list {
   border-top-color: rgba(30, 64, 175, 0.15);
 }
 
-html.light-theme .game-fragment-list > div {
+html[data-theme="light"] .game-fragment-list > div {
   color: #64748b;
 }
 
-html.light-theme .game-fragment-list > div.is-discovered {
+html[data-theme="light"] .game-fragment-list > div.is-discovered {
   color: #1d4ed8;
 }
 
-html.light-theme .game-mobile-controls button {
+html[data-theme="light"] .game-mobile-controls button {
   border-color: rgba(30, 64, 175, 0.32);
   background: rgba(255, 255, 255, 0.94);
   color: #1e3a8a;
   box-shadow: 0 8px 22px rgba(30, 64, 175, 0.16);
 }
 
-html.light-theme .game-mobile-fragment-button {
+html[data-theme="light"] .game-mobile-fragment-button {
   border-color: rgba(30, 64, 175, 0.45);
   background: linear-gradient(135deg, #1d4ed8, #3b82f6);
   color: #ffffff;
   box-shadow: 0 12px 28px rgba(30, 64, 175, 0.3);
 }
 
-html.light-theme .game-zone-feedback {
+html[data-theme="light"] .game-zone-feedback {
   border-color: rgba(194, 65, 12, 0.3);
   background: rgba(255, 247, 237, 0.97);
   color: #9a3412;
   box-shadow: 0 12px 30px rgba(124, 45, 18, 0.14);
 }
 
-html.light-theme .game-zone-feedback strong {
+html[data-theme="light"] .game-zone-feedback strong {
   color: #7c2d12;
 }
 
-html.light-theme .game-chapter-view {
+html[data-theme="light"] .game-chapter-view {
   background:
     radial-gradient(circle at 82% 8%, rgba(59, 130, 246, 0.13), transparent 30%),
     #edf4fd;
 }
 
-html.light-theme .game-chapter-sidebar {
+html[data-theme="light"] .game-chapter-sidebar {
   border-color: rgba(30, 64, 175, 0.18);
   background: rgba(248, 251, 255, 0.98);
 }
 
-html.light-theme .game-chapter-back {
+html[data-theme="light"] .game-chapter-back {
   border-color: rgba(30, 64, 175, 0.24);
   background: rgba(219, 234, 254, 0.58);
   color: #1e3a8a;
 }
 
-html.light-theme .game-chapter-back:hover {
+html[data-theme="light"] .game-chapter-back:hover {
   border-color: rgba(29, 78, 216, 0.5);
   background: #dbeafe;
 }
 
-html.light-theme .game-chapter-nav-heading,
-html.light-theme .game-chapter-nav small,
-html.light-theme .game-chapter-nav-help {
+html[data-theme="light"] .game-chapter-nav-heading,
+html[data-theme="light"] .game-chapter-nav small,
+html[data-theme="light"] .game-chapter-nav-help {
   color: #64748b;
 }
 
-html.light-theme .game-chapter-nav button {
+html[data-theme="light"] .game-chapter-nav button {
   color: #475569;
 }
 
-html.light-theme .game-chapter-nav button:not(:disabled):hover,
-html.light-theme .game-chapter-nav button.is-active {
+html[data-theme="light"] .game-chapter-nav button:not(:disabled):hover,
+html[data-theme="light"] .game-chapter-nav button.is-active {
   border-color: rgba(29, 78, 216, 0.28);
   background: rgba(219, 234, 254, 0.78);
   color: #0f172a;
 }
 
-html.light-theme .game-chapter-nav-symbol {
+html[data-theme="light"] .game-chapter-nav-symbol {
   border-color: rgba(29, 78, 216, 0.28);
   color: #1d4ed8;
 }
 
-html.light-theme .game-chapter-nav-lock {
+html[data-theme="light"] .game-chapter-nav-lock {
   border-color: rgba(30, 64, 175, 0.24);
   background: #f8fbff;
   color: #64748b;
 }
 
-html.light-theme .game-chapter-hero {
+html[data-theme="light"] .game-chapter-hero {
   border-bottom-color: rgba(30, 64, 175, 0.16);
 }
 
-html.light-theme .game-chapter-hero h2,
-html.light-theme .game-chapter-entry h4 {
+html[data-theme="light"] .game-chapter-hero h2,
+html[data-theme="light"] .game-chapter-entry h4 {
   color: #0f172a;
 }
 
-html.light-theme .game-chapter-hero p:not(.hud-label),
-html.light-theme .game-chapter-entry-description {
+html[data-theme="light"] .game-chapter-hero p:not(.hud-label),
+html[data-theme="light"] .game-chapter-entry-description {
   color: #475569;
 }
 
-html.light-theme .game-chapter-badge {
+html[data-theme="light"] .game-chapter-badge {
   border-color: rgba(29, 78, 216, 0.3);
   background: linear-gradient(145deg, #ffffff, #dbeafe);
   color: #1e3a8a;
   box-shadow: 0 18px 42px rgba(30, 64, 175, 0.14);
 }
 
-html.light-theme .game-chapter-badge small,
-html.light-theme .game-chapter-stats strong,
-html.light-theme .game-chapter-section-title,
-html.light-theme .game-chapter-entry-heading,
-html.light-theme .game-chapter-tags span {
+html[data-theme="light"] .game-chapter-badge small,
+html[data-theme="light"] .game-chapter-stats strong,
+html[data-theme="light"] .game-chapter-section-title,
+html[data-theme="light"] .game-chapter-entry-heading,
+html[data-theme="light"] .game-chapter-tags span {
   color: #1d4ed8;
 }
 
-html.light-theme .game-chapter-stats {
+html[data-theme="light"] .game-chapter-stats {
   border-color: rgba(30, 64, 175, 0.18);
   background: rgba(255, 255, 255, 0.7);
 }
 
-html.light-theme .game-chapter-stats > div {
+html[data-theme="light"] .game-chapter-stats > div {
   border-right-color: rgba(30, 64, 175, 0.15);
 }
 
-html.light-theme .game-chapter-stats span,
-html.light-theme .game-chapter-entry-heading p {
+html[data-theme="light"] .game-chapter-stats span,
+html[data-theme="light"] .game-chapter-entry-heading p {
   color: #64748b;
 }
 
-html.light-theme .game-chapter-section-title h3 {
+html[data-theme="light"] .game-chapter-section-title h3 {
   color: #1e3a8a;
 }
 
-html.light-theme .game-chapter-entry {
+html[data-theme="light"] .game-chapter-entry {
   border-color: rgba(30, 64, 175, 0.18);
   background: rgba(255, 255, 255, 0.84);
   box-shadow: 0 10px 26px rgba(30, 64, 175, 0.07);
 }
 
-html.light-theme .game-chapter-tags span {
+html[data-theme="light"] .game-chapter-tags span {
   border-color: rgba(29, 78, 216, 0.2);
   background: rgba(219, 234, 254, 0.72);
 }

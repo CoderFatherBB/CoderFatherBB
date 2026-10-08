@@ -222,3 +222,16 @@ html { scroll-padding-top:100px; }
 .video-controls .caption-control { font-size:11px; }
 
 .achievement-card { position:relative; }
+
+.mobile-menu { overflow-y:auto; overscroll-behavior:contain; }
+.chat-bg { max-width:calc(100vw - 32px); max-height:calc(100dvh - 32px); right:16px; bottom:16px; }
+.chat-input { min-width:0; }
+html[data-theme="light"] .game-window :is(.text-white,.text-slate-200,.text-slate-300,.text-blue-200,.text-blue-300) { color:#193b68; }
+html[data-theme="light"] .game-window :is(.text-slate-400,.text-slate-500) { color:#475569; }
+html[data-theme="light"] .game-window :is(.game-primary-button,.game-mobile-fragment-button) { color:#fff; }
+html[data-theme="light"] .chat-header :is(p,button) { color:#475569; }
+
+.chat-bg,.chat-trigger,.chat-tooltip { z-index:200; }
+html[data-theme="light"] .game-primary-button { background:#1d4ed8; }
+html[data-theme="light"] .game-primary-button:hover { background:#1e40af; }
+html[data-theme="dark"] .game-window .text-slate-500 { color:#94a3b8; }
