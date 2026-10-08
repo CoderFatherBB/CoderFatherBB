@@ -27,7 +27,7 @@ All new profile data lives in `src/lib/data.ts`. Facts and metrics come from the
 
 | Section | Experience |
 | --- | --- |
-| Hero | Research/develop/deploy positioning; muted talking avatar; explicit sound, playback, captions, and transcript controls |
+| Hero | Research/develop/deploy positioning; talking avatar with sound and captions enabled by default; explicit sound, playback, captions, and transcript controls |
 | About | Profile, swaying/flippable ID card, quick facts, original portrait and one industry résumé download |
 | Skills | Periodic-table tiles, family filters, local brand logos, and a skill/project inspector |
 | Work | Expanding project panels with labeled illustrative workflows |
@@ -37,13 +37,13 @@ All new profile data lives in `src/lib/data.ts`. Facts and metrics come from the
 | Achievements | Desktop sticky horizontal gallery and count-up milestones; touch-scroll gallery on mobile |
 | Contact | Email/copy, phone, GitHub, LinkedIn, optional AI lab and assistant |
 
-Light is the default. Theme preference is saved in `localStorage` under `portfolio-theme`. A small pre-paint script restores it without a flash of the opposite theme. Decorative animation, smooth scrolling, autoplay, and desktop pinning respect reduced-motion preferences. Sound requires an explicit button press. The introduction pauses when the hero is less than 35% visible or the video is less than half visible, the tab becomes hidden, or the visitor pauses it.
+Light is the default. Theme preference is saved in `localStorage` under `portfolio-theme`. A small pre-paint script restores it without a flash of the opposite theme. Decorative animation, smooth scrolling, autoplay, and desktop pinning respect reduced-motion preferences. Sound and English captions are enabled by default. If the browser blocks audible autoplay, the video plays muted with a sound hint and retries audio on the first interaction while visible. A deliberate mute stays muted. The introduction pauses when the video is less than half visible, the tab becomes hidden, or the visitor pauses it.
 
 The legacy game is preserved rather than rewritten. Its existing content/components remain under `src/components/`. Both the game and chat UI are dynamically imported only when requested. The assistant still uses the existing `/api/chat` proxy and requires the existing backend, selected with `BACKEND_API_URL`; no credentials are included in this repository.
 
 ## Updating the introduction
 
-Assets live in `public/hero/`: `hero.mp4` (H.264/AAC), `hero.webm` (VP9/Opus), `poster.webp`, and optional English `captions.vtt`. The 14-second video animates a still avatar's mouth; it is not a full-body motion animation or a verified seamless speech loop. It uses a synthetic male US English voice, not a recording or clone of Bhavin's voice.
+Assets live in `public/hero/`: `hero.mp4` (H.264/AAC), `hero.webm` (VP9/Opus), `poster.webp`, and default-on English `captions.vtt`. The 14-second video animates a still avatar's mouth; it is not a full-body motion animation or a verified seamless speech loop. It uses a synthetic male US English voice, not a recording or clone of Bhavin's voice.
 
 The reproducible Piper → Wav2Lip rendering workflow and source avatar are in [Bhavin's Lip_Sync branch](https://github.com/CoderFatherBB/Deep_Learning/tree/codex/bhavin-portfolio-lipsync/Lip_Sync/bhavin-portfolio). Render there, then copy `intro.mp4` and `intro.webm` into this project's hero folder under the names above. Update the transcript in `PROFILE.transcript` and caption timings when changing the narration.
 
@@ -67,3 +67,5 @@ Changes are prepared on `codex/talking-portfolio`. The existing Vercel deploymen
 The ID card uses Bhavin’s original supplied portrait. All résumé downloads serve the industry ATS CV, which best connects research to production engineering and measured impact.
 
 Profile and interactive-lab content share `src/lib/data.ts`. After updating these verified facts, synchronize the backend assistant context with `node --experimental-strip-types scripts/sync-knowledge.mjs` (Node 22+). Keep metrics attached to their role or project; dataset contributions and unpublished papers have separate labels.
+
+Stack tiles use six progressively lighter blue category shades in each theme. Selecting or filtering never hides a tile; categories outside the active filter remain visible but disabled. Interactive tiles do not use the one-shot reveal animation, so React selection updates cannot reset them to an invisible state.

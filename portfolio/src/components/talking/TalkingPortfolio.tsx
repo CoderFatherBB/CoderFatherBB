@@ -84,8 +84,10 @@ function TalkingHero() {
   const visible = useRef(false);
   const heroVisible = useRef(false);
   const pausedByUser = useRef(false);
-  const [sound, setSound] = useState(false);
-  const [captions, setCaptions] = useState(false);
+  const blockedAudio = useRef(false);
+  const [audioBlocked, setAudioBlocked] = useState(false);
+  const [sound, setSound] = useState(true);
+  const [captions, setCaptions] = useState(true);
   const [playing, setPlaying] = useState(false);
   const [failed, setFailed] = useState(false);
   useEffect(() => {
@@ -93,7 +95,18 @@ function TalkingHero() {
     if (!player || !section.current) return;
     const reduced = matchMedia("(prefers-reduced-motion: reduce)");
     const sync = () => {
-      if (visible.current && heroVisible.current && !document.hidden && !pausedByUser.current && !reduced.matches) void player.play().catch(() => {});
+      if (visible.current && !document.hidden && !pausedByUser.current && !reduced.matches) {
+        void player.play().catch(error => {
+          if (error.name !== "NotAllowedError" || !visible.current || document.hidden || pausedByUser.current || reduced.matches) return;
+          // Audible autoplay is browser-controlled. Keep the video running and
+          // retry sound on the visitor's first interaction while it is visible.
+          blockedAudio.current = true;
+          setAudioBlocked(true);
+          player.muted = true;
+          setSound(false);
+          void player.play().catch(() => {});
+        });
+      }
       else player.pause();
     };
     const observer = new IntersectionObserver(entries => {
@@ -105,12 +118,22 @@ function TalkingHero() {
     }, { threshold: [0, .35, .5] });
     observer.observe(section.current);
     observer.observe(player);
+    const enableBlockedAudio = (event: Event) => {
+      if (event.target instanceof Element && event.target.closest(".video-controls")) return;
+      if (!blockedAudio.current || !visible.current || document.hidden || pausedByUser.current || reduced.matches) return;
+      player.muted = false;
+      void player.play().then(() => { blockedAudio.current = false; setAudioBlocked(false); setSound(true); }).catch(() => { player.muted = true; });
+    };
     sync(); document.addEventListener("visibilitychange", sync); reduced.addEventListener("change", sync);
-    return () => { observer.disconnect(); document.removeEventListener("visibilitychange", sync); reduced.removeEventListener("change", sync); player.pause(); };
+    document.addEventListener("pointerdown", enableBlockedAudio);
+    document.addEventListener("keydown", enableBlockedAudio);
+    return () => { observer.disconnect(); document.removeEventListener("visibilitychange", sync); reduced.removeEventListener("change", sync); document.removeEventListener("pointerdown", enableBlockedAudio); document.removeEventListener("keydown", enableBlockedAudio); player.pause(); };
   }, []);
   function toggleSound() {
     const player = video.current;
     if (!player) return;
+    blockedAudio.current = false;
+    setAudioBlocked(false);
     player.muted = !player.muted;
     setSound(!player.muted);
     pausedByUser.current = false;
@@ -141,11 +164,11 @@ function TalkingHero() {
     <div className="hero-stage">
       <span className="ghost-name" aria-hidden="true">BHAVIN</span>
       <div className="video-canvas">
-        <video ref={video} muted loop playsInline preload="metadata" poster="/hero/poster.webp" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} onError={() => setFailed(true)} aria-label="Bhavin's animated introduction" aria-describedby="intro-transcript">
-          <source src="/hero/hero.webm" type="video/webm" /><source src="/hero/hero.mp4" type="video/mp4" /><track kind="captions" src="/hero/captions.vtt" srcLang="en" label="English" />
+        <video ref={video} muted={!sound} loop playsInline preload="metadata" poster="/hero/poster.webp" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} onError={() => setFailed(true)} aria-label="Bhavin's animated introduction" aria-describedby="intro-transcript">
+          <source src="/hero/hero.webm" type="video/webm" /><source src="/hero/hero.mp4" type="video/mp4" /><track kind="captions" src="/hero/captions.vtt" srcLang="en" label="English" default />
         </video>
       </div>
-      {!failed && <div className="video-controls"><button type="button" onClick={toggleSound} aria-label={sound ? "Mute introduction" : "Enable introduction sound"} aria-pressed={sound}>{sound ? "♫" : "♪"}<span className="sound-slash" aria-hidden="true">{sound ? "" : "/"}</span></button><button type="button" onClick={togglePlayback} aria-label={playing ? "Pause introduction" : "Play introduction"}>{playing ? "Ⅱ" : "▶"}</button><button type="button" className="caption-control" onClick={toggleCaptions} aria-label={captions ? "CC: Hide captions" : "CC: Show captions"} aria-pressed={captions}>CC</button><span className="mono">MEET BHAVIN</span></div>}
+      {!failed && <div className="video-controls"><button type="button" onClick={toggleSound} aria-label={sound ? "Mute introduction" : "Enable introduction sound"} aria-pressed={sound}>{sound ? "♫" : "♪"}<span className="sound-slash" aria-hidden="true">{sound ? "" : "/"}</span></button><button type="button" onClick={togglePlayback} aria-label={playing ? "Pause introduction" : "Play introduction"}>{playing ? "Ⅱ" : "▶"}</button><button type="button" className="caption-control" onClick={toggleCaptions} aria-label={captions ? "CC: Hide captions" : "CC: Show captions"} aria-pressed={captions}>CC</button><span className="mono">{!sound && audioBlocked ? "TAP ♪ FOR SOUND" : "MEET BHAVIN"}</span></div>}
       {failed && <p className="video-fallback">The introduction video could not load. Read the introduction below.</p>}
       <details className="intro-transcript" id="intro-transcript"><summary>Read introduction</summary><p>{PROFILE.transcript}</p></details>
     </div>
@@ -170,7 +193,7 @@ function About() {
 
 const SYMBOLS: Record<string, string> = { Python: "Py", SQL: "Sq", JavaScript: "Js", LangChain: "Lc", LangGraph: "Lg", MCP: "Mc", "OpenAI API": "Ai", Groq: "Gq", Ollama: "Ol", ChromaDB: "Ch", FAISS: "Fa", PyTorch: "Pt", TensorFlow: "Tf", "scikit-learn": "Sk", "Hugging Face": "Hf", OpenCV: "Cv", FastAPI: "Fp", Flask: "Fl", Firebase: "Fb", AWS: "Aw", Docker: "Dk", LLMOps: "Lo" };
 function Skills() {
-  const skills = SKILL_GROUPS.flatMap(group => group.skills.map(name => ({ name, family: group.name })));
+  const skills = SKILL_GROUPS.flatMap(group => group.skills.map(name => ({ name, family: group.name, category: SKILL_GROUPS.indexOf(group) })));
   const [family, setFamily] = useState("All");
   const [selected, setSelected] = useState("Python");
   const skill = skills.find(item => item.name === selected)!;
@@ -178,8 +201,8 @@ function Skills() {
   return <section id="skills" className="section" aria-labelledby="skills-label">
     <Heading index="02" label="Tools of the trade" title="The elements of" accent="my stack." />
     <p id="skills-label" className="section-intro">From model experimentation to the infrastructure that brings it to life.</p>
-    <div className="filter-row" role="group" aria-label="Filter skills by family">{["All", ...SKILL_GROUPS.map(group => group.name)].map(item => <button type="button" key={item} aria-pressed={family === item} onClick={() => { setFamily(item); if (item !== "All") setSelected(SKILL_GROUPS.find(group => group.name === item)!.skills[0]); }}>{item}</button>)}</div>
-    <div className="skills-layout"><div className="elements-grid">{skills.map((item, i) => <button type="button" key={item.name} disabled={family !== "All" && family !== item.family} className={`element reveal ${family !== "All" && family !== item.family ? "dimmed" : ""} ${selected === item.name ? "selected" : ""}`} aria-pressed={selected === item.name} onClick={() => setSelected(item.name)} onFocus={() => setSelected(item.name)} style={{ transitionDelay: `${((i % 8) + Math.floor(i / 8)) * 15}ms` }}><span className="element-number">{String(i + 1).padStart(2, "0")}</span><strong>{SYMBOLS[item.name] || item.name.replace(/[^A-Za-z]/g, "").slice(0, 2)}</strong><span className="element-name">{item.name}</span></button>)}</div>
+    <div className="filter-row" role="group" aria-label="Filter skills by family">{["All", ...SKILL_GROUPS.map(group => group.name)].map(item => <button type="button" key={item} data-category={SKILL_GROUPS.findIndex(group => group.name === item)} aria-pressed={family === item} onClick={() => { setFamily(item); if (item !== "All") setSelected(SKILL_GROUPS.find(group => group.name === item)!.skills[0]); }}>{item}</button>)}</div>
+    <div className="skills-layout"><div className="elements-grid">{skills.map((item, i) => <button type="button" key={item.name} disabled={family !== "All" && family !== item.family} data-category={item.category} className={`element ${family !== "All" && family !== item.family ? "dimmed" : ""} ${selected === item.name ? "selected" : ""}`} aria-pressed={selected === item.name} onClick={() => setSelected(item.name)} onFocus={() => setSelected(item.name)}><span className="element-number">{String(i + 1).padStart(2, "0")}</span><strong>{SYMBOLS[item.name] || item.name.replace(/[^A-Za-z]/g, "").slice(0, 2)}</strong><span className="element-name">{item.name}</span></button>)}</div>
       <aside className="skill-inspector" aria-label="Selected skill details"><p className="eyebrow">ELEMENT INSPECTOR</p><TechLogo name={selected} symbol={SYMBOLS[selected] || selected.slice(0, 2)} /><h3>{selected}</h3><p>{skill.family}</p><div className="inspector-projects"><span className="eyebrow">IN MY WORK</span>{projects.length ? projects.map(project => <a key={project.id} href="#work">{project.title} ↗</a>) : <p>Part of my technical toolkit.<br />See the CV for the full stack.</p>}</div></aside>
     </div>
   </section>;

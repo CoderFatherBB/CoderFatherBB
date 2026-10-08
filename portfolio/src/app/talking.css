@@ -235,3 +235,18 @@ html[data-theme="light"] .chat-header :is(p,button) { color:#475569; }
 html[data-theme="light"] .game-primary-button { background:#1d4ed8; }
 html[data-theme="light"] .game-primary-button:hover { background:#1e40af; }
 html[data-theme="dark"] .game-window .text-slate-500 { color:#94a3b8; }
+/* Category shades remain stable when tiles are selected or filtered. */
+:root { --stack-0:#bdd2f4; --stack-1:#c9dbf6; --stack-2:#d5e3f8; --stack-3:#dfeafa; --stack-4:#e8f0fc; --stack-5:#f0f6ff; }
+:root[data-theme="dark"] { --stack-0:#102441; --stack-1:#162d4d; --stack-2:#1c3658; --stack-3:#223e62; --stack-4:#29476d; --stack-5:#304f77; }
+[data-category="0"] { --category-blue:var(--stack-0); }
+[data-category="1"] { --category-blue:var(--stack-1); }
+[data-category="2"] { --category-blue:var(--stack-2); }
+[data-category="3"] { --category-blue:var(--stack-3); }
+[data-category="4"] { --category-blue:var(--stack-4); }
+[data-category="5"] { --category-blue:var(--stack-5); }
+.element { background:var(--category-blue); }
+.element.selected { background:var(--category-blue); box-shadow:inset 0 0 0 1px var(--blue); }
+.element.dimmed { opacity:.65; }
+.element :is(strong,.element-name,.element-number) { color:#193e70; }
+html[data-theme="dark"] .element :is(strong,.element-name,.element-number) { color:#edf4ff; }
+.filter-row button[data-category]:not([data-category="-1"]) { box-shadow:inset 0 -4px var(--category-blue); }

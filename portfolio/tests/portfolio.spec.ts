@@ -37,17 +37,17 @@ test('light default, theme persistence, navigation, and responsive layouts', asy
   expect(errors).toEqual([]);
 });
 
-test('video plays muted, sound is explicit, and playback pauses outside hero', async ({ page }) => {
+test('video defaults to captions and sound, with playback controls and visibility pausing', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
   const video = page.locator('video');
   await expect.poll(() => video.evaluate((el: HTMLVideoElement) => el.readyState)).toBeGreaterThanOrEqual(2);
-  expect(await video.evaluate((el: HTMLVideoElement) => el.muted)).toBe(true);
   await expect.poll(() => video.evaluate((el: HTMLVideoElement) => el.paused)).toBe(false);
-  await page.getByRole('button', { name: 'CC: Show captions' }).click();
-  expect(await video.evaluate((el: HTMLVideoElement) => el.textTracks[0].mode)).toBe('showing');
+  await expect.poll(() => video.evaluate((el: HTMLVideoElement) => el.textTracks[0].mode)).toBe('showing');
   await page.getByRole('button', { name: 'CC: Hide captions' }).click();
-  await page.getByRole('button', { name: 'Enable introduction sound' }).click();
+  expect(await video.evaluate((el: HTMLVideoElement) => el.textTracks[0].mode)).toBe('disabled');
+  await page.getByRole('button', { name: 'CC: Show captions' }).click();
+  if (await video.evaluate((el: HTMLVideoElement) => el.muted)) await page.getByRole('button', { name: 'Enable introduction sound' }).click();
   expect(await video.evaluate((el: HTMLVideoElement) => el.muted)).toBe(false);
   await page.locator('#skills').scrollIntoViewIfNeeded();
   await pauseScroll(page);
@@ -212,4 +212,77 @@ test('short-screen navigation and lab movement, discovery, chapter, and close in
     await page.getByRole('button', { name: 'Close exploration game' }).click();
     await expect(page.getByRole('dialog')).toHaveCount(0);
   }
+});
+
+test('touch selections keep all stack tiles visible and categories have six ordered blue shades', async ({ browser }) => {
+  test.setTimeout(60000);
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  const page = await context.newPage();
+  await page.goto('http://127.0.0.1:3000');
+  for (const theme of ['light', 'dark']) {
+    if (theme === 'dark') await page.getByRole('button', { name: 'Use dark theme' }).tap();
+    const tiles = page.locator('.element');
+    for (let index = 0; index < await tiles.count(); index++) {
+      await tiles.nth(index).tap();
+      await expect(tiles.nth(index)).toHaveAttribute('aria-pressed', 'true');
+      await expect.poll(() => tiles.nth(index).evaluate(el => Number(getComputedStyle(el).opacity))).toBe(1);
+      await expect(tiles.nth(index).locator('.element-name')).toBeVisible();
+    }
+    const shades = await page.locator('.element:not(.selected)').evaluateAll(elements => {
+      const groups = new Map<string, number>();
+      for (const element of elements) {
+        const rgb = getComputedStyle(element).backgroundColor.match(/\d+/g)!.map(Number);
+        groups.set(element.getAttribute('data-category')!, rgb[0] + rgb[1] + rgb[2]);
+      }
+      return [...groups].sort((a,b) => Number(a[0])-Number(b[0])).map(entry => entry[1]);
+    });
+    expect(shades).toHaveLength(6);
+    expect(new Set(shades).size).toBe(6);
+    expect(shades).toEqual([...shades].sort((a,b) => a-b));
+    const filters = page.getByRole('group', { name: 'Filter skills by family' }).getByRole('button');
+    for (let index = 1; index < await filters.count(); index++) {
+      await filters.nth(index).tap();
+      await page.locator('.element:enabled').last().tap();
+      expect(await tiles.evaluateAll(elements => elements.every(el => Number(getComputedStyle(el).opacity) > .5))).toBe(true);
+    }
+    await filters.first().tap();
+  }
+  await context.close();
+});
+
+test('audible autoplay rejection keeps video and captions running and enables sound on interaction', async ({ page }) => {
+  await page.addInitScript(() => {
+    const play = HTMLMediaElement.prototype.play;
+    let rejected = false;
+    HTMLMediaElement.prototype.play = function() {
+      if (!this.muted && !rejected) { rejected = true; return Promise.reject(new DOMException('Autoplay blocked', 'NotAllowedError')); }
+      return play.call(this);
+    };
+  });
+  await page.goto('/');
+  const video = page.locator('video');
+  await expect(page.getByText('TAP ♪ FOR SOUND')).toBeVisible();
+  await expect.poll(() => video.evaluate((el: HTMLVideoElement) => el.paused)).toBe(false);
+  await expect.poll(() => video.evaluate((el: HTMLVideoElement) => el.textTracks[0].mode)).toBe('showing');
+  await page.locator('h1').click();
+  await expect(page.getByRole('button', { name: 'Mute introduction' })).toBeVisible();
+  expect(await video.evaluate((el: HTMLVideoElement) => el.muted)).toBe(false);
+  await page.getByRole('button', { name: 'Mute introduction' }).click();
+  expect(await video.evaluate((el: HTMLVideoElement) => el.muted)).toBe(true);
+  await page.locator('h1').click();
+  expect(await video.evaluate((el: HTMLVideoElement) => el.muted)).toBe(true);
+});
+
+test('video starts with audible sound and captions when the browser permits autoplay', async () => {
+  const { chromium } = await import('@playwright/test');
+  const browser = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required'] });
+  try {
+    const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    await page.goto('http://127.0.0.1:3000');
+    const video = page.locator('video');
+    await expect.poll(() => video.evaluate((el: HTMLVideoElement) => el.paused)).toBe(false);
+    expect(await video.evaluate((el: HTMLVideoElement) => el.muted)).toBe(false);
+    await expect.poll(() => video.evaluate((el: HTMLVideoElement) => el.textTracks[0].mode)).toBe('showing');
+    await expect(page.getByRole('button', { name: 'Mute introduction' })).toHaveAttribute('aria-pressed', 'true');
+  } finally { await browser.close(); }
 });
