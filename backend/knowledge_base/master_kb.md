@@ -21,6 +21,8 @@ Source: supplied research and ATS CVs. Metrics are reported in those CVs, not in
   },
   "EXPERIENCE": [
     {
+      "id": "provilac-software",
+      "employment": "Full-time",
       "date": "Jun 2020–2023",
       "role": "Software Developer",
       "place": "Provilac",
@@ -28,6 +30,8 @@ Source: supplied research and ATS CVs. Metrics are reported in those CVs, not in
       "kind": "Engineering"
     },
     {
+      "id": "btech",
+      "employment": "Full-time",
       "date": "2021–2025",
       "role": "B.Tech · AI & Data Science",
       "place": "Vishwakarma University",
@@ -35,6 +39,7 @@ Source: supplied research and ATS CVs. Metrics are reported in those CVs, not in
       "kind": "Education"
     },
     {
+      "id": "university-research",
       "date": "2022–2024",
       "role": "Research & Development Intern",
       "place": "Vishwakarma University",
@@ -42,6 +47,7 @@ Source: supplied research and ATS CVs. Metrics are reported in those CVs, not in
       "kind": "Research"
     },
     {
+      "id": "drdo",
       "date": "Jul–Dec 2024",
       "role": "Research Intern · AI/ML",
       "place": "DRDO",
@@ -49,6 +55,7 @@ Source: supplied research and ATS CVs. Metrics are reported in those CVs, not in
       "kind": "Research"
     },
     {
+      "id": "provilac-ai",
       "date": "Nov 2024–Aug 2025",
       "role": "AI & ML Engineer",
       "place": "Provilac",
@@ -56,6 +63,7 @@ Source: supplied research and ATS CVs. Metrics are reported in those CVs, not in
       "kind": "Engineering"
     },
     {
+      "id": "mit-wpu",
       "date": "Apr–Dec 2025",
       "role": "Expert Collaborator",
       "place": "MIT World Peace University",
@@ -63,6 +71,7 @@ Source: supplied research and ATS CVs. Metrics are reported in those CVs, not in
       "kind": "Mentoring"
     },
     {
+      "id": "persistent",
       "date": "Sep 2025–Present",
       "role": "Lead Software Engineer · GenAI",
       "place": "Persistent Systems",
@@ -92,9 +101,26 @@ Source: supplied research and ATS CVs. Metrics are reported in those CVs, not in
       ],
       "github": "",
       "diagram": [
-        "Delivery data",
-        "9 AI / ML modules",
-        "Operational insights"
+        {
+          "title": "Delivery records",
+          "detail": "Bring together the delivery data used by the suite."
+        },
+        {
+          "title": "Nine AI/ML modules",
+          "detail": "Run the relevant forecasting, routing, anomaly, and vision modules."
+        },
+        {
+          "title": "Route, demand & package insights",
+          "detail": "Combine route optimization, demand forecasts, and package-tracking signals."
+        },
+        {
+          "title": "Delivery knowledge retrieval",
+          "detail": "Retrieve relevant delivery information for RAG questions."
+        },
+        {
+          "title": "Operational insights",
+          "detail": "Present the combined signals and grounded answers for delivery decisions."
+        }
       ]
     },
     {
@@ -118,9 +144,30 @@ Source: supplied research and ATS CVs. Metrics are reported in those CVs, not in
       ],
       "github": "",
       "diagram": [
-        "Documents",
-        "Chunk · embed · retrieve",
-        "Grounded answers"
+        {
+          "title": "Enterprise documents",
+          "detail": "Start with the document corpus and its metadata."
+        },
+        {
+          "title": "Recursive chunking",
+          "detail": "Break documents into retrievable passages."
+        },
+        {
+          "title": "Embeddings & vector index",
+          "detail": "Represent passages for semantic search using the retrieval stack."
+        },
+        {
+          "title": "Hybrid search & metadata filters",
+          "detail": "Find relevant passages with semantic/keyword retrieval and document filters."
+        },
+        {
+          "title": "Retrieved context",
+          "detail": "Supply the selected evidence to the answer-generation step."
+        },
+        {
+          "title": "Grounded answer",
+          "detail": "Return a document-grounded answer; evaluate retrieval and answer quality."
+        }
       ]
     },
     {
@@ -144,9 +191,26 @@ Source: supplied research and ATS CVs. Metrics are reported in those CVs, not in
       ],
       "github": "",
       "diagram": [
-        "User request",
-        "Plan · tools · reflect",
-        "Completed workflow"
+        {
+          "title": "Request & conversation memory",
+          "detail": "Interpret the request alongside persistent conversation context."
+        },
+        {
+          "title": "Multi-agent planning",
+          "detail": "Coordinate the steps needed for the business workflow."
+        },
+        {
+          "title": "Tool calling",
+          "detail": "Use the relevant tools to carry out those steps."
+        },
+        {
+          "title": "Reflection & evaluation",
+          "detail": "Review the intermediate results and refine the workflow where needed."
+        },
+        {
+          "title": "Workflow result",
+          "detail": "Return the outcome and preserve relevant conversational memory."
+        }
       ]
     },
     {
@@ -168,9 +232,26 @@ Source: supplied research and ATS CVs. Metrics are reported in those CVs, not in
       ],
       "github": "https://github.com/CoderFatherBB/Crop-Doctor-Final-Year-Project-",
       "diagram": [
-        "Plant images",
-        "Deep learning model",
-        "Disease classification"
+        {
+          "title": "Plant images",
+          "detail": "Start with images for agricultural disease classification."
+        },
+        {
+          "title": "Image preparation",
+          "detail": "Prepare the image inputs for model development."
+        },
+        {
+          "title": "Deep-learning model",
+          "detail": "Train the TensorFlow classification model on the prepared data."
+        },
+        {
+          "title": "Training & evaluation",
+          "detail": "Evaluate the model before using it for classification."
+        },
+        {
+          "title": "Disease classification",
+          "detail": "Use the trained model to classify the supplied plant image."
+        }
       ]
     }
   ],

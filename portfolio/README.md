@@ -70,3 +70,5 @@ The ID card uses Bhavin’s original supplied portrait. All résumé downloads s
 Profile and interactive-lab content share `src/lib/data.ts`. After updating these verified facts, synchronize the backend assistant context with `node --experimental-strip-types scripts/sync-knowledge.mjs` (Node 22+). Keep metrics attached to their role or project; dataset contributions and unpublished papers have separate labels.
 
 Stack tiles use six progressively lighter blue category shades in each theme. Selecting or filtering never hides a tile; categories outside the active filter remain visible but disabled. Interactive tiles do not use the one-shot reveal animation, so React selection updates cannot reset them to an invisible state.
+
+The chat proxy supplies current verified profile data and role-specific grounding rules on every request, preserving conversation history. Corrections about the earlier Provilac software role use a verified answer rather than model reconstruction. Both that role and the overlapping B.Tech degree were full-time, confirmed by Bhavin. Project workflows show five or six explained conceptual stages, including on tablet layouts.

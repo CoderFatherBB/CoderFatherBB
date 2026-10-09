@@ -4,7 +4,8 @@ import asyncio
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
+from pathlib import Path
 from sse_starlette.sse import EventSourceResponse
 from groq import Groq
 from dotenv import load_dotenv
@@ -55,51 +56,20 @@ class Message(BaseModel):
 
 class ChatRequest(BaseModel):
     messages: List[Message]
+    portfolio_context: Optional[str] = None
 
 @app.post("/chat")
 async def chat_endpoint(request: ChatRequest):
-    # Extract the user's latest query
-    latest_message = next((m for m in reversed(request.messages) if m.role == "user"), None)
-    query = latest_message.content if latest_message else ""
-    
-    # 1. Retrieve relevant context from ChromaDB
-    # context_chunks = []
-    # if collection and query:
-    #     results = collection.query(
-    #         query_texts=[query],
-    #         n_results=5  # Top 5 most relevant chunks
-    #     )
-    #     if results["documents"] and len(results["documents"]) > 0:
-    #         context_chunks = results["documents"][0]
-
-    with open(r"knowledge_base/master_kb.md", "r") as f:
-        knowledge_base = f.read()
-            
-    # context_string = "\n\n---\n\n".join(context_chunks) if context_chunks else "No specific knowledge base context found."
-    context_string = knowledge_base
-
-    # 2. Build the prompt
-    system_prompt = f"""You are the official digital twin and AI assistant for Bhavin Baldota's portfolio website. 
-Your goal is to answer questions about Bhavin's experience, projects, skills, and background.
-
-INSTRUCTIONS:
-1. Answer professionally and concisely, in the third person as Bhavin's assistant.
-2. Only use the provided context. If a fact is missing, say so rather than inventing it.
-3. Use readable Markdown, with tables only when comparing information.
-4. Keep each metric attached to its role or project and reported baseline. Do not generalize project accuracy to all systems.
-5. Dataset publications are contributions; papers in preparation are not accepted or published.
-6. Roles overlap. Do not sum their durations or invent a total years-of-experience figure.
-7. Certification providers are only those listed in the context. The certification profile is https://www.linkedin.com/in/bhavin-baldota-103553234/details/certifications/
-8. If a question is unrelated, briefly redirect to Bhavin's work.
-
-KNOWLEDGE BASE CONTEXT (Retrieved via RAG):
-{context_string}
-"""
-
-    # Convert Pydantic messages to Groq format
+    knowledge_dir = Path(__file__).resolve().parent / "knowledge_base"
+    rules = json.loads((knowledge_dir / "assistant_rules.json").read_text(encoding="utf-8"))
+    verified_facts = (knowledge_dir / "master_kb.md").read_text(encoding="utf-8")
+    system_prompt = request.portfolio_context or "\n\n".join(rules) + "\n\nVERIFIED PROFILE FACTS:\n" + verified_facts
     groq_messages = [{"role": "system", "content": system_prompt}]
     for msg in request.messages:
-        groq_messages.append({"role": msg.role, "content": msg.content})
+        # The proxy supplies the authoritative context separately. Prior assistant
+        # replies remain history and must never replace the verified role records.
+        if msg.role in ("user", "assistant") and msg.content.strip():
+            groq_messages.append({"role": msg.role, "content": msg.content})
 
     # 3. Call Groq API and stream response
     # The user requested 'openai/gpt-oss-120b', which might be a custom proxy. 
@@ -109,7 +79,7 @@ KNOWLEDGE BASE CONTEXT (Retrieved via RAG):
             completion = groq_client.chat.completions.create(
                 model="openai/gpt-oss-120b",
                 messages=groq_messages,
-                temperature=1,
+                temperature=0.2,
                 max_completion_tokens=8192,
                 top_p=1,
                 stream=True
