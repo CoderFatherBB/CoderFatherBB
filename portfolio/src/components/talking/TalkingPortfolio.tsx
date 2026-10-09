@@ -82,7 +82,7 @@ function TalkingHero({ experienceOpen }: { experienceOpen: boolean }) {
   const video = useRef<HTMLVideoElement>(null);
   const section = useRef<HTMLElement>(null);
   const visible = useRef(false);
-  const heroVisible = useRef(false);
+  const playAttempt = useRef(0);
   const pausedByUser = useRef(false);
   const blockedAudio = useRef(false);
   const [audioBlocked, setAudioBlocked] = useState(false);
@@ -90,13 +90,17 @@ function TalkingHero({ experienceOpen }: { experienceOpen: boolean }) {
   const [captions, setCaptions] = useState(true);
   const [playing, setPlaying] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [frameReady, setFrameReady] = useState(false);
   useEffect(() => {
     const player = video.current;
     if (!player || !section.current) return;
     const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+    const cancelPendingPlay = () => { ++playAttempt.current; };
     const sync = () => {
       if (!experienceOpen && visible.current && !document.hidden && !pausedByUser.current && !reduced.matches) {
+        const attempt = ++playAttempt.current;
         void player.play().catch(error => {
+          if (attempt !== playAttempt.current) return;
           if (error.name !== "NotAllowedError" || experienceOpen || !visible.current || document.hidden || pausedByUser.current || reduced.matches) return;
           // Audible autoplay is browser-controlled. Keep the video running and
           // retry sound on the visitor's first interaction while it is visible.
@@ -111,39 +115,81 @@ function TalkingHero({ experienceOpen }: { experienceOpen: boolean }) {
     };
     const observer = new IntersectionObserver(entries => {
       for (const entry of entries) {
-        if (entry.target === player) visible.current = entry.intersectionRatio >= .5;
-        else heroVisible.current = entry.intersectionRatio >= .35;
+        if (entry.target === player) visible.current = entry.intersectionRatio >= .2;
       }
       sync();
-    }, { threshold: [0, .35, .5] });
-    observer.observe(section.current);
+    }, { threshold: [0, .2] });
     observer.observe(player);
     const enableBlockedAudio = (event: Event) => {
       if (event.target instanceof Element && event.target.closest(".video-controls")) return;
       if (experienceOpen || !blockedAudio.current || !visible.current || document.hidden || pausedByUser.current || reduced.matches) return;
+      const attempt = ++playAttempt.current;
       player.muted = false;
-      void player.play().then(() => { blockedAudio.current = false; setAudioBlocked(false); setSound(true); }).catch(() => { player.muted = true; });
+      player.volume = 1;
+      player.currentTime = 0;
+      void player.play().then(() => { if (attempt !== playAttempt.current) return; blockedAudio.current = false; setAudioBlocked(false); setSound(true); }).catch(() => { if (attempt === playAttempt.current) { player.muted = true; setSound(false); } });
     };
+    player.addEventListener("loadeddata", sync);
     sync(); document.addEventListener("visibilitychange", sync); reduced.addEventListener("change", sync);
     document.addEventListener("pointerdown", enableBlockedAudio);
     document.addEventListener("keydown", enableBlockedAudio);
-    return () => { observer.disconnect(); document.removeEventListener("visibilitychange", sync); reduced.removeEventListener("change", sync); document.removeEventListener("pointerdown", enableBlockedAudio); document.removeEventListener("keydown", enableBlockedAudio); player.pause(); };
+    return () => { cancelPendingPlay(); observer.disconnect(); player.removeEventListener("loadeddata", sync); document.removeEventListener("visibilitychange", sync); reduced.removeEventListener("change", sync); document.removeEventListener("pointerdown", enableBlockedAudio); document.removeEventListener("keydown", enableBlockedAudio); player.pause(); };
   }, [experienceOpen]);
+  useEffect(() => {
+    const player = video.current;
+    if (!player) return;
+    const applyCaptionPreference = () => {
+      const track = player.textTracks[0];
+      if (!track) return;
+      // Safari can leave a default track disabled; keep the visitor's CC choice explicit.
+      track.mode = captions ? "showing" : "disabled";
+    };
+    const trackElement = player.querySelector("track");
+    applyCaptionPreference();
+    player.addEventListener("loadedmetadata", applyCaptionPreference);
+    player.addEventListener("playing", applyCaptionPreference);
+    player.textTracks.addEventListener("addtrack", applyCaptionPreference);
+    trackElement?.addEventListener("load", applyCaptionPreference);
+    return () => {
+      player.removeEventListener("loadedmetadata", applyCaptionPreference);
+      player.removeEventListener("playing", applyCaptionPreference);
+      player.textTracks.removeEventListener("addtrack", applyCaptionPreference);
+      trackElement?.removeEventListener("load", applyCaptionPreference);
+    };
+  }, [captions]);
   function toggleSound() {
     const player = video.current;
     if (!player) return;
+    const attempt = ++playAttempt.current;
+    const enableSound = player.muted;
+    player.muted = !enableSound;
+    player.volume = 1;
+    setSound(enableSound);
     blockedAudio.current = false;
     setAudioBlocked(false);
-    player.muted = !player.muted;
-    setSound(!player.muted);
     pausedByUser.current = false;
-    void player.play().catch(() => {});
+    if (enableSound) player.currentTime = 0;
+    void player.play().catch(error => {
+      if (attempt !== playAttempt.current || error.name !== "NotAllowedError") return;
+      player.muted = true;
+      setSound(false);
+      blockedAudio.current = true;
+      setAudioBlocked(true);
+      void player.play().catch(() => {});
+    });
   }
+  function revealFirstFrame() {
+    const player = video.current;
+    if (!player) return;
+    if ("requestVideoFrameCallback" in player) player.requestVideoFrameCallback(() => setFrameReady(true));
+    else setFrameReady(true);
+  }
+
   function togglePlayback() {
     const player = video.current;
     if (!player) return;
     if (player.paused) { pausedByUser.current = false; void player.play().catch(() => {}); }
-    else { pausedByUser.current = true; player.pause(); }
+    else { ++playAttempt.current; pausedByUser.current = true; player.pause(); }
   }
   function toggleCaptions() {
     const track = video.current?.textTracks[0];
@@ -163,10 +209,11 @@ function TalkingHero({ experienceOpen }: { experienceOpen: boolean }) {
     </div>
     <div className="hero-stage">
       <span className="ghost-name" aria-hidden="true">BHAVIN</span>
-      <div className="video-canvas">
-        <video ref={video} muted={!sound} loop playsInline preload="metadata" poster="/hero/poster.webp" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} onError={() => setFailed(true)} aria-label="Bhavin's animated introduction" aria-describedby="intro-transcript">
-          <source src="/hero/hero.webm" type="video/webm" /><source src="/hero/hero.mp4" type="video/mp4" /><track kind="captions" src="/hero/captions.vtt" srcLang="en" label="English" default />
+      <div className={`video-canvas ${frameReady ? "frame-ready" : ""}`}>
+        <video ref={video} muted={!sound} loop playsInline preload="auto" poster="/hero/poster.webp" onPlay={() => setPlaying(true)} onPlaying={revealFirstFrame} onPause={() => setPlaying(false)} onError={() => setFailed(true)} aria-label="Bhavin's animated introduction" aria-describedby="intro-transcript">
+          <source src="/hero/hero.mp4" type="video/mp4" /><source src="/hero/hero.webm" type="video/webm" /><track kind="captions" src="/hero/captions.vtt" srcLang="en" label="English" default />
         </video>
+        <span className="video-loading-poster" aria-hidden="true" />
       </div>
       {!failed && <div className="video-controls"><button type="button" onClick={toggleSound} aria-label={sound ? "Mute introduction" : "Enable introduction sound"} aria-pressed={sound}>{sound ? "♫" : "♪"}<span className="sound-slash" aria-hidden="true">{sound ? "" : "/"}</span></button><button type="button" onClick={togglePlayback} aria-label={playing ? "Pause introduction" : "Play introduction"}>{playing ? "Ⅱ" : "▶"}</button><button type="button" className="caption-control" onClick={toggleCaptions} aria-label={captions ? "CC: Hide captions" : "CC: Show captions"} aria-pressed={captions}>CC</button><span className="mono">{!sound && audioBlocked ? "TAP ♪ FOR SOUND" : "MEET BHAVIN"}</span></div>}
       {failed && <p className="video-fallback">The introduction video could not load. Read the introduction below.</p>}

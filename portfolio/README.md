@@ -14,10 +14,13 @@ For the production build and browser checks:
 ```bash
 npm run lint
 npm run build
-npx playwright install chromium
+npx playwright install chromium webkit
 npm run test:e2e
+npm run test:webkit
 npm run start
 ```
+
+The WebKit suite checks first-pass media playback, sound, captions, and hero/ID layouts in Safari’s browser engine. Install the browser system dependencies if your machine does not already provide them (`npx playwright install-deps webkit`).
 
 The browser suite starts a production server automatically, checks layouts from 360px to 1920px, verifies theme persistence, mobile-menu keyboard behavior, ID-card interactions, skill filtering, project panels, PDF downloads, video playback, clipboard behavior, and automated accessibility in both themes.
 
@@ -38,11 +41,13 @@ All new profile data lives in `src/lib/data.ts`. Facts and metrics come from the
 | Contact | Email/copy, phone, GitHub, LinkedIn |
 | Floating experiences | Robot and gamepad launchers; vertical on phones, horizontal on desktops |
 
-Light is the default. Theme preference is saved in `localStorage` under `portfolio-theme`. A small pre-paint script restores it without a flash of the opposite theme. Decorative animation, smooth scrolling, autoplay, and desktop pinning respect reduced-motion preferences. Sound and English captions are enabled by default. If the browser blocks audible autoplay, the video plays muted with a sound hint and retries audio on the first interaction while visible. A deliberate mute stays muted. The introduction pauses when the video is less than half visible, the tab becomes hidden, or the visitor pauses it.
+Light is the default. Theme preference is saved in `localStorage` under `portfolio-theme`. A small pre-paint script restores it without a flash of the opposite theme. Decorative animation, smooth scrolling, autoplay, and desktop pinning respect reduced-motion preferences. Sound and English captions are enabled by default. If the browser blocks audible autoplay, the video plays muted with a sound hint and retries audio on the first interaction while visible. A deliberate mute stays muted. The introduction pauses when the video is less than 20% visible, the tab becomes hidden, or the visitor pauses it.
 
 The assistant and AI lab share the main page’s paper surfaces, blue accents, typography, and theme variables in `experiences.css`. Both load only when requested, and preserve conversation or exploration progress when closed. The lab has seven stops, a guided tour that unlocks all chapters, source links, and a restart control. The assistant offers three instant CV highlights generated from the shared profile data, a fresh-conversation control, and Markdown answers. Free-form AI questions use the existing `/api/chat` proxy and configured backend (`BACKEND_API_URL`); CV highlights work without that service. No credentials are included in this repository. Opening either experience pauses the introduction video.
 
 ## Updating the introduction
+
+The player prefers the broadly compatible MP4, preloads the small clip, and retains a separate poster until the first decoded frame. Turning on blocked sound restarts narration from the beginning. Controls sit below the picture and native captions; the outlined name sits above it in both themes.
 
 Assets live in `public/hero/`: `hero.mp4` (H.264/AAC), `hero.webm` (VP9/Opus), `poster.webp`, and default-on English `captions.vtt`. The 14-second video animates a still avatar's mouth; it is not a full-body motion animation or a verified seamless speech loop. It uses a synthetic male US English voice, not a recording or clone of Bhavin's voice.
 

@@ -32,7 +32,7 @@ test('free-form chat sends current server facts and complete follow-up history',
   expect(forwarded.portfolio_context).not.toContain('Wrong facts');
 });
 
-for (const width of [390, 1440]) test(`detailed workflows remain readable in both themes at ${width}px`, async ({ page }) => {
+for (const width of [390, 1440]) test(`detailed workflows remain readable in both themes at ${width}px`, async ({ page }, testInfo) => {
   await page.setViewportSize({ width, height: 900 });
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
@@ -48,7 +48,7 @@ for (const width of [390, 1440]) test(`detailed workflows remain readable in bot
         expect(await step.locator('p').innerText()).toBeTruthy();
       }
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
-      if (name === 'Document intelligence') await page.locator('#project-rag').screenshot({ path: `/workspace/portfolio-review/workflow-${width}-${theme}.png` });
+      if (name === 'Document intelligence') await page.locator('#project-rag').screenshot({ path: testInfo.outputPath(`workflow-${width}-${theme}.png`) });
     }
   }
 });
