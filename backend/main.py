@@ -4,7 +4,8 @@ import asyncio
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
+from pathlib import Path
 from sse_starlette.sse import EventSourceResponse
 from groq import Groq
 from dotenv import load_dotenv
@@ -55,53 +56,20 @@ class Message(BaseModel):
 
 class ChatRequest(BaseModel):
     messages: List[Message]
+    portfolio_context: Optional[str] = None
 
 @app.post("/chat")
 async def chat_endpoint(request: ChatRequest):
-    # Extract the user's latest query
-    latest_message = next((m for m in reversed(request.messages) if m.role == "user"), None)
-    query = latest_message.content if latest_message else ""
-    
-    # 1. Retrieve relevant context from ChromaDB
-    # context_chunks = []
-    # if collection and query:
-    #     results = collection.query(
-    #         query_texts=[query],
-    #         n_results=5  # Top 5 most relevant chunks
-    #     )
-    #     if results["documents"] and len(results["documents"]) > 0:
-    #         context_chunks = results["documents"][0]
-
-    with open(r"knowledge_base/master_kb.md", "r") as f:
-        knowledge_base = f.read()
-            
-    # context_string = "\n\n---\n\n".join(context_chunks) if context_chunks else "No specific knowledge base context found."
-    context_string = knowledge_base
-
-    # 2. Build the prompt
-    system_prompt = f"""You are the official digital twin and AI assistant for Bhavin Baldota's portfolio website. 
-Your goal is to answer questions about Bhavin's experience, projects, skills, and background.
-
-CRITICAL INSTRUCTIONS:
-1. Always be professional, factual, and polite.
-2. Only use the provided KNOWLEDGE BASE CONTEXT to answer questions. 
-3. If someone asks something completely unrelated to Bhavin, politely steer the conversation back.
-4. If the answer is not in the context, do not make up information.
-5. Format your responses nicely using markdown. ALWAYS use proper tables for data presentation and bullet points (*) for description where nessary, and ALWAYS use double newlines (\n\n) between sections or list items to prevent text from merging into a single paragraph. If possible give the answer in table or bullet points, and also add something about bhavin in last helpfull about bhavin and data and also ask a follow up question to make the conversation go on in such a manner that all part is covered like experience, projects, certificates, achivements, education, skills, about me. Keep these end points short and crip and also only 1 or 2 Question suggestions.
-6. Keep your answers concise unless the user asks for a deep dive. Use the WORK EXPERIENCE — DEEP DIVES section from Knowledge base to answer about experience as it has detailed info. And eduation also has its own section so use TABLE OF CONTENTS to get to proper section properly. WHEN asked about total experience, state the total years of experience but DO NOT include any internships, EXCEPT for DRDO which MUST be included as it is a prestigious government research internship.
-7. Check the timeline and data twice before giving answers, you can use the TABLE OF CONTENTS to get to the proper section and mostly all tile lines are present to use it.
-8. Always speak in the third person as Bhavin's assistant.
-9. PROJECTS: If the user asks generally about Bhavin's projects, give a " 3 to 4 projects only" properly with proper table format about project name, description and technologies used, skills. and ALWAYS start with latest first (which will be the latest experience he has in jobs) and also about DRDO, and also at lst also mention that he did 14 project in provilac do you want to know about it.
-10. CERTIFICATES: If the user asks about his certificates, give a proper table of the top/main certifications briefly, name, provider, what is that about. Add TSC iQN in that. Also at last mention he not only have 60+ certificates but also he uses them in development and also tell the providers Microsoft, Linkedin, Udemy, Google, Coursera. If they ask where to see them, ALWAYS provide this exact URL: https://www.linkedin.com/in/bhavin-baldota-103553234/details/certifications/
-
-KNOWLEDGE BASE CONTEXT (Retrieved via RAG):
-{context_string}
-"""
-
-    # Convert Pydantic messages to Groq format
+    knowledge_dir = Path(__file__).resolve().parent / "knowledge_base"
+    rules = json.loads((knowledge_dir / "assistant_rules.json").read_text(encoding="utf-8"))
+    verified_facts = (knowledge_dir / "master_kb.md").read_text(encoding="utf-8")
+    system_prompt = request.portfolio_context or "\n\n".join(rules) + "\n\nVERIFIED PROFILE FACTS:\n" + verified_facts
     groq_messages = [{"role": "system", "content": system_prompt}]
     for msg in request.messages:
-        groq_messages.append({"role": msg.role, "content": msg.content})
+        # The proxy supplies the authoritative context separately. Prior assistant
+        # replies remain history and must never replace the verified role records.
+        if msg.role in ("user", "assistant") and msg.content.strip():
+            groq_messages.append({"role": msg.role, "content": msg.content})
 
     # 3. Call Groq API and stream response
     # The user requested 'openai/gpt-oss-120b', which might be a custom proxy. 
@@ -111,7 +79,7 @@ KNOWLEDGE BASE CONTEXT (Retrieved via RAG):
             completion = groq_client.chat.completions.create(
                 model="openai/gpt-oss-120b",
                 messages=groq_messages,
-                temperature=1,
+                temperature=0.2,
                 max_completion_tokens=8192,
                 top_p=1,
                 stream=True

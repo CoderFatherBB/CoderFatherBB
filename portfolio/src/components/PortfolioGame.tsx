@@ -79,11 +79,28 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
   const [openChapterId, setOpenChapterId] = useState<string | null>(null);
   const [zoneFeedback, setZoneFeedback] = useState<ZoneFeedback | null>(null);
   const [stageSize, setStageSize] = useState({ width: 840, height: 560 });
+  const modalRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const pressedDirectionsRef = useRef<Set<Direction>>(new Set());
   const playerRef = useRef<Point>(START_POSITION);
   const discoveredIdsRef = useRef<string[]>([]);
   const zoneFeedbackTimeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const previous = document.activeElement as HTMLElement | null;
+    modalRef.current?.querySelector<HTMLButtonElement>("button")?.focus();
+    const trap = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return;
+      const nodes = modalRef.current?.querySelectorAll<HTMLElement>('button:not(:disabled),a[href]');
+      if (!nodes?.length) return;
+      const first = nodes[0], last = nodes[nodes.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    };
+    window.addEventListener("keydown", trap);
+    return () => { window.removeEventListener("keydown", trap); previous?.focus(); };
+  }, [isOpen]);
 
   const playerCenter = useMemo(() => ({
     x: player.x + PLAYER_SIZE / 2,
@@ -308,6 +325,7 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          ref={modalRef}
           role="dialog"
           aria-modal="true"
           aria-label="Bhavin's AI Lab exploration game"
@@ -320,10 +338,10 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
           >
             <header className="game-topbar">
               <div className="flex items-center gap-3">
-                <span className="game-live-dot" />
+                <span className="experience-header-icon"><Gamepad2 size={22} aria-hidden="true" /></span>
                 <div>
                   <p className="hud-label text-blue-200">Bhavin&apos;s AI Lab</p>
-                  <p className="hidden text-[10px] text-slate-500 sm:block">Exploration build · BB-1506</p>
+                  <p className="hidden text-[10px] text-slate-500 sm:block">Research · development · deployment</p>
                 </div>
               </div>
 
@@ -332,6 +350,7 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
                   <Map size={14} className="text-blue-300" />
                   <span className="font-mono text-xs text-slate-400">{discoveredIds.length}/{discoveryZones.length} fragments</span>
                 </div>
+                <button type="button" className="game-icon-button" onClick={restart} aria-label="Restart exploration" title="Restart exploration"><RotateCcw size={17} /></button>
                 <button
                   type="button"
                   onClick={() => {
@@ -497,7 +516,7 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
                         <p className="hud-label mt-5 text-blue-300">Exploration mode</p>
                         <h2 id="game-title" className="mt-3 text-3xl font-semibold text-white md:text-5xl">Enter Bhavin&apos;s AI Lab</h2>
                         <p className="mx-auto mt-4 max-w-lg text-sm leading-6 text-slate-300 md:text-base">
-                          Move through the lab, approach five glowing locations, and collect the story fragments hidden inside. No quiz—just explore.
+                          Move through the lab, approach seven locations, and collect the story fragments hidden inside. Discover the people, projects, and ideas behind the work.
                         </p>
                         <div className="mt-6 flex flex-wrap justify-center gap-3 text-xs text-slate-400">
                           <span className="game-instruction-chip">WASD / arrows to move</span>
@@ -506,6 +525,7 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
                         <button type="button" onClick={() => setHasStarted(true)} className="game-primary-button mt-7">
                           Enter the lab <ArrowRight size={17} />
                         </button>
+                        <button type="button" className="game-secondary-button mt-3" onClick={() => { const ids = discoveryZones.map(zone => zone.id); setDiscoveredIds(ids); discoveredIdsRef.current = ids; setHasStarted(true); showChapter("origin"); }}>Take a guided tour <BookOpen size={17} /></button>
                       </motion.div>
                     </motion.div>
                   )}
@@ -584,7 +604,7 @@ export default function PortfolioGame({ isOpen, onClose }: PortfolioGameProps) {
               <AnimatePresence>
                 {openChapter && (
                   <GameChapterView
-                    key={`chapter-${openChapter.id}`}
+                    key="lab-chapter"
                     zone={openChapter}
                     zones={discoveryZones}
                     discoveredIds={discoveredIds}

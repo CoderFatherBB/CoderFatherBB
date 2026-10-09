@@ -1,5 +1,6 @@
 "use client";
 
+import { PROFILE } from "@/lib/data";
 import { Mail, ArrowUp } from "lucide-react";
 import { FaGithub, FaLinkedin, FaYoutube, FaInstagram } from "react-icons/fa";
 
@@ -20,7 +21,7 @@ export default function Footer() {
           </div>
           
           <div className="flex space-x-4">
-            <a href="mailto:bhavinbaldota15@gmail.com" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-300 hover:bg-blue-500 hover:text-white transition-all">
+            <a href={`mailto:${PROFILE.email}`} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-300 hover:bg-blue-500 hover:text-white transition-all">
               <Mail size={18} />
             </a>
             <a href="https://github.com/CoderFatherBB" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-300 hover:bg-white hover:text-black transition-all">

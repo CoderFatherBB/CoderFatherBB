@@ -1,0 +1,95 @@
+/* Shared paper, typography, and blue accents for both portfolio experiences. */
+.experience-dock { position:fixed; right:24px; bottom:22px; display:flex; gap:12px; z-index:160; }
+.experience-orb { width:76px; height:76px; border-radius:50%; border:1px solid var(--line); background:var(--surface); color:var(--blue); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; box-shadow:0 8px 24px #00000012; font-family:var(--font-inter),Arial,sans-serif; cursor:pointer; transition:transform .2s,border-color .2s; }
+.experience-orb span { font-size:10px; color:var(--ink); }
+.experience-orb:hover { transform:translateY(-3px); border-color:var(--blue); }
+.experience-orb:focus-visible,.assistant-panel :focus-visible { outline:3px solid var(--blue); outline-offset:3px; }
+.assistant-overlay { position:fixed; inset:0; z-index:220; background:#101f3540; backdrop-filter:blur(5px); display:flex; justify-content:flex-end; align-items:flex-end; padding:24px; }
+.assistant-panel { width:460px; height:min(720px,calc(100dvh - 48px)); display:flex; flex-direction:column; background:var(--paper); border:1px solid var(--line); border-radius:24px; box-shadow:0 24px 80px #00000024; color:var(--ink); overflow:hidden; font-family:var(--font-inter),Arial,sans-serif; }
+.experience-header { display:flex; align-items:center; gap:14px; padding:22px; border-bottom:1px solid var(--line); background:var(--surface); }
+.experience-header h2 { font-size:22px; letter-spacing:-.035em; margin:3px 0 0; font-weight:600; }
+.experience-header .eyebrow { font-size:8px; }
+.experience-header-icon { flex:none; width:44px; height:44px; border-radius:50%; background:var(--blue-soft); color:var(--blue); display:grid; place-items:center; }
+.experience-icon-button { margin-left:auto; width:36px; height:36px; flex:none; border:1px solid var(--line); border-radius:50%; display:grid; place-items:center; background:var(--surface); color:var(--ink); cursor:pointer; }
+.assistant-log { flex:1; min-height:0; overflow-y:auto; overscroll-behavior:contain; padding:22px; }
+.assistant-message { padding:16px; border:1px solid var(--line); background:var(--surface); border-radius:16px; font-size:14px; line-height:1.65; margin-bottom:16px; overflow-wrap:anywhere; }
+.assistant-message.user { margin-left:28px; background:var(--blue-soft); }
+.assistant-message>.eyebrow { font-size:8px; display:block; margin-bottom:9px; }
+.assistant-message p { margin:8px 0; }
+.assistant-message h3 { font-size:17px; line-height:1.3; margin:18px 0 8px; }
+.assistant-message a { color:var(--blue); text-decoration:underline; text-underline-offset:3px; }
+.assistant-message :is(ul,ol) { padding-left:20px; }
+.assistant-message table { display:block; overflow-x:auto; max-width:100%; border-collapse:collapse; }
+.assistant-message :is(td,th) { border:1px solid var(--line); padding:8px; }
+.assistant-message pre { overflow:auto; padding:10px; background:var(--soft); border-radius:8px; }
+.assistant-highlights { padding:0 20px 12px; }
+.assistant-highlights>.eyebrow { display:block; font-size:8px; margin-bottom:7px; }
+.assistant-highlights>div { display:flex; flex-wrap:wrap; gap:6px; }
+.assistant-highlights button { display:flex; gap:5px; align-items:center; border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:20px; font-size:11px; padding:7px 10px; cursor:pointer; }
+.assistant-form { display:flex; gap:8px; margin:0 20px; border:1px solid var(--line); border-radius:28px; background:var(--surface); padding:6px 6px 6px 16px; }
+.assistant-form:focus-within { border-color:var(--blue); }
+.assistant-form input { min-width:0; flex:1; background:transparent; color:var(--ink); border:0; font-size:14px; outline:none; }
+.assistant-form input::placeholder { color:var(--muted); }
+.experience-send { flex:none; width:38px; height:38px; border:0; border-radius:50%; background:var(--blue); color:var(--paper); display:grid; place-items:center; cursor:pointer; }
+.assistant-panel button:disabled { opacity:.55; cursor:default; }
+.assistant-footer { padding:12px 22px 18px; display:flex; flex-wrap:wrap; gap:12px; justify-content:space-between; font-size:10px; color:var(--muted); }
+.assistant-footer button { display:flex; gap:5px; align-items:center; background:none; border:0; color:inherit; cursor:pointer; }
+.assistant-spinner { animation:assistant-spin 1s linear infinite; }
+@keyframes assistant-spin { to { transform:rotate(360deg); } }
+html[data-theme] .game-overlay { z-index:220; background:#101f3540; backdrop-filter:blur(5px); font-family:var(--font-inter),Arial,sans-serif; }
+html[data-theme] .game-window { background:var(--paper); border:1px solid var(--line); color:var(--ink); box-shadow:0 24px 80px #00000024; border-radius:24px; }
+html[data-theme] :is(.game-topbar,.game-discovery-panel,.game-chapter-sidebar) { background:var(--surface); border-color:var(--line); }
+html[data-theme] :is(.game-stage,.game-world) { background:var(--paper); }
+html[data-theme] .game-grid-floor { background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px); opacity:.5; }
+html[data-theme] .game-grid-floor::after { background:none; }
+html[data-theme] :is(.game-path,.game-room-outline) { background:var(--blue-soft); border-color:var(--line); box-shadow:none; }
+html[data-theme] :is(.game-zone-building,.game-zone-symbol,.game-portal-core,.game-stage-hud,.game-zone-feedback,.game-intro-card,.game-chapter-entry,.game-chapter-stats>div,.game-chapter-badge) { background:var(--surface); color:var(--ink); border-color:var(--line); box-shadow:0 4px 18px #00000008; }
+html[data-theme] :is(.game-zone.is-discovered .game-zone-building,.game-portal.is-unlocked .game-portal-core) { background:var(--blue-soft); border-color:var(--blue); }
+html[data-theme] :is(.game-zone-prompt,.game-zone.is-discovered .game-zone-symbol,.game-player-body) { background:var(--blue); color:var(--paper); border-color:var(--blue); box-shadow:none; }
+html[data-theme] .game-player-sensor { background:var(--blue); box-shadow:none; }
+html[data-theme] .game-zone-beacon { border-color:var(--blue); }
+html[data-theme] .game-intro { background:color-mix(in srgb,var(--paper) 90%,transparent); }
+html[data-theme] .game-intro-card h2 { font-family:var(--font-serif),Georgia,serif; font-weight:400; font-style:italic; color:var(--blue); }
+html[data-theme] :is(.game-primary-button,.game-mobile-fragment-button) { background:var(--blue); color:var(--paper); border-color:var(--blue); box-shadow:none; }
+html[data-theme] :is(.game-primary-button,.game-mobile-fragment-button):hover { background:var(--blue); box-shadow:none; }
+html[data-theme] :is(.game-secondary-button,.game-icon-button,.game-chapter-back,.game-instruction-chip,.game-intro-icon,.game-chapter-nav-symbol,.game-mobile-controls button,.game-key-hint span) { background:var(--surface); color:var(--ink); border-color:var(--line); box-shadow:none; }
+html[data-theme] .game-intro-icon { color:var(--blue); border-radius:50%; }
+html[data-theme] :is(.game-chapter-nav button.is-active,.game-chapter-tags span) { background:var(--blue-soft); color:var(--ink); border-color:var(--line); box-shadow:none; }
+html[data-theme] :is(.game-chapter-hero h2,.game-chapter-entry h4,.game-chapter-section-title h3) { color:var(--ink); }
+html[data-theme] :is(.game-chapter-nav-heading,.game-chapter-stats strong,.game-chapter-badge small,.game-chapter-section-title,.game-chapter-entry-heading,.game-fragment-list>div.is-discovered,.game-chapter-content a) { color:var(--blue); }
+html[data-theme] :is(.game-chapter-nav-help,.game-chapter-hero p,.game-chapter-entry-description,.game-chapter-stats span,.game-chapter-entry-heading p,.game-fragment-list>div) { color:var(--muted); }
+html[data-theme] .game-window :is(.text-white,.text-slate-200,.text-slate-300,.text-blue-200,.text-blue-300,.text-cyan-300) { color:var(--ink); }
+html[data-theme] .game-window :is(.text-slate-400,.text-slate-500) { color:var(--muted); }
+html[data-theme] .game-live-dot { background:var(--blue); box-shadow:none; }
+html[data-theme] :is(.game-progress-value,.game-player-sensor) { background:var(--blue); box-shadow:none; }
+html[data-theme] .game-progress-track { background:var(--line); }
+.game-topbar>.flex:first-child>.game-live-dot { display:none; }
+.game-topbar .experience-header-icon { width:36px; height:36px; }
+.game-window :focus-visible { outline:3px solid var(--blue); outline-offset:3px; }
+.game-chapter-link { display:inline-block; margin-top:12px; font-size:13px; text-decoration:underline; }
+html[data-theme] .game-chapter-stats { background:none; border-color:var(--line); }
+html[data-theme] .game-chapter-entry { border-color:var(--line); }
+@media(max-width:760px) {
+  .experience-dock { flex-direction:column; right:16px; bottom:16px; gap:10px; }
+  .experience-orb { width:64px; height:64px; }
+  .assistant-overlay { padding:12px; align-items:center; }
+  .assistant-panel { width:100%; height:calc(100dvh - 24px); border-radius:20px; }
+  .experience-header { padding:16px; gap:10px; }
+  .experience-header h2 { font-size:20px; }
+  .assistant-log { padding:16px; }
+  .assistant-highlights { padding:0 16px 10px; }
+  .assistant-form { margin:0 16px; }
+  .assistant-footer { padding:12px 16px; }
+  .portfolio-footer { padding-right:70px; }
+}
+@media(prefers-reduced-motion:reduce) { .experience-orb,.assistant-spinner { transition:none; animation:none; } }
+html[data-theme] .game-chapter-nav button { color:var(--ink); }
+html[data-theme] .game-chapter-nav small { color:var(--muted); }
+html[data-theme] .game-chapter-nav button:not(:disabled):hover { color:var(--ink); background:var(--blue-soft); border-color:var(--line); }
+html[data-theme] .game-chapter-nav-lock { background:var(--surface); color:var(--muted); border-color:var(--line); }
+html[data-theme] .game-chapter-stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
+html[data-theme] .game-chapter-view { background:var(--paper); }
+html[data-theme] .game-intro-card h2.text-white { color:var(--blue); }
+.game-intro-card .game-secondary-button { margin-left:10px; }
+html[data-theme] .game-chapter-hero { border-color:var(--line); }
+@media(max-height:560px) { .game-intro { align-items:flex-start; overflow-y:auto; } .game-intro-card { margin:16px 0; padding:20px; } .game-intro-card h2 { font-size:28px; } }

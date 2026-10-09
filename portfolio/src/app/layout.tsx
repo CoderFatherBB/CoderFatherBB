@@ -1,44 +1,23 @@
 import type { Metadata } from "next";
-import { Inter, Outfit } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
-import MouseSpotlight from "@/components/MouseSpotlight";
-import ThemeToggle from "@/components/ThemeToggle";
-import Chatbot from "@/components/Chatbot";
+import "./talking.css";
+import "./experiences.css";
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
-
-const outfit = Outfit({
-  variable: "--font-outfit",
-  subsets: ["latin"],
-});
-
+const inter = localFont({ src: "../fonts/InterTight.woff2", variable: "--font-inter", display: "swap" });
+const serif = localFont({ src: "../fonts/InstrumentSerif-Italic.woff2", variable: "--font-serif", display: "swap" });
+const mono = localFont({ src: "../fonts/JetBrainsMono.woff2", variable: "--font-mono", display: "swap", preload: false });
 export const metadata: Metadata = {
-  title: "Bhavin Baldota | GenAI/ML Engineer & Researcher",
-  description: "An interactive portfolio by Bhavin Baldota—Lead Software Engineer building production GenAI, RAG, multi-agent, and computer vision systems.",
+  metadataBase: new URL("https://bhavin-baldota-portfolio.vercel.app"),
+  title: "Bhavin Baldota | AI Engineer & Researcher",
+  description: "I research, develop, and deploy AI systems. Explore Bhavin Baldota's work in generative AI, intelligent agents, applied machine learning, and research.",
+  openGraph: { title: "Bhavin Baldota | Research. Develop. Deploy.", description: "AI engineering, applied research, and production systems.", images: [{ url: "/og.jpg", width: 1200, height: 630 }] },
+  twitter: { card: "summary_large_image", images: ["/og.jpg"] },
 };
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <html lang="en" className={`${inter.variable} ${outfit.variable} scroll-smooth`}>
-      <body className="min-h-screen bg-[var(--background)] text-[var(--foreground)] antialiased selection:bg-blue-500/30 transition-colors duration-500">
-        <MouseSpotlight />
-        <ThemeToggle />
-        <Chatbot />
-        <div className="relative overflow-x-hidden w-full min-h-screen flex flex-col">
-          <div className="bg-glow top-0 left-0" />
-          <div className="bg-glow bottom-0 right-0" style={{ filter: "blur(120px)", opacity: 0.5 }} />
-          <div className="relative z-10 w-full">
-            {children}
-          </div>
-        </div>
-      </body>
-    </html>
-  );
+const themeScript = `try{document.documentElement.dataset.theme=localStorage.getItem('portfolio-theme')==='dark'?'dark':'light'}catch{document.documentElement.dataset.theme='light'}`;
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  return <html lang="en" data-theme="light" suppressHydrationWarning className={`${inter.variable} ${serif.variable} ${mono.variable}`}>
+    <head><link rel="preload" as="image" href="/hero/poster.webp" fetchPriority="high" /></head>
+    <body><script dangerouslySetInnerHTML={{ __html: themeScript }} /><a className="skip-link" href="#main-content">Skip to content</a>{children}</body>
+  </html>;
 }
